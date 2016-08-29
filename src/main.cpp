@@ -33,6 +33,6 @@ int main(int argc, char *argv[]) {
     qmlRegister();
     singletonRegister();
     QQmlApplicationEngine engine;
-    engine.load(QUrl(QLatin1String("qrc:/main.qml")));
+    engine.load(QUrl(QLatin1String("qrc:/src/qml/main.qml")));
     return app.exec();
 }
