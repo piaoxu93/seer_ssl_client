@@ -1,0 +1,41 @@
+{
+    "field":{
+        "width":900,
+        "height":600,
+        "invert":false,
+        "goalWidth":120,
+        "goalDepth":20,
+        "penaltyRadius":100,
+        "penaltyCenterLength":50,
+        "centerCircleRadius":50
+    },
+    "canvas":{
+        "width":1050,
+        "height":700
+    },
+    "car":{
+        "diameter": 17.9,
+        "faceWidth" : 12.1
+    },
+    "ball":{
+        "diameter": 6.62
+    },
+    "crazy":{
+        "port":"",
+        "frequency":0
+    },
+    "vision":{
+        "address":"224.5.23.2",
+        "port":10005
+    },
+    "referee":{
+        "address":"224.5.23.1",
+        "sendPort":10003,
+        "receivePort":10003
+    },
+    "game":{
+        "playerNumber":6,
+        "maxPlayer":12,
+        "maxBallNumber":20
+    }
+}
