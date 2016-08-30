@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-CONFIG += c++11
+CONFIG += c++11 debug
 
 QT += qml quick serialport network
 
@@ -62,18 +62,34 @@ win32 {
     LIBS +=
 }
 
-unix {
+macx {
     debug {
         #CONFIG += console
+        params.path = $${OUT_PWD}/debug/bin/$${TARGET}.app/Contents/MacOS
+        params.files = $$PWD/params.json
+        INSTALLS += params
+    }
+    release {
+        params.path = $${OUT_PWD}/release/bin/$${TARGET}.app/Contents/MacOS
+        params.files = $$PWD/params.json
+        INSTALLS += params
     }
     INCLUDEPATH += /usr/local/include
     LIBS += /usr/local/lib/libprotobuf.dylib \
         /usr/local/lib/libboost_filesystem-mt.dylib \
         /usr/local/lib/libboost_system-mt.dylib
-
 }
 
-INSTALLS +=
+CONFIG(debug) {
+    DESTDIR = ./debug/bin
+    MOC_DIR = ./debug
+    OBJECTS_DIR = ./debug
+}
+CONFIG(release) {
+    DESTDIR = ./release/bin
+    MOC_DIR = ./release
+    OBJECTS_DIR = ./release
+}
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
