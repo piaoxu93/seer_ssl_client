@@ -9,7 +9,9 @@ RESOURCES += qml.qrc
 
 INCLUDEPATH += /usr/local/include
 
-LIBS += /usr/local/lib/libprotobuf.dylib
+LIBS += /usr/local/lib/libprotobuf.dylib \
+    /usr/local/lib/libboost_filesystem.dylib \
+    /usr/local/lib/libboost_system.dylib
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =

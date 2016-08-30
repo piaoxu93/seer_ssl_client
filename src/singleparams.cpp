@@ -5,12 +5,17 @@
 #include <String>
 #include <QDir>
 #include <regex>
+
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+#include <iostream>
 using namespace std;
 
 SingleParams *SingleParams::single = nullptr;
 
 SingleParams::SingleParams(){
-    string filename = string(QCoreApplication::applicationDirPath().toUtf8().constData())+string("/params.json");
+    boost::filesystem::path full_path( boost::filesystem::initial_path<boost::filesystem::path>() );
+    string filename = full_path.string()+string("/params.json");
     fstream file(filename,ios::in | ios::out);
     qDebug() << "READING :  params.json..." << endl;
     if(file.is_open()){

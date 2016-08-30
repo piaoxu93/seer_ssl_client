@@ -11,13 +11,13 @@
 Field *Field::single = nullptr;
 namespace{
     const static QColor BLUE(19,49,137);
-    const static QColor TRANSBLUE(19,49,137,20);
+    const static QColor TRANSBLUE(19,49,137,30);
     const static QColor YELLOW(241,231,36);
-    const static QColor TRANSYELLOW(241,231,36,20);
+    const static QColor TRANSYELLOW(241,231,36,30);
     const static QColor PINK(255,63,149);
     const static QColor GREEN(105,255,0);
     const static QColor ORANGE(255,170,85);
-    const static QColor TRANSORANGE(255,170,85,20);
+    const static QColor TRANSORANGE(255,170,85,30);
     const static QColor DARKGREEN(Qt::darkGreen);
     const static QColor TRANSPARENT(Qt::transparent);
 }
@@ -63,17 +63,15 @@ void Field::paint(QPainter* painter){
     static QRect area(0,0,this->property("width").toReal(),this->property("height").toReal());
     //paintCar(false,0,0,0,90);
     painter->drawPixmap(area,pixmap);
+
 }
-//void Field::update(const QRect &rect){
-//    painter->drawPixmap(rect,pixmap);
-//}
 void Field::draw(){
     static QRect area(0,0,this->property("width").toReal(),this->property("height").toReal());
     pixmap.fill(DARKGREEN);
     imagePainter.strokePath(painterPath, QPen(Qt::white, 1));
     drawOneFrame(0);
-    for (int i=-1;i>-60;i-=3)
-        drawOneFrame(i,false);
+//    for (int i=-1;i>-60;i-=2)
+//        drawOneFrame(i,false);
     this->update(area);
 }
 void Field::drawOneFrame(int index,bool solid){

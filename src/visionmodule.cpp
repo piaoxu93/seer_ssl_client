@@ -1,8 +1,12 @@
 #include "visionmodule.h"
 #include <QtDebug>
+#include <QNetworkInterface>
+
+#include <string>
 #include "singleparams.h"
 #include "field.h"
 #include "globaldata.h"
+
 #include "proto/messages_robocup_ssl_detection.pb.h"
 #include "proto/messages_robocup_ssl_geometry.pb.h"
 #include "proto/messages_robocup_ssl_wrapper.pb.h"
@@ -129,7 +133,7 @@ void parseAndStoreVisionData(void * ptr,int size,ReceiveVisionMessage & currentM
     }
 */
 }
-CVisionModule::CVisionModule(QObject *parent) : QObject(parent){
+CVisionModule::CVisionModule(QObject *parent) : QObject(parent),cycle(0){
     for (int i=0;i<PARAM::CAMERA;i++){
         cameraUpdate[i] = false;
     }
@@ -140,6 +144,15 @@ CVisionModule::CVisionModule(QObject *parent) : QObject(parent){
     udpSocket->bind(QHostAddress::AnyIPv4, port, QUdpSocket::ShareAddress);
     udpSocket->joinMulticastGroup(groupAddress);
     connect(udpSocket, SIGNAL(readyRead()), this, SLOT(output()));
+
+    //
+    for(int i=0;i<PARAM::SENDVISIONNUM;i++){
+        std::string address = SingleParams::instance()->_("vision.send["+std::to_string(i)+"].address");
+        sendAddresses[i] = QString(address.c_str());
+        sendPorts[i] = SingleParams::instance()->_("vision.send["+std::to_string(i)+"].port");
+        sendUdps[i].bind(QHostAddress::AnyIPv4, sendPorts[i]+1, QUdpSocket::ShareAddress);
+        qDebug() << sendPorts[i] << " " << sendAddresses[i];
+    }
 }
 void CVisionModule::output(){
     while (udpSocket->hasPendingDatagrams()) {
@@ -151,6 +164,7 @@ void CVisionModule::output(){
         cameraUpdate[currentVision.camID] = true;
         if (collectNewVision()){
             mix();
+            send();
             Field::instance()->draw();
         }
     }
@@ -167,11 +181,16 @@ void CVisionModule::updateVisionControl(int index){
     c = !c;
 }
 void CVisionModule::mix(){
-    VisionMessage vision;
+    static VisionMessage vision;
+    static quint32 maintainBall;
+    vision.init();
+    maintainBall = 0xffffffff;
     bool exist;
+    auto& lastBall = GlobalData::Instance()->vision[0].ball;
     for (int i=0;i<PARAM::CAMERA;i++){
         if (GlobalData::Instance()->cameraControl[i]) {
             auto& t = GlobalData::Instance()->camera[i][0];
+            //* mix method one
             for (int j=0;j<t.blueNum;j++){
                 exist = false;
                 for (int k=0;k<vision.blueSize;k++){
@@ -195,10 +214,66 @@ void CVisionModule::mix(){
                 if (!exist)
                     vision.yellow[vision.yellowSize++] = t.yellow[j];
             }
-            if (t.ballNum>0)
-                vision.ball = t.ball[0];
+            for (int j=0;j<t.ballNum;j++) {
+                auto deltaX = qint16(lastBall.pos.x - t.ball[j].pos.x);
+                auto deltaY = qint16(lastBall.pos.y - t.ball[j].pos.y);
+                auto dis = quint32(deltaX * deltaX + deltaY * deltaY);
+                if ( dis < maintainBall ) {
+                    vision.ball = t.ball[j];
+                    maintainBall = dis;
+                }
+            }
+            //*/
+            /* mix method two */
+
         }
         cameraUpdate[i] = false;
     }
     GlobalData::Instance()->vision.push(vision);
+}
+
+int min_int(int a,int b){
+    return a < b ? a : b;
+}
+void CVisionModule::send(){
+    auto& t = GlobalData::Instance()->vision[0];
+    SendVisionMessage sendMessage;
+//    int Cycle;
+    sendMessage.Cycle = cycle++;
+//    bool  BallFound;
+    sendMessage.BallFound = t.ball.pos.x+9999 > 0.01 ;
+//    float Ballx;
+//    float Bally;
+    sendMessage.Ballx = t.ball.pos.x;
+    sendMessage.Bally = t.ball.pos.y;
+//    int nCameraID;
+    sendMessage.nCameraID = 4;
+//    int BallImagex;
+//    int BallImagey;
+    //
+//    unsigned char  RobotINDEX[2][6];
+//    bool  RobotFound[2][6];
+//    float RobotPosX[2][6];
+//    float RobotPosY[2][6];
+//    float RobotRotation[2][6];
+    for(int i=0;i<min_int(t.yellowSize,6);i++){
+        sendMessage.RobotFound[0][i] = true;
+        sendMessage.RobotINDEX[0][i] = t.yellow[i].id;
+        sendMessage.RobotPosX[0][i] = t.yellow[i].pos.x;
+        sendMessage.RobotPosY[0][i] = t.yellow[i].pos.y;
+        sendMessage.RobotRotation[0][i] = t.yellow[i].angel;
+    }
+    for(int i=0;i<min_int(t.blueSize,6);i++){
+        sendMessage.RobotFound[1][i] = true;
+        sendMessage.RobotINDEX[1][i] = t.blue[i].id;
+        sendMessage.RobotPosX[1][i] = t.blue[i].pos.x;
+        sendMessage.RobotPosY[1][i] = t.blue[i].pos.y;
+        sendMessage.RobotRotation[1][i] = t.blue[i].angel;
+    }
+    for(int i = 0; i < QNetworkInterface::allInterfaces().length(); ++i){
+        for(int j = 0;j <PARAM::SENDVISIONNUM; j++){
+            udpSocket->setMulticastInterface(QNetworkInterface::allInterfaces()[i]);
+            udpSocket->writeDatagram((char*)&sendMessage,sizeof(sendMessage),sendAddresses[j], sendPorts[j]);
+        }
+    }
 }

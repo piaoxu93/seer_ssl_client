@@ -26,7 +26,15 @@
     },
     "vision":{
         "address":"224.5.23.2",
-        "port":10005
+        "port":10005,
+        "player":{
+            "minAddFrame":30,
+            "maxLostFrame":30
+        },
+        "ball":{
+            "minAddFrame":30,
+            "maxLostFrame":30
+        }
     },
     "referee":{
         "address":"224.5.23.1",
@@ -36,6 +44,7 @@
     "game":{
         "playerNumber":6,
         "maxPlayer":12,
-        "maxBallNumber":20
-    }
+        "maxBallNum":20,
+        "maxPlayerNum":12,
+    },
 }

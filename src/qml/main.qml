@@ -5,8 +5,8 @@ import Client.Component 1.0 as Client
 ApplicationWindow{
     visible:true;
     width:1300;
-    height:700//830;
-    minimumHeight: 700//830;
+    height:830;
+    minimumHeight: 830;
     minimumWidth: 1300;
     color:"#FFFFFF";
     id:window;

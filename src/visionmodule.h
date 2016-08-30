@@ -4,6 +4,9 @@
 #include <QObject>
 #include <QUdpSocket>
 #include <QHostAddress>
+
+
+#include <algorithm>
 #include "singleparams.h"
 #include "params.h"
 #include "singleton.hpp"
@@ -23,15 +26,44 @@ namespace Vision{
         _Robot():id(-1){}
     }Robot;
 }
+//
+typedef struct SENDVISIONMESSAGE
+{
+    int Cycle;
+    bool  BallFound;
+    float Ballx;
+    float Bally;
+
+    int nCameraID;
+    int BallImagex;
+    int BallImagey;
+
+    unsigned char  RobotINDEX[2][6];
+    bool  RobotFound[2][6];
+    float RobotPosX[2][6];
+    float RobotPosY[2][6];
+    float RobotRotation[2][6];
+
+}SendVisionMessage;
+//
 class VisionMessage{
 public:
     Vision::Robot blue[PARAM::ROBOTNUM];
     Vision::Robot yellow[PARAM::ROBOTNUM];
     Vision::Ball ball;
     int blueSize;
+    int blueIndex[PARAM::ROBOTMAXID];
     int yellowSize;
-    VisionMessage():blueSize(0),yellowSize(0){}
-    void init(){ blueSize = 0;yellowSize = 0; }
+    int yellowIndex[PARAM::ROBOTMAXID];
+    VisionMessage():blueSize(0),yellowSize(0){
+        std::fill_n(blueIndex,PARAM::ROBOTMAXID,-1);
+        std::fill_n(yellowIndex,PARAM::ROBOTMAXID,-1);
+    }
+    void init(){
+        blueSize = 0;yellowSize = 0;
+        std::fill_n(blueIndex,PARAM::ROBOTMAXID,-1);
+        std::fill_n(yellowIndex,PARAM::ROBOTMAXID,-1);
+    }
 };
 class ReceiveVisionMessage{
 public:
@@ -57,6 +89,7 @@ class CVisionModule : public QObject
 public:
     CVisionModule(QObject *parent = 0);
     void mix();
+    void send();
 public slots:
     void updateVisionControl(int);
 signals:
@@ -69,6 +102,11 @@ private:
     ReceiveVisionMessage currentVision;
     bool collectNewVision();
     bool cameraUpdate[PARAM::CAMERA];
+    quint64 cycle;
+private:
+    QHostAddress sendAddresses[PARAM::SENDVISIONNUM];
+    quint16 sendPorts[PARAM::SENDVISIONNUM];
+    QUdpSocket (sendUdps)[PARAM::SENDVISIONNUM];
 };
 typedef Singleton<CVisionModule> VisionModule;
 #endif // VISIONMODULE_H
