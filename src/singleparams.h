@@ -2,7 +2,7 @@
 #define SINGLEPARAMS_H
 #include <String>
 #include <QtDebug>
-#include "json.hpp"
+#include "lib/json.hpp"
 using json = nlohmann::json;
 class SingleParams
 {

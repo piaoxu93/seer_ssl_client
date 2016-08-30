@@ -89,3 +89,6 @@ CMakeLists.txt.user*
 # Protocal Buffer
 *.pb.h
 *.pb.cc
+
+# VS Code
+.vscode
