@@ -68,8 +68,8 @@ unix {
     }
     INCLUDEPATH += /usr/local/include
     LIBS += /usr/local/lib/libprotobuf.dylib \
-        /usr/local/lib/libboost_filesystem.dylib \
-        /usr/local/lib/libboost_system.dylib
+        /usr/local/lib/libboost_filesystem-mt.dylib \
+        /usr/local/lib/libboost_system-mt.dylib
 
 }
 

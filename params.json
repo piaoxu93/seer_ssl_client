@@ -34,7 +34,15 @@
         "ball":{
             "minAddFrame":30,
             "maxLostFrame":30
-        }
+        },
+        "send":[{
+            "address":"127.0.0.1",
+            "port":12345
+            },{
+            "address":"127.0.0.1",
+            "port":54321
+            }
+        ]
     },
     "referee":{
         "address":"224.5.23.1",
@@ -45,6 +53,6 @@
         "playerNumber":6,
         "maxPlayer":12,
         "maxBallNum":20,
-        "maxPlayerNum":12,
-    },
+        "maxPlayerNum":12
+    }
 }
