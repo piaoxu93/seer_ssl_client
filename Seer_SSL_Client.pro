@@ -8,6 +8,20 @@ TARGET = Seer_SSL_Client
 
 RESOURCES += qml.qrc
 
+win32 {
+    PROTOBUF_INCLUDE_DIR = D:\workspace\yys\include
+    debug {
+        LIBPROTOBUF_DEBUG = D:\workspace\yys\lib\debug\libprotobuf.lib
+    }
+    release {
+        LIBPROTOBUF_RELEASE = D:\workspace\yys\lib\release\libprotobuf.lib
+    }
+}
+
+maxc {
+    LIBPROTOBUF = /usr/local/lib/libprotobuf.dylib
+}
+
 HEADERS += \
     $$PWD/src/commandparser.h \
     $$PWD/src/dataqueue.hpp \
@@ -77,15 +91,15 @@ win32 {
         DESTDIR = ./debug/bin
         MOC_DIR = ./debug
         OBJECTS_DIR = ./debug
-        LIBS += D:\workspace\yys\lib\debug\libprotobuf.lib
+        LIBS += $$LIBPROTOBUF_DEBUG
     }
     CONFIG(release, debug|release) {
         DESTDIR = ./release/bin
         MOC_DIR = ./release
         OBJECTS_DIR = ./release
-        LIBS += D:\workspace\yys\lib\release\libprotobuf.lib
+        LIBS += $$LIBPROTOBUF_RELEASE
     }
-    INCLUDEPATH += D:\workspace\yys\include
+    INCLUDEPATH += $$PROTOBUF_INCLUDE_DIR
     copyToDestdir($$PWD/params.json)
 }
 
@@ -108,7 +122,7 @@ macx {
         INSTALLS += params
     }
     INCLUDEPATH += /usr/local/include
-    LIBS += /usr/local/lib/libprotobuf.dylib
+    LIBS += $$LIBPROTOBUF
 }
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
