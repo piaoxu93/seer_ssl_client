@@ -55,11 +55,38 @@ SOURCES += \
     $$PWD/src/proto/referee.pb.cc \
     $$PWD/src/proto/savestate.pb.cc
 
-win32 {
-    debug {
-       #CONFIG += console
+defineTest(copyToDestdir) {
+    files = $$1
+
+    for(FILE, files) {
+        DDIR = $$DESTDIR
+
+        # Replace slashes in paths with backslashes for Windows
+        win32:FILE ~= s,/,\\,g
+        win32:DDIR ~= s,/,\\,g
+
+        QMAKE_POST_LINK += $$QMAKE_COPY $$quote($$FILE) $$quote($$DDIR) $$escape_expand(\\n\\t)
     }
-    LIBS +=
+
+    export(QMAKE_POST_LINK)
+}
+
+win32 {
+    CONFIG(debug, debug|release) {
+        CONFIG += console
+        DESTDIR = ./debug/bin
+        MOC_DIR = ./debug
+        OBJECTS_DIR = ./debug
+        LIBS += D:\workspace\yys\lib\debug\libprotobuf.lib
+    }
+    CONFIG(release, debug|release) {
+        DESTDIR = ./release/bin
+        MOC_DIR = ./release
+        OBJECTS_DIR = ./release
+        LIBS += D:\workspace\yys\lib\release\libprotobuf.lib
+    }
+    INCLUDEPATH += D:\workspace\yys\include
+    copyToDestdir($$PWD/params.json)
 }
 
 macx {
