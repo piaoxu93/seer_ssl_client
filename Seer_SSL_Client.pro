@@ -63,13 +63,19 @@ win32 {
 }
 
 macx {
-    debug {
-        #CONFIG += console
+    CONFIG(debug, debug|release) {
+        CONFIG += console
+        DESTDIR = ./debug/bin
+        MOC_DIR = ./debug
+        OBJECTS_DIR = ./debug
         params.path = $${OUT_PWD}/debug/bin/$${TARGET}.app/Contents/MacOS
         params.files = $$PWD/params.json
         INSTALLS += params
     }
-    release {
+    CONFIG(release, debug|release) {
+        DESTDIR = ./release/bin
+        MOC_DIR = ./release
+        OBJECTS_DIR = ./release
         params.path = $${OUT_PWD}/release/bin/$${TARGET}.app/Contents/MacOS
         params.files = $$PWD/params.json
         INSTALLS += params
@@ -80,17 +86,5 @@ macx {
         /usr/local/lib/libboost_system-mt.dylib
 }
 
-CONFIG(debug) {
-    DESTDIR = ./debug/bin
-    MOC_DIR = ./debug
-    OBJECTS_DIR = ./debug
-}
-CONFIG(release) {
-    DESTDIR = ./release/bin
-    MOC_DIR = ./release
-    OBJECTS_DIR = ./release
-}
-
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
-
