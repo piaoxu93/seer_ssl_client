@@ -12,8 +12,10 @@ public:
     const T& operator[](int index);
     int size(){ return _size; }
     int validSize(){ return _validSize; }
+    int cycle(){ return _cycle; }
     void push(const T& t);
 private:
+    long long _cycle;
     long _size;
     long _validSize;
     long long _currentIndex;
@@ -21,12 +23,12 @@ private:
 };
 
 template<typename T>
-inline DataQueue<T>::DataQueue():_size(100),_currentIndex(99),_validSize(0),pointer(nullptr){
+inline DataQueue<T>::DataQueue():_size(100),_currentIndex(99),_validSize(0),pointer(nullptr),_cycle(0){
     pointer = new T[_size];
 }
 
 template<typename T>
-inline DataQueue<T>::DataQueue(int size):_size(size),_currentIndex(size-1),_validSize(0),pointer(nullptr){
+inline DataQueue<T>::DataQueue(int size):_size(size),_currentIndex(size-1),_validSize(0),pointer(nullptr),_cycle(0){
     pointer = new T[_size];
 }
 
@@ -39,6 +41,7 @@ template<typename T>
 void DataQueue<T>::push(const T& t){
     _currentIndex =(_currentIndex+1)%_size;
     if(_validSize < _size) _validSize++;
+    _cycle++;
     pointer[_currentIndex] = t;
 }
 #endif

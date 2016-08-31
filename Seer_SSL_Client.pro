@@ -64,7 +64,7 @@ win32 {
 
 macx {
     CONFIG(debug, debug|release) {
-        CONFIG += console
+        #CONFIG += console
         DESTDIR = ./debug/bin
         MOC_DIR = ./debug
         OBJECTS_DIR = ./debug
@@ -81,9 +81,7 @@ macx {
         INSTALLS += params
     }
     INCLUDEPATH += /usr/local/include
-    LIBS += /usr/local/lib/libprotobuf.dylib \
-        /usr/local/lib/libboost_filesystem-mt.dylib \
-        /usr/local/lib/libboost_system-mt.dylib
+    LIBS += /usr/local/lib/libprotobuf.dylib
 }
 
 # Additional import path used to resolve QML modules in Qt Creator's code model

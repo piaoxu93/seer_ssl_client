@@ -6,8 +6,5 @@ namespace PARAM {
     const int ROBOTNUM = 12;
     const int BALLNUM = 20;
     const int ROBOTMAXID = 12;
-
-    //
-    const int SENDVISIONNUM = 2;
 }
 #endif // PARAMS_H

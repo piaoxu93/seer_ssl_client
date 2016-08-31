@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QUdpSocket>
 #include <QHostAddress>
-
+#include <QVector>
 
 #include <algorithm>
 #include "singleparams.h"
@@ -102,11 +102,10 @@ private:
     ReceiveVisionMessage currentVision;
     bool collectNewVision();
     bool cameraUpdate[PARAM::CAMERA];
-    quint64 cycle;
 private:
-    QHostAddress sendAddresses[PARAM::SENDVISIONNUM];
-    quint16 sendPorts[PARAM::SENDVISIONNUM];
-    QUdpSocket (sendUdps)[PARAM::SENDVISIONNUM];
+    QVector<QHostAddress> sendAddresses;
+    QVector<quint16> sendPorts;
+    QUdpSocket *sendUdp;
 };
 typedef Singleton<CVisionModule> VisionModule;
 #endif // VISIONMODULE_H
