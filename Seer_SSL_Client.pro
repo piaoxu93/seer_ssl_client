@@ -18,7 +18,7 @@ win32 {
     }
 }
 
-maxc {
+macx {
     LIBPROTOBUF = /usr/local/lib/libprotobuf.dylib
 }
 
@@ -73,7 +73,12 @@ defineTest(copyToDestdir) {
     files = $$1
 
     for(FILE, files) {
-        DDIR = $$DESTDIR
+        macx {
+            DDIR = $${DESTDIR}/$${TARGET}.app/Contents/MacOS
+        }
+        win32 {
+            DDIR = $$DESTDIR
+        }
 
         # Replace slashes in paths with backslashes for Windows
         win32:FILE ~= s,/,\\,g
@@ -87,7 +92,7 @@ defineTest(copyToDestdir) {
 
 win32 {
     CONFIG(debug, debug|release) {
-        CONFIG += console
+        #CONFIG += console
         DESTDIR = ./debug/bin
         MOC_DIR = ./debug
         OBJECTS_DIR = ./debug
@@ -109,19 +114,14 @@ macx {
         DESTDIR = ./debug/bin
         MOC_DIR = ./debug
         OBJECTS_DIR = ./debug
-        params.path = $${OUT_PWD}/debug/bin/$${TARGET}.app/Contents/MacOS
-        params.files = $$PWD/params.json
-        INSTALLS += params
     }
     CONFIG(release, debug|release) {
         DESTDIR = ./release/bin
         MOC_DIR = ./release
         OBJECTS_DIR = ./release
-        params.path = $${OUT_PWD}/release/bin/$${TARGET}.app/Contents/MacOS
-        params.files = $$PWD/params.json
-        INSTALLS += params
     }
     INCLUDEPATH += /usr/local/include
+    copyToDestdir($$PWD/params.json)
     LIBS += $$LIBPROTOBUF
 }
 
