@@ -27,14 +27,10 @@
     "vision":{
         "address":"224.5.23.2",
         "port":10005,
-        "player":{
-            "minAddFrame":30,
-            "maxLostFrame":30
-        },
-        "ball":{
-            "minAddFrame":30,
-            "maxLostFrame":30
-        },
+        "minAddFrame":10,
+        "minLostFrame":3,
+        "ballMaxSpeed":1000,
+        "robotMaxSpeed":700,
         "send":[{
             "address":"127.0.0.1",
             "port":12345

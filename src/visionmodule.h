@@ -10,86 +10,20 @@
 #include "singleparams.h"
 #include "params.h"
 #include "singleton.hpp"
-namespace Vision{
-    typedef struct _Pos{
-        qreal x;
-        qreal y;
-        _Pos():x(-9999),y(-9999){}
-    }Pos2d;
-    typedef struct _Ball{
-        Pos2d pos;
-    }Ball;
-    typedef struct _Robot{
-        Pos2d pos;
-        qreal angel;
-        quint8 id;
-        _Robot():id(-1){}
-    }Robot;
-}
-//
-typedef struct SENDVISIONMESSAGE
-{
-    int Cycle;
-    bool  BallFound;
-    float Ballx;
-    float Bally;
 
-    int nCameraID;
-    int BallImagex;
-    int BallImagey;
-
-    unsigned char  RobotINDEX[2][6];
-    bool  RobotFound[2][6];
-    float RobotPosX[2][6];
-    float RobotPosY[2][6];
-    float RobotRotation[2][6];
-
-}SendVisionMessage;
-//
-class VisionMessage{
-public:
-    Vision::Robot blue[PARAM::ROBOTNUM];
-    Vision::Robot yellow[PARAM::ROBOTNUM];
-    Vision::Ball ball;
-    int blueSize;
-    int blueIndex[PARAM::ROBOTMAXID];
-    int yellowSize;
-    int yellowIndex[PARAM::ROBOTMAXID];
-    VisionMessage():blueSize(0),yellowSize(0){
-        std::fill_n(blueIndex,PARAM::ROBOTMAXID,-1);
-        std::fill_n(yellowIndex,PARAM::ROBOTMAXID,-1);
-    }
-    void init(){
-        blueSize = 0;yellowSize = 0;
-        std::fill_n(blueIndex,PARAM::ROBOTMAXID,-1);
-        std::fill_n(yellowIndex,PARAM::ROBOTMAXID,-1);
-    }
-};
-class ReceiveVisionMessage{
-public:
-    quint8 camID;
-    quint32 frame;
-    qreal captureTime;
-    quint8 ballNum;
-    quint8 blueNum;
-    quint8 yellowNum;
-    Vision::Robot blue[PARAM::ROBOTNUM];
-    Vision::Robot yellow[PARAM::ROBOTNUM];
-    Vision::Ball ball[PARAM::BALLNUM];
-    ReceiveVisionMessage():camID(-1),frame(-1),captureTime(-1),blueNum(0),yellowNum(0){}
-};
-typedef struct _VisionData{
-
-}VisionData;
-
-
+#include "./follow/Transmit.h"
+#include "./follow/BallFollow.h"
+#include "./follow/RobotFollow.h"
+#include "./proto/messages_robocup_ssl_wrapper.pb.h"
 class CVisionModule : public QObject
 {
     Q_OBJECT
 public:
     CVisionModule(QObject *parent = 0);
+    void parse(void * ptr,int size);
     void mix();
     void send();
+    void sendSmsg();
 public slots:
     void updateVisionControl(int);
 signals:
@@ -102,6 +36,28 @@ private:
     ReceiveVisionMessage currentVision;
     bool collectNewVision();
     bool cameraUpdate[PARAM::CAMERA];
+private:
+    BallFollow ballFollow;
+    RobotFollow yellowFollow;
+    RobotFollow blueFollow;
+    qreal ballMaxSpeed;
+    qreal robotMaxSpeed;
+
+    void setNewCameraID(int id);
+
+    SendVisionMessage  transmit_msg;
+    SSL_DetectionFrame detection;
+    int newCameraID;
+    int _cycle;
+    CAMERAMODE cameraMode;
+    int followCheckCycle;
+    bool m_sendFalse;//false
+    Transmit transmit;
+    int minAddFrame;
+    int minLostFrame;
+    float maxBallDist;//speed*1000/60
+    float maxVehicleDist;//speed*1000/60
+    float distorterr;//25
 private:
     QVector<QHostAddress> sendAddresses;
     QVector<quint16> sendPorts;

@@ -4,7 +4,6 @@
 #include <QtDebug>
 
 #include <iostream>
-#include "globaldata.h"
 #include "commandparser.h"
 #include "field.h"
 #include "singleparams.h"

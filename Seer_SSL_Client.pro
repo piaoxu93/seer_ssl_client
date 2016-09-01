@@ -26,7 +26,6 @@ HEADERS += \
     $$PWD/src/commandparser.h \
     $$PWD/src/dataqueue.hpp \
     $$PWD/src/field.h \
-    $$PWD/src/globaldata.h \
     $$PWD/src/interaction.h \
     $$PWD/src/params.h \
     $$PWD/src/radiopacket.h \
@@ -45,12 +44,20 @@ HEADERS += \
     $$PWD/src/proto/rcon.pb.h \
     $$PWD/src/proto/referee.pb.h \
     $$PWD/src/proto/savestate.pb.h \
-    $$PWD/src/lib/json.hpp
+    $$PWD/src/lib/json.hpp \
+    $$PWD/src/follow/BallFollow.h \
+    $$PWD/src/follow/Follow.h \
+    $$PWD/src/follow/munkres.h \
+    $$PWD/src/follow/RobotFollow.h \
+    $$PWD/src/follow/matrix.h \
+    $$PWD/src/follow/message.h \
+    $$PWD/src/follow/TwoCameraMixer.h \
+    $$PWD/src/follow/GlobalData.h \
+    $$PWD/src/follow/Transmit.h
 
 SOURCES += \
     $$PWD/src/commandparser.cpp \
     $$PWD/src/field.cpp \
-    $$PWD/src/globaldata.cpp \
     $$PWD/src/interaction.cpp \
     $$PWD/src/main.cpp \
     $$PWD/src/radiopacket.cpp \
@@ -67,7 +74,15 @@ SOURCES += \
     $$PWD/src/proto/messages_robocup_ssl_wrapper.pb.cc \
     $$PWD/src/proto/rcon.pb.cc \
     $$PWD/src/proto/referee.pb.cc \
-    $$PWD/src/proto/savestate.pb.cc
+    $$PWD/src/proto/savestate.pb.cc \
+    $$PWD/src/follow/BallFollow.cpp \
+    $$PWD/src/follow/Follow.cpp \
+    $$PWD/src/follow/munkres.cpp \
+    $$PWD/src/follow/RobotFollow.cpp \
+    $$PWD/src/follow/matrix.cpp \
+    $$PWD/src/follow/TwoCameraMixer.cpp \
+    $$PWD/src/follow/GlobalData.cpp \
+    $$PWD/src/follow/Transmit.cpp
 
 defineTest(copyToDestdir) {
     files = $$1

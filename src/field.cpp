@@ -6,20 +6,19 @@
 #include <QPixmap>
 #include <QElapsedTimer>
 #include "singleparams.h"
-#include "globaldata.h"
-#include "visionmodule.h"
+#include "./follow/GlobalData.h"
 Field *Field::single = nullptr;
 namespace{
-    const static QColor BLUE(19,49,137);
-    const static QColor TRANSBLUE(19,49,137,30);
-    const static QColor YELLOW(241,231,36);
-    const static QColor TRANSYELLOW(241,231,36,30);
-    const static QColor PINK(255,63,149);
-    const static QColor GREEN(105,255,0);
-    const static QColor ORANGE(255,170,85);
-    const static QColor TRANSORANGE(255,170,85,30);
-    const static QColor DARKGREEN(Qt::darkGreen);
-    const static QColor TRANSPARENT(Qt::transparent);
+    const static QColor COLOR_BLUE(19,49,137);
+    const static QColor COLOR_TRANSBLUE(19,49,137,30);
+    const static QColor COLOR_YELLOW(241,231,36);
+    const static QColor COLOR_TRANSYELLOW(241,231,36,30);
+    const static QColor COLOR_PINK(255,63,149);
+    const static QColor COLOR_GREEN(105,255,0);
+    const static QColor COLOR_ORANGE(255,170,85);
+    const static QColor COLOR_TRANSORANGE(255,170,85,30);
+    const static QColor COLOR_DARKGREEN(Qt::darkGreen);
+    const static QColor COLOR_TRANSPARENT(Qt::transparent);
 }
 
 Field* Field::instance(){
@@ -56,7 +55,7 @@ Field::Field(QQuickItem *parent)
     imagePainter.scale(invert,invert);
     //image
     initPainterPath(painterPath);
-    pixmap.fill(DARKGREEN);
+    pixmap.fill(COLOR_DARKGREEN);
     imagePainter.strokePath(painterPath, QPen(Qt::white, 1));
 }
 void Field::paint(QPainter* painter){
@@ -67,7 +66,7 @@ void Field::paint(QPainter* painter){
 }
 void Field::draw(){
     static QRect area(0,0,this->property("width").toReal(),this->property("height").toReal());
-    pixmap.fill(DARKGREEN);
+    pixmap.fill(COLOR_DARKGREEN);
     imagePainter.strokePath(painterPath, QPen(Qt::white, 1));
     drawOneFrame(0);
 //    for (int i=-1;i>-60;i-=2)
@@ -76,17 +75,25 @@ void Field::draw(){
 }
 void Field::drawOneFrame(int index,bool solid){
     static qreal posRatio = 0.1;
-    static qreal angRatio = 180/3.14159;
-    const VisionMessage& vision = GlobalData::Instance()->vision[index];
-    for(int i=0;i<vision.blueSize;i++){
-        auto& t = vision.blue[i];
-        paintCar(solid ? BLUE : TRANSBLUE,t.id,t.pos.x*posRatio,t.pos.y*posRatio,t.angel*angRatio);
+    static qreal angRatio = 1;//180/3.14159;
+    auto& vision = GlobalData::Instance()->msg[index];
+    for(int i=0;i<SendCarNum;i++){
+        if(vision.RobotFound[BLUE][i]){
+            paintCar(solid ? COLOR_BLUE : COLOR_TRANSBLUE
+                             ,vision.RobotINDEX[BLUE][i]
+                     ,vision.RobotPosX[BLUE][i]*posRatio,vision.RobotPosY[BLUE][i]*posRatio,vision.RobotRotation[BLUE][i]*angRatio);
+        }
     }
-    for(int i=0;i<vision.yellowSize;i++){
-        auto& t = vision.yellow[i];
-        paintCar(solid ? YELLOW : TRANSYELLOW,t.id,t.pos.x*posRatio,t.pos.y*posRatio,t.angel*angRatio);
+    for(int i=0;i<SendCarNum;i++){
+        if(vision.RobotFound[YELLOW][i]){
+            paintCar(solid ? COLOR_YELLOW : COLOR_TRANSYELLOW
+                             ,vision.RobotINDEX[YELLOW][i]
+                     ,vision.RobotPosX[YELLOW][i]*posRatio,vision.RobotPosY[YELLOW][i]*posRatio,vision.RobotRotation[YELLOW][i]*angRatio);
+        }
     }
-    paintBall(solid ? ORANGE : TRANSORANGE, vision.ball.pos.x*posRatio,vision.ball.pos.y*posRatio);
+    if (vision.BallFound){
+        paintBall(solid ? COLOR_ORANGE : COLOR_TRANSORANGE, vision.Ballx*posRatio,vision.Bally*posRatio);
+    }
 }
 void Field::paintCar(const QColor& color,quint8 num,qreal x,qreal y,qreal radian){
     static float diameter = SingleParams::instance()->_("car.diameter");
