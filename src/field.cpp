@@ -10,13 +10,13 @@
 Field *Field::single = nullptr;
 namespace{
     const static QColor COLOR_BLUE(19,49,137);
-    const static QColor COLOR_TRANSBLUE(19,49,137,30);
+    const static QColor COLOR_TRANSBLUE(19,49,137,25);
     const static QColor COLOR_YELLOW(241,231,36);
-    const static QColor COLOR_TRANSYELLOW(241,231,36,30);
+    const static QColor COLOR_TRANSYELLOW(241,231,36,25);
     const static QColor COLOR_PINK(255,63,149);
     const static QColor COLOR_GREEN(105,255,0);
     const static QColor COLOR_ORANGE(255,170,85);
-    const static QColor COLOR_TRANSORANGE(255,170,85,30);
+    const static QColor COLOR_TRANSORANGE(255,170,85,25);
     const static QColor COLOR_DARKGREEN(Qt::darkGreen);
     const static QColor COLOR_TRANSPARENT(Qt::transparent);
 }
@@ -32,51 +32,94 @@ static void initPainterPath(QPainterPath& painterPath);
 static void addQuarterCirclePath(QPainterPath& painterPath,qreal x,qreal y,qreal radius,qreal angel);
 Field::Field(QQuickItem *parent)
     : QQuickPaintedItem(parent)
-    ,image(QImage(QSize(
-                      SingleParams::instance()->_("canvas.width"),
-                      SingleParams::instance()->_("canvas.height"))
-                  , QImage::Format_ARGB32))
-    ,pixmap(QPixmap(QSize(
-                        SingleParams::instance()->_("canvas.width"),
-                        SingleParams::instance()->_("canvas.height")))){
+//    ,image(QImage(QSize(
+//                      SingleParams::instance()->_("canvas.width"),
+//                      SingleParams::instance()->_("canvas.height"))
+//                  , QImage::Format_ARGB32))
+//    ,pixmap(QPixmap(QSize(
+//                        SingleParams::instance()->_("canvas.width"),
+//                        SingleParams::instance()->_("canvas.height"))))
+    , cameraMode(FourCamera)
+    , pixmap(nullptr){
     if(nullptr == single){
         single = this;
     }else{
         qDebug() << "Error declaration of not-only-one Field";
     }
-    float totalHeight = SingleParams::instance()->_("canvas.height");
-    float totalWidth = SingleParams::instance()->_("canvas.width");
-    int invert = SingleParams::instance()->_("field.invert") ? -1 : 1;
+    changeMode(cameraMode);
+    pixmap->fill(COLOR_DARKGREEN);
+    imagePainter.strokePath(painterPath, QPen(Qt::white, 1));
+}
+void Field::initField(){
+    if (pixmap == nullptr){
+        pixmap = new QPixmap(QSize(totalWidth,totalHeight));
+        imagePainter.begin(pixmap);
+    }
     setImplicitWidth(totalWidth);
     setImplicitHeight(totalHeight);
-    //imagePainter.begin(&image);
-    imagePainter.begin(&pixmap);
+    imagePainter.resetTransform();
     imagePainter.setWindow(-totalWidth/2,totalHeight/2,totalWidth,-totalHeight);
+
     imagePainter.scale(invert,invert);
     //image
-    initPainterPath(painterPath);
-    pixmap.fill(COLOR_DARKGREEN);
-    imagePainter.strokePath(painterPath, QPen(Qt::white, 1));
+    painterPath = QPainterPath();
+    initPainterPath();
 }
 void Field::paint(QPainter* painter){
-    static QRect area(0,0,this->property("width").toReal(),this->property("height").toReal());
-    //paintCar(false,0,0,0,90);
-    painter->drawPixmap(area,pixmap);
-
+    painter->drawPixmap(area,*pixmap);
 }
-void Field::draw(){
-    static QRect area(0,0,this->property("width").toReal(),this->property("height").toReal());
-    pixmap.fill(COLOR_DARKGREEN);
+void Field::changeMode(bool ifBig){
+    std::string prefix = ifBig ? "bigField" : "smallField";
+    totalHeight           = SingleParams::instance()->_(prefix+".canvas.height");
+    totalWidth            = SingleParams::instance()->_(prefix+".canvas.width");
+    width                 = SingleParams::instance()->_(prefix+".field.width");
+    height                = SingleParams::instance()->_(prefix+".field.height");
+    goalWidth             = SingleParams::instance()->_(prefix+".field.goalWidth");
+    goalDepth             = SingleParams::instance()->_(prefix+".field.goalDepth");
+    penaltyRadius         = SingleParams::instance()->_(prefix+".field.penaltyRadius");
+    penaltyCenterLength   = SingleParams::instance()->_(prefix+".field.penaltyCenterLength");
+    centerCircleRadius    = SingleParams::instance()->_(prefix+".field.centerCircleRadius");
+    invert                = SingleParams::instance()->_("invert") ? -1 : 1;
+    initField();
+    area = QRect(0,0,this->property("width").toReal(),this->property("height").toReal());
+    pixmap->fill(COLOR_DARKGREEN);
     imagePainter.strokePath(painterPath, QPen(Qt::white, 1));
-    drawOneFrame(0);
-//    for (int i=-1;i>-60;i-=2)
-//        drawOneFrame(i,false);
     this->update(area);
 }
-void Field::drawOneFrame(int index,bool solid){
+void Field::draw(bool robot,bool ball,bool style){
+    static QRect area(0,0,this->property("width").toReal(),this->property("height").toReal());
+    pixmap->fill(COLOR_DARKGREEN);
+    imagePainter.strokePath(painterPath, QPen(Qt::white, 1));
+
+    for (int i=-1;i>-40;i-=1)
+        style ? drawOneFrame(i,ball,false) : drawPoint(i,ball,true);
+    drawOneFrame(0,true,true);
+    this->update(area);
+}
+void Field::drawPoint(int index,bool ball,bool solid){
     static qreal posRatio = 0.1;
     static qreal angRatio = 1;//180/3.14159;
-    auto& vision = GlobalData::Instance()->msg[index];
+    auto& vision = GlobalData::instance()->msg[index];
+    for(int i=0;i<SendCarNum;i++){
+        if(vision.RobotFound[BLUE][i]){
+            paintBall(solid ? COLOR_BLUE : COLOR_TRANSBLUE
+                     ,vision.RobotPosX[BLUE][i]*posRatio,vision.RobotPosY[BLUE][i]*posRatio);
+        }
+    }
+    for(int i=0;i<SendCarNum;i++){
+        if(vision.RobotFound[YELLOW][i]){
+            paintBall(solid ? COLOR_YELLOW : COLOR_TRANSYELLOW
+                     ,vision.RobotPosX[YELLOW][i]*posRatio,vision.RobotPosY[YELLOW][i]*posRatio);
+        }
+    }
+    if (vision.BallFound && ball){
+        paintBall(solid ? COLOR_ORANGE : COLOR_TRANSORANGE, vision.Ballx*posRatio,vision.Bally*posRatio);
+    }
+}
+void Field::drawOneFrame(int index,bool ball,bool solid){
+    static qreal posRatio = 0.1;
+    static qreal angRatio = 1;//180/3.14159;
+    auto& vision = GlobalData::instance()->msg[index];
     for(int i=0;i<SendCarNum;i++){
         if(vision.RobotFound[BLUE][i]){
             paintCar(solid ? COLOR_BLUE : COLOR_TRANSBLUE
@@ -91,7 +134,7 @@ void Field::drawOneFrame(int index,bool solid){
                      ,vision.RobotPosX[YELLOW][i]*posRatio,vision.RobotPosY[YELLOW][i]*posRatio,vision.RobotRotation[YELLOW][i]*angRatio);
         }
     }
-    if (vision.BallFound){
+    if (vision.BallFound && ball){
         paintBall(solid ? COLOR_ORANGE : COLOR_TRANSORANGE, vision.Ballx*posRatio,vision.Bally*posRatio);
     }
 }
@@ -110,14 +153,7 @@ void Field::paintBall(const QColor& color,qreal x, qreal y){
     imagePainter.setPen(Qt::NoPen);
     imagePainter.drawEllipse(x-radius,y-radius,2*radius,2*radius);
 }
-static void initPainterPath(QPainterPath& painterPath){
-    static int width                 = SingleParams::instance()->_("field.width");
-    static int height                = SingleParams::instance()->_("field.height");
-    static int goalWidth             = SingleParams::instance()->_("field.goalWidth");
-    static int goalDepth             = SingleParams::instance()->_("field.goalDepth");
-    static int penaltyRadius         = SingleParams::instance()->_("field.penaltyRadius");
-    static int penaltyCenterLength   = SingleParams::instance()->_("field.penaltyCenterLength");
-    static int centerCircleRadius    = SingleParams::instance()->_("field.centerCircleRadius");
+void Field::initPainterPath(){
     painterPath.addRect(-width/2,-height/2,width,height);
     painterPath.addRect(-width/2,goalWidth/2,-goalDepth,-goalWidth);
     painterPath.addRect(width/2,goalWidth/2,goalDepth,-goalWidth);

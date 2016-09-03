@@ -24,7 +24,7 @@ void qmlRegister(){
     qmlRegisterType<Interaction>("Client.Component", 1, 0, "Interaction");
 }
 void singletonRegister(){
-    VisionModule::Instance();
+    VisionModule::instance();
 }
 int main(int argc, char *argv[]) {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);

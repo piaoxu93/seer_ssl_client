@@ -26,7 +26,7 @@ RadioPacket::RadioPacket(QSerialPort* serialPtr)
     startPacket2[2] = 0x04;
     startPacket2[3] = 0x05;
     startPacket2[4] = 0x06;
-    updateFrequency();
+    updateFrequency(int(SingleParams::instance()->_("crazy.frequency")));
     encode();
 }
 bool RadioPacket::sendStartPacket(){
@@ -37,8 +37,8 @@ bool RadioPacket::sendStartPacket(){
     }
     return false;
 }
-void RadioPacket::updateFrequency(){
-    int frequency = int(SingleParams::instance()->_("crazy.frequency"));
+void RadioPacket::updateFrequency(int frequency){
+    //int frequency = int(SingleParams::instance()->_("crazy.frequency"));
     qDebug() << "frequency!!! " << frequency;
     startPacket2[5] = 0x10 + frequency;
     startPacket2[TRANSMIT_PACKET_SIZE - 1] = CCrc8::calc((unsigned char*)(startPacket2.data()), TRANSMIT_PACKET_SIZE - 1);
@@ -50,7 +50,7 @@ bool RadioPacket::sendCommand(){
     if(serialPtr != NULL){
         encode();
         serialPtr->write((transmitPacket.data()),TRANSMIT_PACKET_SIZE);
-        qDebug() << "Hz : " << double(++times)/timer.nsecsElapsed()*1000000000;
+        //qDebug() << "Hz : " << double(++times)/timer.nsecsElapsed()*1000000000;
         return true;
     }
     return false;

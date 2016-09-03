@@ -3,12 +3,12 @@
 template <class SingletonClass >
 class Singleton{
 public:
-    static SingletonClass * Instance(){
+    static SingletonClass * instance(){
         static SingletonClass instance;
         return &instance;
     }
-    SingletonClass* operator ->() { return Instance(); }
-    const SingletonClass* operator ->() const { return Instance(); }
+    SingletonClass* operator ->() { return instance(); }
+    const SingletonClass* operator ->() const { return instance(); }
 private:
     Singleton(){}
     ~Singleton(){}

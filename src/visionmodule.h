@@ -25,7 +25,7 @@ public:
     void send();
     void sendSmsg();
 public slots:
-    void updateVisionControl(int);
+    void updateVisionControl(bool);
 signals:
 
 private slots:

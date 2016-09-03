@@ -93,10 +93,10 @@ SendVisionMessage TwoCameraMixer::mixAlgorithm(int cameraMode,int minAddFrame, i
 	}
 	initSmsg();
 	compare(minAddFrame);
-	if(GlobalData::Instance()->firstStart){
+    if(GlobalData::instance()->firstStart){
 		usort();
 	}
 	updateMixMsg(minAddFrame,minLostFrame,isFalseSend);
 	reInitFollow();
-	return GlobalData::Instance()->smsg;
+    return GlobalData::instance()->smsg;
 }

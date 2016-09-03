@@ -1,17 +1,34 @@
 {
-    "field":{
-        "width":900,
-        "height":600,
-        "invert":false,
-        "goalWidth":120,
-        "goalDepth":20,
-        "penaltyRadius":100,
-        "penaltyCenterLength":50,
-        "centerCircleRadius":50
+    "invert":false,
+    "bigField":{
+        "field":{
+            "width":900,
+            "height":600,
+            "goalWidth":120,
+            "goalDepth":20,
+            "penaltyRadius":100,
+            "penaltyCenterLength":50,
+            "centerCircleRadius":50
+        },
+        "canvas":{
+            "width":1050,
+            "height":700
+        }
     },
-    "canvas":{
-        "width":1050,
-        "height":700
+    "smallField":{
+        "field":{
+            "width":600,
+            "height":400,
+            "goalWidth":70,
+            "goalDepth":20,
+            "penaltyRadius":80,
+            "penaltyCenterLength":50,
+            "centerCircleRadius":50
+        },
+        "canvas":{
+            "width":700,
+            "height":467
+        }
     },
     "car":{
         "diameter": 17.9,
@@ -28,7 +45,7 @@
         "address":"224.5.23.2",
         "port":10005,
         "minAddFrame":10,
-        "minLostFrame":3,
+        "minLostFrame":20,
         "ballMaxSpeed":1000,
         "robotMaxSpeed":700,
         "send":[{

@@ -31,11 +31,11 @@ RobotFollow::~RobotFollow(void)
 void RobotFollow::initSmsg()
 {
 	for(int i = 0; i < SendCarNum; i++){
-		GlobalData::Instance()->smsg.RobotPosX[_side][i] = -ERRORNUM;
-		GlobalData::Instance()->smsg.RobotPosY[_side][i] = -ERRORNUM;
-		GlobalData::Instance()->smsg.RobotINDEX[_side][i] = MaxFollowNum;
-		GlobalData::Instance()->smsg.RobotFound[_side][i] = false;
-		GlobalData::Instance()->smsg.RobotRotation[_side][i] = -ERRORNUM;
+        GlobalData::instance()->smsg.RobotPosX[_side][i] = -ERRORNUM;
+        GlobalData::instance()->smsg.RobotPosY[_side][i] = -ERRORNUM;
+        GlobalData::instance()->smsg.RobotINDEX[_side][i] = MaxFollowNum;
+        GlobalData::instance()->smsg.RobotFound[_side][i] = false;
+        GlobalData::instance()->smsg.RobotRotation[_side][i] = -ERRORNUM;
 	}
 }
 
@@ -66,25 +66,25 @@ bool RobotFollow::determinesend(int minAddFrame, int minLostFrame, bool isSendFa
 		int tmp = getFollowNum(existNum[i]);
 		if(tmp >= 0){
 			if(followarray[tmp].Fresh == true && followarray[tmp].AddFrame == minAddFrame) {
-				GlobalData::Instance()->smsg.RobotFound[_side][i] = true;
+                GlobalData::instance()->smsg.RobotFound[_side][i] = true;
 			} else {
 				if (!isSendFalse) {
 					if(followarray[tmp].LostFrame < minLostFrame && followarray[tmp].AddFrame == minAddFrame){
-						GlobalData::Instance()->smsg.RobotFound[_side][i] = true;
+                        GlobalData::instance()->smsg.RobotFound[_side][i] = true;
 					} else{
-						GlobalData::Instance()->smsg.RobotFound[_side][i] = false;
+                        GlobalData::instance()->smsg.RobotFound[_side][i] = false;
 					}
 				} else{
-					GlobalData::Instance()->smsg.RobotFound[_side][i] = followarray[tmp].Fresh;
+                    GlobalData::instance()->smsg.RobotFound[_side][i] = followarray[tmp].Fresh;
 				}
 			}
-			GlobalData::Instance()->smsg.RobotINDEX[_side][i] = followarray[tmp].Num + 1;
-			GlobalData::Instance()->smsg.RobotPosX[_side][i] = followarray[tmp].PosX;
-			GlobalData::Instance()->smsg.RobotPosY[_side][i] = followarray[tmp].PosY;
-			GlobalData::Instance()->smsg.RobotRotation[_side][i] = followarray[tmp].Rotation*180/PI;
+            GlobalData::instance()->smsg.RobotINDEX[_side][i] = followarray[tmp].Num + 1;
+            GlobalData::instance()->smsg.RobotPosX[_side][i] = followarray[tmp].PosX;
+            GlobalData::instance()->smsg.RobotPosY[_side][i] = followarray[tmp].PosY;
+            GlobalData::instance()->smsg.RobotRotation[_side][i] = followarray[tmp].Rotation*180/PI;
 			followarray[tmp].Fresh = false;
 		} else{
-			GlobalData::Instance()->smsg.RobotINDEX[_side][i] += 1;
+            GlobalData::instance()->smsg.RobotINDEX[_side][i] += 1;
 		}
 	}
 	return false;
@@ -96,13 +96,13 @@ void RobotFollow::startFollowSingle(int court, int minAddFrame, int minLostFrame
 	for(int row= 0; row< MaxFollowNum; row++){
 		for(int col= 0; col< ReceiveCarNum; col++){
 			if(distances(followarray[row].PosX,followarray[row].PosY,
-				GlobalData::Instance()->receiveMsg[court].RobotPosX[_side][col],
-				GlobalData::Instance()->receiveMsg[court].RobotPosY[_side][col]) < CALIERROR*CALIERROR){
+                GlobalData::instance()->receiveMsg[court].RobotPosX[_side][col],
+                GlobalData::instance()->receiveMsg[court].RobotPosY[_side][col]) < CALIERROR*CALIERROR){
 					_matrix(row,col) = -ERRORNUM*ERRORNUM;
 			} else{
 				_matrix(row,col)=distances(followarray[row].PosX,followarray[row].PosY,
-					GlobalData::Instance()->receiveMsg[court].RobotPosX[_side][col],
-					GlobalData::Instance()->receiveMsg[court].RobotPosY[_side][col]);
+                    GlobalData::instance()->receiveMsg[court].RobotPosX[_side][col],
+                    GlobalData::instance()->receiveMsg[court].RobotPosY[_side][col]);
 			}
 		}
 	}
@@ -115,15 +115,15 @@ void RobotFollow::startFollowSingle(int court, int minAddFrame, int minLostFrame
 	for(int row = 0 ; row < MaxFollowNum; row++ ){
 		for ( int col = 0 ; col <ReceiveCarNum; col++ ){
 			if(_matrix(row,col) != INITNUM){
-				if(/*isRecvValid(court, col) && */canBeSet(GlobalData::Instance()->receiveMsg[court],row,col)
-					&& GlobalData::Instance()->receiveMsg[court].RobotFound[_side][col]){
-					followarray[row].PosX = GlobalData::Instance()->receiveMsg[court].RobotPosX[_side][col];
-					followarray[row].PosY = GlobalData::Instance()->receiveMsg[court].RobotPosY[_side][col];
-					followarray[row].Rotation = GlobalData::Instance()->receiveMsg[court].RobotRotation[_side][col];
+                if(/*isRecvValid(court, col) && */canBeSet(GlobalData::instance()->receiveMsg[court],row,col)
+                    && GlobalData::instance()->receiveMsg[court].RobotFound[_side][col]){
+                    followarray[row].PosX = GlobalData::instance()->receiveMsg[court].RobotPosX[_side][col];
+                    followarray[row].PosY = GlobalData::instance()->receiveMsg[court].RobotPosY[_side][col];
+                    followarray[row].Rotation = GlobalData::instance()->receiveMsg[court].RobotRotation[_side][col];
 					followarray[row].Fresh = true;
-					if(GlobalData::Instance()->smsg.Cycle % GlobalData::Instance()->followCheckCycle == 0
-						&& GlobalData::Instance()->receiveMsg[court].RobotFound[_side][col]){
-							followarray[row].Num = GlobalData::Instance()->receiveMsg[court].RobotINDEX[_side][col];
+                    if(GlobalData::instance()->smsg.Cycle % GlobalData::instance()->followCheckCycle == 0
+                        && GlobalData::instance()->receiveMsg[court].RobotFound[_side][col]){
+                            followarray[row].Num = GlobalData::instance()->receiveMsg[court].RobotINDEX[_side][col];
 					}
 				}
 			}
@@ -144,40 +144,40 @@ void RobotFollow::startFollowDouble(int minAddFrame, int minLostFrame,float maxd
 
 	int countNum = 0;
 	for(int leftnum=0;leftnum<MaxFollowNum;leftnum++){
-		if(GlobalData::Instance()->receiveMsg[_camera1].RobotFound[_side][leftnum]){
+        if(GlobalData::instance()->receiveMsg[_camera1].RobotFound[_side][leftnum]){
 			int rightnum = 0;
 			for (rightnum = 0; rightnum < MaxFollowNum; rightnum++){
 				if(ismix(leftnum,rightnum) && countNum < MaxFollowNum){
-					ReceiveVisionMessage tmpmsg=GlobalData::Instance()->receiveMsg[_camera1];
-					ReceiveVisionMessage tmpmsg2=GlobalData::Instance()->receiveMsg[_camera2];
+                    ReceiveVisionMessage tmpmsg=GlobalData::instance()->receiveMsg[_camera1];
+                    ReceiveVisionMessage tmpmsg2=GlobalData::instance()->receiveMsg[_camera2];
 					mixedrecMsg.RobotPosX[_side][countNum]=
-					(GlobalData::Instance()->receiveMsg[_camera1].RobotPosX[_side][leftnum]+GlobalData::Instance()->receiveMsg[_camera2].RobotPosX[_side][rightnum])/2;
+                    (GlobalData::instance()->receiveMsg[_camera1].RobotPosX[_side][leftnum]+GlobalData::instance()->receiveMsg[_camera2].RobotPosX[_side][rightnum])/2;
 					mixedrecMsg.RobotPosY[_side][countNum]=
-					(GlobalData::Instance()->receiveMsg[_camera1].RobotPosY[_side][leftnum]+GlobalData::Instance()->receiveMsg[_camera2].RobotPosY[_side][rightnum])/2;
-					double tmp1 = (cos(GlobalData::Instance()->receiveMsg[_camera1].RobotRotation[_side][leftnum]) + 
-						cos(GlobalData::Instance()->receiveMsg[_camera2].RobotRotation[_side][rightnum])) / 2;
-					double tmp2 = (sin(GlobalData::Instance()->receiveMsg[_camera1].RobotRotation[_side][leftnum]) + 
-						sin(GlobalData::Instance()->receiveMsg[_camera2].RobotRotation[_side][rightnum])) / 2;
+                    (GlobalData::instance()->receiveMsg[_camera1].RobotPosY[_side][leftnum]+GlobalData::instance()->receiveMsg[_camera2].RobotPosY[_side][rightnum])/2;
+                    double tmp1 = (cos(GlobalData::instance()->receiveMsg[_camera1].RobotRotation[_side][leftnum]) +
+                        cos(GlobalData::instance()->receiveMsg[_camera2].RobotRotation[_side][rightnum])) / 2;
+                    double tmp2 = (sin(GlobalData::instance()->receiveMsg[_camera1].RobotRotation[_side][leftnum]) +
+                        sin(GlobalData::instance()->receiveMsg[_camera2].RobotRotation[_side][rightnum])) / 2;
 					mixedrecMsg.RobotRotation[_side][countNum]=atan2f(tmp2,tmp1);
 					mixedrecMsg.RobotFound[_side][countNum]=true;
-					mixedrecMsg.RobotINDEX[_side][countNum]=GlobalData::Instance()->receiveMsg[_camera1].RobotINDEX[_side][leftnum];
+                    mixedrecMsg.RobotINDEX[_side][countNum]=GlobalData::instance()->receiveMsg[_camera1].RobotINDEX[_side][leftnum];
 					countNum++;
 					break;
 				}
 			}
 			if(rightnum == MaxFollowNum && countNum < MaxFollowNum && isRecvValid(_camera1,leftnum)){
-                ReceiveVisionMessage temdrecMsg = GlobalData::Instance()->receiveMsg[_camera1];
+                ReceiveVisionMessage temdrecMsg = GlobalData::instance()->receiveMsg[_camera1];
 				mixedrecMsg.RobotFound[_side][countNum]=true;
-				mixedrecMsg.RobotINDEX[_side][countNum]=GlobalData::Instance()->receiveMsg[_camera1].RobotINDEX[_side][leftnum];
-				mixedrecMsg.RobotPosX[_side][countNum]=GlobalData::Instance()->receiveMsg[_camera1].RobotPosX[_side][leftnum];
-				mixedrecMsg.RobotPosY[_side][countNum]=GlobalData::Instance()->receiveMsg[_camera1].RobotPosY[_side][leftnum];
-				mixedrecMsg.RobotRotation[_side][countNum]=GlobalData::Instance()->receiveMsg[_camera1].RobotRotation[_side][leftnum];
+                mixedrecMsg.RobotINDEX[_side][countNum]=GlobalData::instance()->receiveMsg[_camera1].RobotINDEX[_side][leftnum];
+                mixedrecMsg.RobotPosX[_side][countNum]=GlobalData::instance()->receiveMsg[_camera1].RobotPosX[_side][leftnum];
+                mixedrecMsg.RobotPosY[_side][countNum]=GlobalData::instance()->receiveMsg[_camera1].RobotPosY[_side][leftnum];
+                mixedrecMsg.RobotRotation[_side][countNum]=GlobalData::instance()->receiveMsg[_camera1].RobotRotation[_side][leftnum];
 				countNum++;
 			}
 		}
 	}
 	for(int rightnum = 0; rightnum < MaxFollowNum; rightnum++){
-		if(GlobalData::Instance()->receiveMsg[_camera2].RobotFound[_side][rightnum]){
+        if(GlobalData::instance()->receiveMsg[_camera2].RobotFound[_side][rightnum]){
 			int leftnum = 0;
 			for (leftnum = 0; leftnum < MaxFollowNum; leftnum++){
 				if(ismix(leftnum,rightnum) && countNum < MaxFollowNum){
@@ -186,10 +186,10 @@ void RobotFollow::startFollowDouble(int minAddFrame, int minLostFrame,float maxd
 			}
 			if(leftnum == MaxFollowNum && countNum < MaxFollowNum && isRecvValid(_camera2,rightnum)){
 				mixedrecMsg.RobotFound[_side][countNum]=true;
-				mixedrecMsg.RobotINDEX[_side][countNum]=GlobalData::Instance()->receiveMsg[_camera2].RobotINDEX[_side][rightnum];
-				mixedrecMsg.RobotPosX[_side][countNum]=GlobalData::Instance()->receiveMsg[_camera2].RobotPosX[_side][rightnum];
-				mixedrecMsg.RobotPosY[_side][countNum]=GlobalData::Instance()->receiveMsg[_camera2].RobotPosY[_side][rightnum];
-				mixedrecMsg.RobotRotation[_side][countNum]=GlobalData::Instance()->receiveMsg[_camera2].RobotRotation[_side][rightnum];
+                mixedrecMsg.RobotINDEX[_side][countNum]=GlobalData::instance()->receiveMsg[_camera2].RobotINDEX[_side][rightnum];
+                mixedrecMsg.RobotPosX[_side][countNum]=GlobalData::instance()->receiveMsg[_camera2].RobotPosX[_side][rightnum];
+                mixedrecMsg.RobotPosY[_side][countNum]=GlobalData::instance()->receiveMsg[_camera2].RobotPosY[_side][rightnum];
+                mixedrecMsg.RobotRotation[_side][countNum]=GlobalData::instance()->receiveMsg[_camera2].RobotRotation[_side][rightnum];
 				countNum++;
 			}
 		}
@@ -220,7 +220,7 @@ void RobotFollow::startFollowDouble(int minAddFrame, int minLostFrame,float maxd
 					followarray[row].PosX = mixedrecMsg.RobotPosX[_side][col];
 					followarray[row].PosY = mixedrecMsg.RobotPosY[_side][col];
 					followarray[row].Rotation = mixedrecMsg.RobotRotation[_side][col];
-					if(GlobalData::Instance()->smsg.Cycle % GlobalData::Instance()->followCheckCycle == 0
+                    if(GlobalData::instance()->smsg.Cycle % GlobalData::instance()->followCheckCycle == 0
 						&& mixedrecMsg.RobotFound[_side][col]){
 							followarray[row].Num = mixedrecMsg.RobotINDEX[_side][col];
 					}
@@ -234,10 +234,10 @@ bool RobotFollow::ismix(int leftnum,int rightnum)
 {
 	if (isRecvValid(_camera1,leftnum)
 		&&isRecvValid(_camera2,rightnum)
-	    &&distances(GlobalData::Instance()->receiveMsg[_camera1].RobotPosX[_side][leftnum],
-	      GlobalData::Instance()->receiveMsg[_camera1].RobotPosY[_side][leftnum],
-		  GlobalData::Instance()->receiveMsg[_camera2].RobotPosX[_side][rightnum],
-		  GlobalData::Instance()->receiveMsg[_camera2].RobotPosY[_side][rightnum])<CALIERROR*CALIERROR)
+        &&distances(GlobalData::instance()->receiveMsg[_camera1].RobotPosX[_side][leftnum],
+          GlobalData::instance()->receiveMsg[_camera1].RobotPosY[_side][leftnum],
+          GlobalData::instance()->receiveMsg[_camera2].RobotPosX[_side][rightnum],
+          GlobalData::instance()->receiveMsg[_camera2].RobotPosY[_side][rightnum])<CALIERROR*CALIERROR)
 	{
 		return true;
 	}
@@ -282,13 +282,13 @@ void RobotFollow::addFollow(float x, float y, float dir, int index)
 
 bool RobotFollow::isRecvValid(int court, int col)
 {
-	if(GlobalData::Instance()->receiveMsg[court].RobotINDEX[_side][col]>=0 
-		&& GlobalData::Instance()->receiveMsg[court].RobotINDEX[_side][col]<12
-		&& GlobalData::Instance()->receiveMsg[court].RobotPosY[_side][col]>-MaxValidWidth
-		&& GlobalData::Instance()->receiveMsg[court].RobotPosY[_side][col]<MaxValidWidth
-		&& GlobalData::Instance()->receiveMsg[court].RobotPosX[_side][col]>-MaxValidLength
-		&& GlobalData::Instance()->receiveMsg[court].RobotPosX[_side][col]<MaxValidLength
-		&& GlobalData::Instance()->receiveMsg[court].RobotFound[_side][col]){
+    if(GlobalData::instance()->receiveMsg[court].RobotINDEX[_side][col]>=0
+        && GlobalData::instance()->receiveMsg[court].RobotINDEX[_side][col]<12
+        && GlobalData::instance()->receiveMsg[court].RobotPosY[_side][col]>-MaxValidWidth
+        && GlobalData::instance()->receiveMsg[court].RobotPosY[_side][col]<MaxValidWidth
+        && GlobalData::instance()->receiveMsg[court].RobotPosX[_side][col]>-MaxValidLength
+        && GlobalData::instance()->receiveMsg[court].RobotPosX[_side][col]<MaxValidLength
+        && GlobalData::instance()->receiveMsg[court].RobotFound[_side][col]){
 			return true;
 	}
 	return false;

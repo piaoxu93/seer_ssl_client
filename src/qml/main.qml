@@ -4,10 +4,12 @@ import QtQuick.Controls.Styles 1.4
 import Client.Component 1.0 as Client
 ApplicationWindow{
     visible:true;
-    width:1300;
-    height:830;
-    minimumHeight: 830;
-    minimumWidth: 1300;
+    width:1350;
+    height:700;
+    minimumHeight: height;
+    minimumWidth: width;
+    maximumHeight: height;
+    maximumWidth: width;
     color:"#FFFFFF";
     id:window;
     Client.CommandParser{ id: commandParser; }
@@ -65,7 +67,6 @@ ApplicationWindow{
             Tab{
                 anchors.fill: parent;
                 title: "Radio";
-                //color:"lightgrey";
                 Rectangle{
                     width:parent.width;
                     anchors.top: parent.top;
@@ -129,88 +130,55 @@ ApplicationWindow{
                         property int velStep : 1;
                         property bool mode : false;
                         property int robotID : 0;
+                        property int itemWidth : 70;
                         Text{ text:"robot  " }
-                        SpinBox{ minimumValue:0; maximumValue:11; value:parent.robotID; width:parent.width/4;
+                        SpinBox{ minimumValue:0; maximumValue:11; value:parent.robotID; width:parent.itemWidth
                             onEditingFinished:{parent.robotID = value}}
                         Text{ text:" " }
                         Text{ text:" " }
                         Text{ text:"vel-x" }
-                        SpinBox{ minimumValue:-crazyShow.m_VEL; maximumValue:crazyShow.m_VEL; value:parent.velX;width:parent.width/4;
+                        SpinBox{ minimumValue:-crazyShow.m_VEL; maximumValue:crazyShow.m_VEL; value:parent.velX;width:parent.itemWidth
                             onEditingFinished:{parent.velX = value;}}
                         Text{ text:"dribb" }
-                        Button{ text:parent.dribble;width:parent.width/4;
+                        Button{ text:parent.dribble;width:parent.itemWidth
                             onClicked: {
                                 parent.dribble = !parent.dribble;
                                 serial.updateCommandParams(crazyShow.robotID,crazyShow.velX,crazyShow.velY,crazyShow.velR,crazyShow.dribble,crazyShow.mode,crazyShow.shoot,crazyShow.power);
                             }
                         }
                         Text{ text:"vel-y "}
-                        SpinBox{ minimumValue:-crazyShow.m_VEL; maximumValue:crazyShow.m_VEL; value:parent.velY;width:parent.width/4;
+                        SpinBox{ minimumValue:-crazyShow.m_VEL; maximumValue:crazyShow.m_VEL; value:parent.velY;width:parent.itemWidth
                             onEditingFinished:{parent.velY = value;}}
                         Text{ text:"shoot"  }
-                        Button{ text:parent.shoot;width:parent.width/4;
+                        Button{ text:parent.shoot;width:parent.itemWidth
                             onClicked: {
                                 parent.shoot = !parent.shoot;
                                 serial.updateCommandParams(crazyShow.robotID,crazyShow.velX,crazyShow.velY,crazyShow.velR,crazyShow.dribble,crazyShow.mode,crazyShow.shoot,crazyShow.power);
                             }
                         }
                         Text{ text:"vel-r"  }
-                        SpinBox{ minimumValue:-crazyShow.m_VELR; maximumValue:crazyShow.m_VELR; value:parent.velR;width:parent.width/4;
+                        SpinBox{ minimumValue:-crazyShow.m_VELR; maximumValue:crazyShow.m_VELR; value:parent.velR;width:parent.itemWidth
                             onEditingFinished:{parent.velR = value;}}
                         Text{ text:"mode"  }
-                        Button{ text:(parent.mode?"lift":"flat");width:parent.width/4;
+                        Button{ text:(parent.mode?"lift":"flat");width:parent.itemWidth
                             onClicked: {
                                 parent.mode = !parent.mode
                                 serial.updateCommandParams(crazyShow.robotID,crazyShow.velX,crazyShow.velY,crazyShow.velR,crazyShow.dribble,crazyShow.mode,crazyShow.shoot,crazyShow.power);
                             }
                         }
                         Text{ text:"step" }
-                        SpinBox{ minimumValue:1; maximumValue:crazyShow.m_VEL; value:parent.velStep;width:parent.width/4;
+                        SpinBox{ minimumValue:1; maximumValue:crazyShow.m_VEL; value:parent.velStep;width:parent.itemWidth
                             onEditingFinished:{parent.velStep = value;}}
                         Text{ text:"power"  }
-                        SpinBox{ minimumValue:0; maximumValue:127; value:parent.power;width:parent.width/4;
+                        SpinBox{ minimumValue:0; maximumValue:127; value:parent.power;width:parent.itemWidth
                             onEditingFinished:{parent.power = value;}}
-                        Keys.onPressed:{
-                            handleKeyboardEvent(event);
-                            serial.updateCommandParams(crazyShow.robotID,crazyShow.velX,crazyShow.velY,crazyShow.velR,crazyShow.dribble,crazyShow.mode,crazyShow.shoot,crazyShow.power);
-                        }
-                        function handleKeyboardEvent(event){
+                        Keys.onPressed:getFocus(event);
+                        function getFocus(event){
                             switch(event.key){
                             case Qt.Key_Enter:
                             case Qt.Key_Return:
                             case Qt.Key_Escape:
                                 crazyShow.focus = true;
-                                break;
-                            case Qt.Key_A:
-                                crazyShow.velY = limitVel(crazyShow.velY-crazyShow.velStep,-crazyShow.m_VEL,crazyShow.m_VEL);
-                                break;
-                            case Qt.Key_D:
-                                crazyShow.velY = limitVel(crazyShow.velY+crazyShow.velStep,-crazyShow.m_VEL,crazyShow.m_VEL);
-                                break;
-                            case Qt.Key_W:
-                                crazyShow.velX = limitVel(crazyShow.velX+crazyShow.velStep,-crazyShow.m_VEL,crazyShow.m_VEL);
-                                break;
-                            case Qt.Key_S:
-                                crazyShow.velX = limitVel(crazyShow.velX-crazyShow.velStep,-crazyShow.m_VEL,crazyShow.m_VEL);
-                                break;
-                            case Qt.Key_Left:
-                                crazyShow.velR = limitVel(crazyShow.velR+crazyShow.velStep,-crazyShow.m_VELR,crazyShow.m_VELR);
-                                break;
-                            case Qt.Key_Right:
-                                crazyShow.velR = limitVel(crazyShow.velR-crazyShow.velStep,-crazyShow.m_VELR,crazyShow.m_VELR);
-                                break;
-                            case Qt.Key_Space:
-                                crazyShow.shoot = !crazyShow.shoot;
-                                break;
-                            case Qt.Key_Shift:{
-                                    crazyShow.velX = 0;
-                                    crazyShow.velY = 0;
-                                    crazyShow.velR = 0;
-                                    crazyShow.shoot = false;
-                                    crazyShow.dribble = false;
-                                    break;}
-                            case Qt.Key_Control:
-                                crazyShow.dribble = !crazyShow.dribble;
                                 break;
                             default:
                                 event.accepted = false;
@@ -218,12 +186,81 @@ ApplicationWindow{
                             }
                             event.accepted = true;
                         }
+                        function handleKeyboardEvent(e){
+                            switch(e){
+                            case 'U':{crazyShow.mode = !crazyShow.mode;break;}
+                            case 'a':{crazyShow.velY = crazyShow.limitVel(crazyShow.velY-crazyShow.velStep,-crazyShow.m_VEL,crazyShow.m_VEL);
+                                break;}
+                            case 'd':{crazyShow.velY = crazyShow.limitVel(crazyShow.velY+crazyShow.velStep,-crazyShow.m_VEL,crazyShow.m_VEL);
+                                break;}
+                            case 'w':{crazyShow.velX = crazyShow.limitVel(crazyShow.velX+crazyShow.velStep,-crazyShow.m_VEL,crazyShow.m_VEL);
+                                break;}
+                            case 's':{crazyShow.velX = crazyShow.limitVel(crazyShow.velX-crazyShow.velStep,-crazyShow.m_VEL,crazyShow.m_VEL);
+                                break;}
+                            case 'q':{crazyShow.dribble = !crazyShow.dribble;
+                                break;}
+                            case 'e':{crazyShow.shoot = !crazyShow.shoot;
+                                break;}
+                            case 'L':{crazyShow.velR = crazyShow.limitVel(crazyShow.velR+crazyShow.velStep,-crazyShow.m_VELR,crazyShow.m_VELR);
+                                break;}
+                            case 'R':{crazyShow.velR = crazyShow.limitVel(crazyShow.velR-crazyShow.velStep,-crazyShow.m_VELR,crazyShow.m_VELR);
+                                break;}
+                            case 'S':{crazyShow.velX = 0;
+                                    crazyShow.velY = 0;
+                                    crazyShow.velR = 0;
+                                    crazyShow.shoot = false;
+                                    crazyShow.dribble = false;
+                                break;}
+                            default:
+                                return false;
+                            }
+                            serial.updateCommandParams(crazyShow.robotID,crazyShow.velX,crazyShow.velY,crazyShow.velR,crazyShow.dribble,crazyShow.mode,crazyShow.shoot,crazyShow.power);
+                        }
                         function limitVel(vel,minValue,maxValue){
                             if(vel>maxValue) return maxValue;
                             if(vel<minValue) return minValue;
                             return vel;
                         }
-
+                        Shortcut{
+                            sequence:"A";
+                            onActivated:crazyShow.handleKeyboardEvent('a');
+                        }
+                        Shortcut{
+                            sequence:"Up";
+                            onActivated:crazyShow.handleKeyboardEvent('U');
+                        }
+                        Shortcut{
+                            sequence:"D"
+                            onActivated:crazyShow.handleKeyboardEvent('d');
+                        }
+                        Shortcut{
+                            sequence:"W"
+                            onActivated:crazyShow.handleKeyboardEvent('w');
+                        }
+                        Shortcut{
+                            sequence:"S"
+                            onActivated:crazyShow.handleKeyboardEvent('s');
+                        }
+                        Shortcut{
+                            sequence:"Q"
+                            onActivated:crazyShow.handleKeyboardEvent('q');
+                        }
+                        Shortcut{
+                            sequence:"E"
+                            onActivated:crazyShow.handleKeyboardEvent('e');
+                        }
+                        Shortcut{
+                            sequence:"Left"
+                            onActivated:crazyShow.handleKeyboardEvent('L');
+                        }
+                        Shortcut{
+                            sequence:"Right"
+                            onActivated:crazyShow.handleKeyboardEvent('R');
+                        }
+                        Shortcut{
+                            sequence:"Space"
+                            onActivated:crazyShow.handleKeyboardEvent('S');
+                        }
                     }
                     Button{
                         id : crazyStart;
@@ -234,7 +271,9 @@ ApplicationWindow{
                         anchors.top:crazyShow.bottom;
                         anchors.topMargin: 20;
                         enabled : crazyConnect.ifConnected;
-                        onClicked:handleClickEvent();
+                        onClicked:{
+                            handleClickEvent();
+                        }
                         function handleClickEvent(){
                             if(ifStarted){
                                 timer.stop();

@@ -16,7 +16,7 @@ Transmit::Transmit()
 {
 	initRmsgArray();
 
-	for (int i=0;i<GlobalData::Instance()->cameraNum/2;i++)
+    for (int i=0;i<GlobalData::instance()->cameraNum/2;i++)
 	{
 		if(i==0)
 		{
@@ -27,8 +27,6 @@ Transmit::Transmit()
 		{
 		_cameraMixer[1]=TwoCameraMixer(0,2);
 		}
-
-		
 	}
 	_lastCameraMixer=TwoCameraMixer(MaxNumOfCamera,MaxNumOfCamera+1);
 }
@@ -40,45 +38,45 @@ Transmit::~Transmit()
 
 void Transmit::setFirstStart()
 { 
-	GlobalData::Instance()->firstStart = true;
+    GlobalData::instance()->firstStart = true;
 	sortCount = 0; 
 }
 void Transmit::usortCounter()
 {
-	if (GlobalData::Instance()->firstStart)
+    if (GlobalData::instance()->firstStart)
 	{
 		sortCount++;
 		if(sortCount == 60){
-			GlobalData::Instance()->firstStart = false;
+            GlobalData::instance()->firstStart = false;
 			sortCount = 0;
 		}
 	}
 }
 void Transmit::setCycle(int followcycle, int cycle)
 {
-	 GlobalData::Instance()->followCheckCycle = followcycle;
-	 GlobalData::Instance()->smsg.Cycle = cycle;
+     GlobalData::instance()->followCheckCycle = followcycle;
+     GlobalData::instance()->smsg.Cycle = cycle;
 }
 
 void Transmit::initRmsgArray()
 {
 	for(int i = 0; i < MaxNumOfCamera+2 ; i++){
 		for(int j = 0; j < MaxBallNum; j++){
-			GlobalData::Instance()->receiveMsg[i].Ballx[j] = -ERRORNUM;  //add 2010 +
-			GlobalData::Instance()->receiveMsg[i].Bally[j] = -ERRORNUM;
-			GlobalData::Instance()->receiveMsg[i].BallFound[j] = false;
+            GlobalData::instance()->receiveMsg[i].Ballx[j] = -ERRORNUM;  //add 2010 +
+            GlobalData::instance()->receiveMsg[i].Bally[j] = -ERRORNUM;
+            GlobalData::instance()->receiveMsg[i].BallFound[j] = false;
 		}
 		for(int j = 0; j < ReceiveCarNum; j++){
-			GlobalData::Instance()->receiveMsg[i].RobotINDEX[BLUE][j] = MaxFollowNum;
-			GlobalData::Instance()->receiveMsg[i].RobotFound[BLUE][j] = false;
-			GlobalData::Instance()->receiveMsg[i].RobotPosX[BLUE][j] = -ERRORNUM;
-			GlobalData::Instance()->receiveMsg[i].RobotPosY[BLUE][j] = -ERRORNUM;
-			GlobalData::Instance()->receiveMsg[i].RobotRotation[BLUE][j] = -ERRORNUM;
-			GlobalData::Instance()->receiveMsg[i].RobotINDEX[YELLOW][j] = MaxFollowNum;
-			GlobalData::Instance()->receiveMsg[i].RobotFound[YELLOW][j] = false;
-			GlobalData::Instance()->receiveMsg[i].RobotPosX[YELLOW][j] = -ERRORNUM;
-			GlobalData::Instance()->receiveMsg[i].RobotPosY[YELLOW][j] = -ERRORNUM;
-			GlobalData::Instance()->receiveMsg[i].RobotRotation[YELLOW][j] = -ERRORNUM;
+            GlobalData::instance()->receiveMsg[i].RobotINDEX[BLUE][j] = MaxFollowNum;
+            GlobalData::instance()->receiveMsg[i].RobotFound[BLUE][j] = false;
+            GlobalData::instance()->receiveMsg[i].RobotPosX[BLUE][j] = -ERRORNUM;
+            GlobalData::instance()->receiveMsg[i].RobotPosY[BLUE][j] = -ERRORNUM;
+            GlobalData::instance()->receiveMsg[i].RobotRotation[BLUE][j] = -ERRORNUM;
+            GlobalData::instance()->receiveMsg[i].RobotINDEX[YELLOW][j] = MaxFollowNum;
+            GlobalData::instance()->receiveMsg[i].RobotFound[YELLOW][j] = false;
+            GlobalData::instance()->receiveMsg[i].RobotPosX[YELLOW][j] = -ERRORNUM;
+            GlobalData::instance()->receiveMsg[i].RobotPosY[YELLOW][j] = -ERRORNUM;
+            GlobalData::instance()->receiveMsg[i].RobotRotation[YELLOW][j] = -ERRORNUM;
 		}
 	}
 }
@@ -90,16 +88,10 @@ SendVisionMessage Transmit::smsgUpdate(int cameraMode,int minAddFrame, int minLo
 	if (cameraMode==TwoCamDown||cameraMode==SingleCamLeftDown||cameraMode==SingleCamRightDown)
 		startNum=1;
 
-	for (int i=startNum;i<GlobalData::Instance()->cameraNum/2+startNum;i++)
+    for (int i=startNum;i<GlobalData::instance()->cameraNum/2+startNum;i++)
 	{
-		//minLostFrame?????ĳ?1
-		_cameraMixer[i].mixAlgorithm(cameraMode,1,1,maxdist,isFalseSend);
-		
-		//cout<<"Mixer : "<<i<<endl;
-		//cout<<_cameraMixer[i]._cameraId1<<endl;
-		//cout<<_cameraMixer[i]._cameraId2<<endl;
-	
-		GlobalData::Instance()->changeSmsgToRmsg(i+MaxNumOfCamera);
+        _cameraMixer[i].mixAlgorithm(cameraMode,minAddFrame,minLostFrame,maxdist,isFalseSend);
+        GlobalData::instance()->changeSmsgToRmsg(i+MaxNumOfCamera);
 	}
 
 	if (cameraMode==FourCamera)
@@ -107,5 +99,5 @@ SendVisionMessage Transmit::smsgUpdate(int cameraMode,int minAddFrame, int minLo
 		_lastCameraMixer.mixAlgorithm(cameraMode,minAddFrame,minLostFrame,maxdist,isFalseSend);
 	}
 	initRmsgArray();
-	return GlobalData::Instance()->smsg;
+    return GlobalData::instance()->smsg;
 }

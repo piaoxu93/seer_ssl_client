@@ -11,7 +11,7 @@ public:
 public:
     Q_INVOKABLE int getCameraNumber() { return PARAM::CAMERA; }
 signals:
-    void visionControlChanged(int);
+    void fieldChange(bool);
 public slots:
 };
 

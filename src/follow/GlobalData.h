@@ -30,5 +30,5 @@ public:
 	void changeSmsgToRmsg(int);
 };
 
-typedef Singleton< CGlobalData > GlobalData;
+typedef Singleton<CGlobalData> GlobalData;
 #endif

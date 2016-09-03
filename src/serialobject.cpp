@@ -1,10 +1,11 @@
 #include <QtSerialPort/QSerialPortInfo>
 #include <QtDebug>
 #include "serialobject.h"
-
+#include "singleparams.h"
 SerialObject::SerialObject(QObject *parent):QObject(parent),radioPacket(&serial){
     // add needed settings
-    const char tempIndex[] = {0,4,3,0,0,8};
+    char tempIndex[] = {0,4,3,0,0,8};
+    tempIndex[5] = int(SingleParams::instance()->_("crazy.frequency"));
     defaultIndex.append(tempIndex,6);
     currentIndex.append(tempIndex,6);
     const auto& ports = QSerialPortInfo::availablePorts();
@@ -110,5 +111,6 @@ void SerialObject::closeSerialPort(){
 }
 void SerialObject::sendStartPacket(){
     qDebug() << "Set Frequency...";
+    radioPacket.updateFrequency(frequency[currentIndex[5]]);
     radioPacket.sendStartPacket();
 }

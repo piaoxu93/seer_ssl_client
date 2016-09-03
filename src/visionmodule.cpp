@@ -26,23 +26,23 @@ void CVisionModule::parse(void * ptr,int size){
         int robots_yellow_n =  detection.robots_yellow_size();
         for (int i = 0; i < balls_n; i++) {
             SSL_DetectionBall ball = detection.balls(i);
-            GlobalData::Instance()->setBall(newCameraID, i, ball.x(),ball.y(),ball.confidence());
+            GlobalData::instance()->setBall(newCameraID, i, ball.x(),ball.y(),ball.confidence());
         }
         for (int i = 0; i < robots_blue_n; i++) {
             SSL_DetectionRobot robot = detection.robots_blue(i);
-                GlobalData::Instance()->setBlueRobot(newCameraID, i,robot.robot_id(),robot.x(),robot.y(),robot.orientation(),robot.confidence());
+                GlobalData::instance()->setBlueRobot(newCameraID, i,robot.robot_id(),robot.x(),robot.y(),robot.orientation(),robot.confidence());
         }
         for (int i = 0; i < robots_yellow_n; i++) {
             SSL_DetectionRobot robot = detection.robots_yellow(i);
-            GlobalData::Instance()->setYellowRobot(newCameraID, i,robot.robot_id(),robot.x(),robot.y(),robot.orientation(),robot.confidence());
+            GlobalData::instance()->setYellowRobot(newCameraID, i,robot.robot_id(),robot.x(),robot.y(),robot.orientation(),robot.confidence());
         }
         if (collectNewVision()) {
-            if(GlobalData::Instance()->smsg.Cycle % 1 == 0)
-                GlobalData::Instance()->copyReceiveMsg();
+            if(GlobalData::instance()->smsg.Cycle % 1 == 0)
+                GlobalData::instance()->copyReceiveMsg();
             if(_cycle > 32766)
                 _cycle = 1;
             transmit.setCycle(followCheckCycle, _cycle++);
-            Field::instance()->draw();
+            Field::instance()->draw(true,false,false);
 //            doTransmit();
             sendSmsg();
             std::fill_n(cameraUpdate,PARAM::CAMERA,false);
@@ -91,7 +91,7 @@ void CVisionModule::output(){
         udpSocket->readDatagram(datagram.data(), datagram.size());
         parse((void*)datagram.data(),datagram.size());
 //        parseAndStoreVisionData((void *)datagram.data(),datagram.size(),currentVision);
-//        GlobalData::Instance()->camera[currentVision.camID].push(currentVision);
+//        GlobalData::instance()->camera[currentVision.camID].push(currentVision);
 //        cameraUpdate[currentVision.camID] = true;
 //        if (collectNewVision()){
 //            ballFollow.startFollowDouble( ballAddFrame, ballLostFrame, ballMaxSpeed*10/PARAM::FOLLOW::FRAMERATE);
@@ -106,14 +106,14 @@ void CVisionModule::output(){
 }
 bool CVisionModule::collectNewVision() {
     for (int i=0;i<PARAM::CAMERA;i++) {
-        if (GlobalData::Instance()->cameraControl[i] && !cameraUpdate[i])
+        if (GlobalData::instance()->cameraControl[i] && !cameraUpdate[i])
             return false;
     }
     return true;
 }
-void CVisionModule::updateVisionControl(int index){
-//    bool& c = GlobalData::Instance()->cameraControl[index];
-//    c = !c;
+void CVisionModule::updateVisionControl(bool mode){
+    cameraMode = mode ? FourCamera : TwoCamUp;
+    Field::instance()->changeMode(mode);
 }
 void CVisionModule::mix(){
 //    static VisionMessage vision;
@@ -121,10 +121,10 @@ void CVisionModule::mix(){
 //    vision.init();
 //    maintainBall = 0xffffffff;
 //    bool exist;
-//    auto& lastBall = GlobalData::Instance()->vision[0].ball[0];
+//    auto& lastBall = GlobalData::instance()->vision[0].ball[0];
 //    for (int i=0;i<PARAM::CAMERA;i++){
-//        if (GlobalData::Instance()->cameraControl[i]) {
-//            auto& t = GlobalData::Instance()->camera[i][0];
+//        if (GlobalData::instance()->cameraControl[i]) {
+//            auto& t = GlobalData::instance()->camera[i][0];
 //            //* mix method one
 //            for (int j=0;j<t.blueNum;j++){
 //                exist = false;
@@ -167,16 +167,16 @@ void CVisionModule::mix(){
 //        }
 //        cameraUpdate[i] = false;
 //    }
-//    GlobalData::Instance()->vision.push(vision);
+//    GlobalData::instance()->vision.push(vision);
 }
 
 int min_int(int a,int b){
     return a < b ? a : b;
 }
 void CVisionModule::send(){
-//    auto& t = GlobalData::Instance()->vision[0];
+//    auto& t = GlobalData::instance()->vision[0];
 //    SendVisionMessage sendMessage;
-//    sendMessage.Cycle = GlobalData::Instance()->vision.cycle();
+//    sendMessage.Cycle = GlobalData::instance()->vision.cycle();
 //    sendMessage.BallFound = t.ball[0].pos.x+9999 > 0.01 ;
 //    sendMessage.Ballx = t.ball[0].pos.x;
 //    sendMessage.Bally = t.ball[0].pos.y;
@@ -204,7 +204,7 @@ void CVisionModule::send(){
 }
 void CVisionModule::sendSmsg(){
     transmit_msg = transmit.smsgUpdate(cameraMode,minAddFrame, minLostFrame,maxVehicleDist + distorterr,m_sendFalse);
-    GlobalData::Instance()->msg.push(transmit_msg);
+    GlobalData::instance()->msg.push(transmit_msg);
     for(int i = 0; i < QNetworkInterface::allInterfaces().length(); ++i){
         for(int j = 0;j <sendAddresses.size(); j++){
             sendUdp->setMulticastInterface(QNetworkInterface::allInterfaces()[i]);

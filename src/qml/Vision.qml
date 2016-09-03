@@ -14,19 +14,26 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter;
         Grid{
             id : controlGrid;
-            columns:2;
+            columns:3;
             columnSpacing: 20;
             rowSpacing: 5;
-            Repeater{
-                model:interaction.getCameraNumber();
-                CheckBox{
-                    text:"Camera" + index;
-                    checked: true;
-                    onClicked:{
-                        interaction.visionControlChanged(index);
+            Text{ text:qsTr("Small"); }
+            Switch{
+                id:field;
+                style: SwitchStyle {
+                    groove: Rectangle {
+                         implicitWidth: 100
+                         implicitHeight: 20
+                         color:"black";
+                         border.width: 1
                     }
                 }
+                checked: true;
+                onClicked:{
+                    interaction.fieldChange(field.checked);
+                }
             }
+            Text{ text:qsTr("Big"); }
         }
     }
     function autoSizeForListView(item){

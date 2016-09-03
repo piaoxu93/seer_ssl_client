@@ -15,12 +15,12 @@ public:
         this->ctrl = ctrl;
         this->shootMode = mode;this->shoot = shoot; this->shootPowerLevel = power;
     }
+    void updateFrequency(int);
 private:
     static const int TRANSMIT_PACKET_SIZE = 25;
     QByteArray startPacket1;
     QByteArray startPacket2;
     QByteArray transmitPacket;
-    void updateFrequency();
     QSerialPort* serialPtr;
     bool encode();
 private:

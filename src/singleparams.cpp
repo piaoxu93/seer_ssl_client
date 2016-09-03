@@ -19,7 +19,7 @@ SingleParams::SingleParams(){
     string filename = string(QCoreApplication::applicationDirPath().toUtf8().constData())+string("/params.json");
     cout << endl << filename << endl;
     fstream file(filename,ios::in | ios::out);
-    qDebug() << "READING :  params.json..." << endl;
+    qDebug() << "READING :  params.json...";
     if(file.is_open()){
         file >> this->params;
         file.close();
