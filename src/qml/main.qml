@@ -1,4 +1,5 @@
 import QtQuick 2.6
+import QtQuick.Layouts 1.3
 import QtQuick.Controls 1.5
 import QtQuick.Controls.Styles 1.4
 import Client.Component 1.0 as Client
@@ -86,16 +87,22 @@ ApplicationWindow{
                     anchors.top: parent.top;
                     anchors.bottom: parent.bottom;
                     color : "lightgrey";
-                    Rectangle{
+                    GroupBox{
                         id : crazyListRectangle;
-                        width: parent.width;
-                        color : "lightgrey";
-                        height: 240;
+                        width: parent.width*0.9;
+                        anchors.horizontalCenter: parent.horizontalCenter;
+                        height: 235;
+                        anchors.top: parent.top;
+                        anchors.margins: 10;
                         ListView{
                             id : crazyListView;
                             delegate:crazyComponent;
-                            anchors.fill: parent;
-                            anchors.margins: 20;
+                            anchors.left: parent.left;
+                            anchors.right:parent.right;
+                            anchors.top: parent.top;
+                            anchors.bottom: parent.bottom;
+                            anchors.margins: 10;
+                            interactive:false;
                             spacing: 10;
                             model: [qsTr("Ports")+ translator.emptyString,qsTr("BaudRate")+ translator.emptyString
                                 ,qsTr("DataBits")+ translator.emptyString,qsTr("Parity")+ translator.emptyString
@@ -110,6 +117,7 @@ ApplicationWindow{
                         anchors.top: crazyListRectangle.bottom;
                         anchors.right: parent.right;
                         anchors.rightMargin: 20;
+                        anchors.topMargin: 10;
                         onClicked: {
                             if(ifConnected){
                                 timer.stop();
@@ -123,11 +131,13 @@ ApplicationWindow{
                             text = (ifConnected ? qsTr("Disconnect") : qsTr("Connect")) + translator.emptyString;
                         }
                     }
-                    Grid{
-                        id : crazyShow;
+                    GroupBox{
                         anchors.top:crazyConnect.bottom;
                         anchors.horizontalCenter: parent.horizontalCenter;
                         anchors.margins: 20;
+                        id : groupBox2;
+                    Grid{
+                        id : crazyShow;
                         columns: 4;
                         rows:5;
                         verticalItemAlignment: Grid.AlignVCenter;
@@ -278,13 +288,14 @@ ApplicationWindow{
                             onActivated:crazyShow.handleKeyboardEvent('S');
                         }
                     }
+                    }
                     Button{
                         id : crazyStart;
                         text:qsTr("Start") + translator.emptyString;
                         property bool ifStarted:false;
                         anchors.right:parent.right;
                         anchors.rightMargin: 20;
-                        anchors.top:crazyShow.bottom;
+                        anchors.top:groupBox2.bottom;
                         anchors.topMargin: 20;
                         enabled : crazyConnect.ifConnected;
                         onClicked:{
@@ -396,18 +407,38 @@ ApplicationWindow{
             }
         }
     }
-    Switch{
+    Button{
         id : language;
         anchors.bottom: parent.bottom;
         anchors.right: parent.right;
-        checked : true;
-        onClicked:{
-            translator.selectLanguage(language.checked ? "zh" : "en");
+        property bool ifEnglish : true;
+        width:30;
+        height:20;
+        text:"";
+        style: ButtonStyle {
+            label: Text {
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                font.pointSize: 20
+                color: "blue"
+                text:language.text;
+            }
+            background: Rectangle {
+                border.width: 0;
+                color:"transparent";
+            }
+        }
+        onClicked: switchLanguage();
+        function switchLanguage(){
+            language.ifEnglish = !language.ifEnglish;
+            translator.selectLanguage(language.ifEnglish ? "en" : "zh");
+            language.text = language.ifEnglish ? "🇬🇧" : "🇨🇳";
+        }
+        Component.onCompleted: {
+            language.switchLanguage();
         }
     }
-    Component.onCompleted: {
-        translator.selectLanguage("zh");
-    }
+
     Component{
         id:crazyComponent;
         Item{
@@ -419,7 +450,7 @@ ApplicationWindow{
                 anchors.verticalCenter: parent.verticalCenter;
                 anchors.leftMargin: 10;
                 height:parent.height;
-                text: modelData;//serial.getName(itemIndex);
+                text: modelData;
                 lineHeight: parent.height;
             }
             ComboBox{
