@@ -14,6 +14,8 @@ ApplicationWindow{
     id:window;
     Client.CommandParser{ id: commandParser; }
     Client.Serial { id : serial; }
+    Client.Interaction{ id : interaction; }
+    Client.Translator{ id : translator; }
     Timer{
         id:timer;
         interval:15;
@@ -28,15 +30,27 @@ ApplicationWindow{
         columns:2;
         rowSpacing:0;
         columnSpacing:0;
+        function fieldChangeSignal(ifBig){
+            fieldCanvas.ifBig = ifBig;
+        }
         Client.Field{
             width:1050;
             height:700;
             id:fieldCanvas;
+            property bool ifBig : true;
+            property int bigWidth : 1050;
+            property int bigHeight: 700;
+            property int smallWidth : 700;
+            property int smallHeight : 467;
             MouseArea{
                 anchors.fill: parent;
                 hoverEnabled : true;
                 onPositionChanged:{
-                    mousePos.text = "( " + Math.floor(mouseX)  + " , " + Math.floor(mouseY) + " )";
+                    var w = fieldCanvas.ifBig ? fieldCanvas.bigWidth : fieldCanvas.smallWidth;
+                    var h = fieldCanvas.ifBig ? fieldCanvas.bigHeight : fieldCanvas.smallHeight;
+                    var x = Math.floor((1/fieldCanvas.width*mouseX - 0.5)*w);
+                    var y = -Math.floor((1/fieldCanvas.height*mouseY- 0.5)*h);
+                    mousePos.text = "( " + x  + " , " + y + " )";
                 }
             }
             Text{
@@ -66,7 +80,7 @@ ApplicationWindow{
             id: operationPanel;
             Tab{
                 anchors.fill: parent;
-                title: "Radio";
+                title: qsTr("Radio") + translator.emptyString;
                 Rectangle{
                     width:parent.width;
                     anchors.top: parent.top;
@@ -89,7 +103,7 @@ ApplicationWindow{
                     }
                     Button{
                         id : crazyConnect;
-                        text: "Connect";
+                        text: qsTr("Connect");
                         property bool ifConnected:false;
                         anchors.top: crazyListRectangle.bottom;
                         anchors.right: parent.right;
@@ -104,7 +118,7 @@ ApplicationWindow{
                                 serial.sendStartPacket();
                             }
                             ifConnected = !ifConnected;
-                            text = ifConnected ? "Disconnect" : "Connect";
+                            text = ifConnected ? qsTr("Disconnect") : qsTr("Connect");
                         }
                     }
                     Grid{
@@ -131,45 +145,45 @@ ApplicationWindow{
                         property bool mode : false;
                         property int robotID : 0;
                         property int itemWidth : 70;
-                        Text{ text:"robot  " }
+                        Text{ text:qsTr("robot") }
                         SpinBox{ minimumValue:0; maximumValue:11; value:parent.robotID; width:parent.itemWidth
                             onEditingFinished:{parent.robotID = value}}
                         Text{ text:" " }
                         Text{ text:" " }
-                        Text{ text:"vel-x" }
+                        Text{ text:qsTr("vel-x") }
                         SpinBox{ minimumValue:-crazyShow.m_VEL; maximumValue:crazyShow.m_VEL; value:parent.velX;width:parent.itemWidth
                             onEditingFinished:{parent.velX = value;}}
-                        Text{ text:"dribb" }
+                        Text{ text:qsTr("dribb") }
                         Button{ text:parent.dribble;width:parent.itemWidth
                             onClicked: {
                                 parent.dribble = !parent.dribble;
                                 serial.updateCommandParams(crazyShow.robotID,crazyShow.velX,crazyShow.velY,crazyShow.velR,crazyShow.dribble,crazyShow.mode,crazyShow.shoot,crazyShow.power);
                             }
                         }
-                        Text{ text:"vel-y "}
+                        Text{ text:qsTr("vel-y ")}
                         SpinBox{ minimumValue:-crazyShow.m_VEL; maximumValue:crazyShow.m_VEL; value:parent.velY;width:parent.itemWidth
                             onEditingFinished:{parent.velY = value;}}
-                        Text{ text:"shoot"  }
+                        Text{ text:qsTr("shoot")}
                         Button{ text:parent.shoot;width:parent.itemWidth
                             onClicked: {
                                 parent.shoot = !parent.shoot;
                                 serial.updateCommandParams(crazyShow.robotID,crazyShow.velX,crazyShow.velY,crazyShow.velR,crazyShow.dribble,crazyShow.mode,crazyShow.shoot,crazyShow.power);
                             }
                         }
-                        Text{ text:"vel-r"  }
+                        Text{ text:qsTr("vel-r") }
                         SpinBox{ minimumValue:-crazyShow.m_VELR; maximumValue:crazyShow.m_VELR; value:parent.velR;width:parent.itemWidth
                             onEditingFinished:{parent.velR = value;}}
-                        Text{ text:"mode"  }
-                        Button{ text:(parent.mode?"lift":"flat");width:parent.itemWidth
+                        Text{ text:qsTr("mode") }
+                        Button{ text:(parent.mode?qsTr("lift"):qsTr("flat"));width:parent.itemWidth
                             onClicked: {
                                 parent.mode = !parent.mode
                                 serial.updateCommandParams(crazyShow.robotID,crazyShow.velX,crazyShow.velY,crazyShow.velR,crazyShow.dribble,crazyShow.mode,crazyShow.shoot,crazyShow.power);
                             }
                         }
-                        Text{ text:"step" }
+                        Text{ text:qsTr("step") }
                         SpinBox{ minimumValue:1; maximumValue:crazyShow.m_VEL; value:parent.velStep;width:parent.itemWidth
                             onEditingFinished:{parent.velStep = value;}}
-                        Text{ text:"power"  }
+                        Text{ text:qsTr("power")  }
                         SpinBox{ minimumValue:0; maximumValue:127; value:parent.power;width:parent.itemWidth
                             onEditingFinished:{parent.power = value;}}
                         Keys.onPressed:getFocus(event);
@@ -264,7 +278,7 @@ ApplicationWindow{
                     }
                     Button{
                         id : crazyStart;
-                        text:"Start";
+                        text:qsTr("Start");
                         property bool ifStarted:false;
                         anchors.right:parent.right;
                         anchors.rightMargin: 20;
@@ -281,7 +295,7 @@ ApplicationWindow{
                                 timer.start();
                             }
                             ifStarted = !ifStarted;
-                            text = ifStarted ? "Stop " : "Start";
+                            text = ifStarted ? qsTr("Stop") : qsTr("Start");
                         }
                     }
                 }
@@ -289,13 +303,56 @@ ApplicationWindow{
             }
             Tab{
                 anchors.fill: parent;
-                property string title: "Referee";
+                property string title: qsTr("Referee");
                 RefereeBox{}
             }
             Tab{
                 anchors.fill: parent;
-                property string title: "Vision";
-                Vision{}
+                property string title: qsTr("Vision");
+                Rectangle{
+                    id:vision;
+                    anchors.top: parent.top;
+                    anchors.topMargin: 10;
+                    color : "lightgrey";
+                    Column{
+                        anchors.horizontalCenter: parent.horizontalCenter;
+                        Grid{
+                            id : controlGrid;
+                            columns:3;
+                            columnSpacing: 20;
+                            rowSpacing: 5;
+                            Text{ text:qsTr("Small"); }
+                            Switch{
+                                id:fieldOption;
+                                style: SwitchStyle {
+                                    groove: Rectangle {
+                                         implicitWidth: 100
+                                         implicitHeight: 20
+                                         color:"black";
+                                         border.width: 1
+                                    }
+                                }
+                                checked: true;
+                                onClicked:{
+                                    fieldCanvas.ifBig = fieldOption.checked;
+                                    interaction.fieldChange(fieldOption.checked);
+                                }
+                            }
+                            Text{ text:qsTr("Big"); }
+                        }
+                    }
+                    function autoSizeForListView(item){
+                        var root = item.visibleChildren[0];
+                        var listViewHeight = 0;
+                        var listViewWidth = 0;
+                        for (var i = 0; i < root.visibleChildren.length; i++) {
+                            listViewHeight += root.visibleChildren[i].height;
+                            listViewWidth  = Math.max(listViewWidth, root.visibleChildren[i].width);
+                        }
+                        item.height = listViewHeight;
+                        item.width = listViewWidth;
+                    }
+                }
             }
         }
         Canvas{
@@ -304,7 +361,6 @@ ApplicationWindow{
             id:monitorCanvas;
         }
         Rectangle{
-
             width:window.width - fieldCanvas.width;
             height:window.height - fieldCanvas.height;
             id:terminal;
@@ -337,6 +393,9 @@ ApplicationWindow{
                 }
             }
         }
+    }
+    Component.onCompleted: {
+        translator.selectLanguage("zh");
     }
     Component{
         id:crazyComponent;

@@ -75,7 +75,7 @@ Item {
     }
     CheckBox{
         id:refboxSwitch;
-        text:"Use Referee Box";
+        text:qsTr("Use Referee Box");
         anchors.top: parent.top;
         anchors.topMargin: 10;
         anchors.left: parent.left;
@@ -103,35 +103,35 @@ Item {
                 Button{
                     property int index : Client.RefBoxCommand.HALT;
                     width:parent.buttonWidth;
-                    text:qsTr("Halt (KP_Pause)");
+                    text:qsTr("Halt");
                     onClicked:getButtonsCommand(index);
                     enabled: haltGame;
                 }
                 Button{
                     property int index : Client.RefBoxCommand.STOP_GAME;
                     width:parent.buttonWidth;
-                    text:qsTr("Stop Game (KP_0)");
+                    text:qsTr("Stop Game");
                     onClicked:getButtonsCommand(index);
                     enabled: stopGame;
                 }
                 Button{
                     property int index : Client.RefBoxCommand.FORCE_START;
                     width:parent.buttonWidth;
-                    text:qsTr("Force Start (KP_5)");
+                    text:qsTr("Force Start");
                     onClicked:getButtonsCommand(index);
                     enabled: forceStart;
                 }
                 Button{
                     property int index : Client.RefBoxCommand.NORMAL_START;
                     width:parent.buttonWidth;
-                    text:qsTr("Normal Start (KP_Enter)");
+                    text:qsTr("Normal Start");
                     onClicked:getButtonsCommand(index);
                     enabled: normalStart;
                 }
             }
         }
         GroupBox{
-            title:"Yellow Team Control";
+            title:qsTr("Yellow Team Control");
             width : parent.width;
             enabled: teamControl;
             Grid{
@@ -184,7 +184,7 @@ Item {
             }
         }
         GroupBox{
-            title:"Blue Team Control";
+            title:qsTr("Blue Team Control");
             width : parent.width;
             enabled: teamControl;
             Grid{
