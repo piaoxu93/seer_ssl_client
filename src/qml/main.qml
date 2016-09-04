@@ -396,6 +396,15 @@ ApplicationWindow{
             }
         }
     }
+    Switch{
+        id : language;
+        anchors.bottom: parent.bottom;
+        anchors.right: parent.right;
+        checked : true;
+        onClicked:{
+            translator.selectLanguage(language.checked ? "zh" : "en");
+        }
+    }
     Component.onCompleted: {
         translator.selectLanguage("zh");
     }

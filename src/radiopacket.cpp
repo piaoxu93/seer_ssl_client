@@ -38,8 +38,6 @@ bool RadioPacket::sendStartPacket(){
     return false;
 }
 void RadioPacket::updateFrequency(int frequency){
-    //int frequency = int(SingleParams::instance()->_("crazy.frequency"));
-    qDebug() << "frequency!!! " << frequency;
     startPacket2[5] = 0x10 + frequency;
     startPacket2[TRANSMIT_PACKET_SIZE - 1] = CCrc8::calc((unsigned char*)(startPacket2.data()), TRANSMIT_PACKET_SIZE - 1);
 }
