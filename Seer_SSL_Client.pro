@@ -53,7 +53,8 @@ HEADERS += \
     $$PWD/src/follow/message.h \
     $$PWD/src/follow/TwoCameraMixer.h \
     $$PWD/src/follow/GlobalData.h \
-    $$PWD/src/follow/Transmit.h
+    $$PWD/src/follow/Transmit.h \
+    $$PWD/src/translation.hpp
 
 SOURCES += \
     $$PWD/src/commandparser.cpp \
@@ -83,6 +84,8 @@ SOURCES += \
     $$PWD/src/follow/TwoCameraMixer.cpp \
     $$PWD/src/follow/GlobalData.cpp \
     $$PWD/src/follow/Transmit.cpp
+
+TRANSLATIONS = t1_zh.ts
 
 defineTest(copyToDestdir) {
     files = $$1
@@ -120,7 +123,8 @@ win32 {
         LIBS += $$LIBPROTOBUF_RELEASE
     }
     INCLUDEPATH += $$PROTOBUF_INCLUDE_DIR
-    copyToDestdir($$PWD/params.json)
+    system(lrelease t1_zh.ts)
+    copyToDestdir($$PWD/params.json $$PWD/t1_zh.qm)
 }
 
 macx {
@@ -136,9 +140,11 @@ macx {
         OBJECTS_DIR = ./release
     }
     INCLUDEPATH += /usr/local/include
-    copyToDestdir($$PWD/params.json)
+    system(lrelease t1_zh.ts)
+    copyToDestdir($$PWD/params.json $$PWD/t1_zh.qm)
     LIBS += $$LIBPROTOBUF
 }
+
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =

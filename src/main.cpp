@@ -2,7 +2,6 @@
 #include <QQmlApplicationEngine>
 #include <QQmlEngine>
 #include <QtDebug>
-
 #include <iostream>
 #include "commandparser.h"
 #include "field.h"
@@ -12,7 +11,18 @@
 #include "visionmodule.h"
 #include "refereebox.h"
 #include "interaction.h"
+#include "translation.hpp"
 using namespace std;
+
+//int main(int argc, char *argv[]) {
+// QApplication app(argc, argv);
+// TranslationTest myObj;
+// QDeclarativeView view;
+// view.rootContext()->setContextProperty("rootItem", (QObject*)&myObj);
+// view.setSource(QUrl::fromLocalFile("main.qml"));
+// view.show();
+// return app.exec();
+//}
 
 void qmlRegister(){
     qmlRegisterType<CommandParser>("Client.Component", 1, 0, "CommandParser");
@@ -22,6 +32,7 @@ void qmlRegister(){
     qmlRegisterType<GameState>("Client.Component", 1, 0, "GameState");
     qmlRegisterType<RefereeBox>("Client.Component", 1, 0, "RefereeBox");
     qmlRegisterType<Interaction>("Client.Component", 1, 0, "Interaction");
+    qmlRegisterType<TranslationTest>("Client.Component", 1, 0, "Translator");
 }
 void singletonRegister(){
     VisionModule::instance();

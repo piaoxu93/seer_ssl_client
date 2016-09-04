@@ -97,13 +97,15 @@ ApplicationWindow{
                             anchors.fill: parent;
                             anchors.margins: 20;
                             spacing: 10;
-                            model: 6;
+                            model: [qsTr("Ports")+ translator.emptyString,qsTr("BaudRate")+ translator.emptyString
+                                ,qsTr("DataBits")+ translator.emptyString,qsTr("Parity")+ translator.emptyString
+                                ,qsTr("StopBits")+ translator.emptyString,qsTr("Frequency")+ translator.emptyString];
                             enabled: !crazyConnect.ifConnected;
                         }
                     }
                     Button{
                         id : crazyConnect;
-                        text: qsTr("Connect");
+                        text: qsTr("Connect") + translator.emptyString;
                         property bool ifConnected:false;
                         anchors.top: crazyListRectangle.bottom;
                         anchors.right: parent.right;
@@ -118,7 +120,7 @@ ApplicationWindow{
                                 serial.sendStartPacket();
                             }
                             ifConnected = !ifConnected;
-                            text = ifConnected ? qsTr("Disconnect") : qsTr("Connect");
+                            text = (ifConnected ? qsTr("Disconnect") : qsTr("Connect")) + translator.emptyString;
                         }
                     }
                     Grid{
@@ -145,45 +147,45 @@ ApplicationWindow{
                         property bool mode : false;
                         property int robotID : 0;
                         property int itemWidth : 70;
-                        Text{ text:qsTr("robot") }
+                        Text{ text:qsTr("robot") + translator.emptyString }
                         SpinBox{ minimumValue:0; maximumValue:11; value:parent.robotID; width:parent.itemWidth
                             onEditingFinished:{parent.robotID = value}}
                         Text{ text:" " }
                         Text{ text:" " }
-                        Text{ text:qsTr("vel-x") }
+                        Text{ text:qsTr("vel-x") + translator.emptyString }
                         SpinBox{ minimumValue:-crazyShow.m_VEL; maximumValue:crazyShow.m_VEL; value:parent.velX;width:parent.itemWidth
                             onEditingFinished:{parent.velX = value;}}
-                        Text{ text:qsTr("dribb") }
-                        Button{ text:parent.dribble;width:parent.itemWidth
+                        Text{ text:qsTr("dribb") + translator.emptyString }
+                        Button{ text:(parent.dribble ? qsTr("true") : qsTr("false")) +translator.emptyString;width:parent.itemWidth
                             onClicked: {
                                 parent.dribble = !parent.dribble;
                                 serial.updateCommandParams(crazyShow.robotID,crazyShow.velX,crazyShow.velY,crazyShow.velR,crazyShow.dribble,crazyShow.mode,crazyShow.shoot,crazyShow.power);
                             }
                         }
-                        Text{ text:qsTr("vel-y ")}
+                        Text{ text:qsTr("vel-y ") + translator.emptyString}
                         SpinBox{ minimumValue:-crazyShow.m_VEL; maximumValue:crazyShow.m_VEL; value:parent.velY;width:parent.itemWidth
                             onEditingFinished:{parent.velY = value;}}
-                        Text{ text:qsTr("shoot")}
-                        Button{ text:parent.shoot;width:parent.itemWidth
+                        Text{ text:qsTr("shoot") + translator.emptyString}
+                        Button{ text:(parent.shoot? qsTr("true") : qsTr("false")) + translator.emptyString;width:parent.itemWidth
                             onClicked: {
                                 parent.shoot = !parent.shoot;
                                 serial.updateCommandParams(crazyShow.robotID,crazyShow.velX,crazyShow.velY,crazyShow.velR,crazyShow.dribble,crazyShow.mode,crazyShow.shoot,crazyShow.power);
                             }
                         }
-                        Text{ text:qsTr("vel-r") }
+                        Text{ text:qsTr("vel-r")  + translator.emptyString}
                         SpinBox{ minimumValue:-crazyShow.m_VELR; maximumValue:crazyShow.m_VELR; value:parent.velR;width:parent.itemWidth
                             onEditingFinished:{parent.velR = value;}}
-                        Text{ text:qsTr("mode") }
-                        Button{ text:(parent.mode?qsTr("lift"):qsTr("flat"));width:parent.itemWidth
+                        Text{ text:qsTr("mode")  + translator.emptyString}
+                        Button{ text:(parent.mode?qsTr("lift"):qsTr("flat")) + translator.emptyString;width:parent.itemWidth
                             onClicked: {
                                 parent.mode = !parent.mode
                                 serial.updateCommandParams(crazyShow.robotID,crazyShow.velX,crazyShow.velY,crazyShow.velR,crazyShow.dribble,crazyShow.mode,crazyShow.shoot,crazyShow.power);
                             }
                         }
-                        Text{ text:qsTr("step") }
+                        Text{ text:qsTr("step") + translator.emptyString }
                         SpinBox{ minimumValue:1; maximumValue:crazyShow.m_VEL; value:parent.velStep;width:parent.itemWidth
                             onEditingFinished:{parent.velStep = value;}}
-                        Text{ text:qsTr("power")  }
+                        Text{ text:qsTr("power") + translator.emptyString }
                         SpinBox{ minimumValue:0; maximumValue:127; value:parent.power;width:parent.itemWidth
                             onEditingFinished:{parent.power = value;}}
                         Keys.onPressed:getFocus(event);
@@ -278,7 +280,7 @@ ApplicationWindow{
                     }
                     Button{
                         id : crazyStart;
-                        text:qsTr("Start");
+                        text:qsTr("Start") + translator.emptyString;
                         property bool ifStarted:false;
                         anchors.right:parent.right;
                         anchors.rightMargin: 20;
@@ -295,7 +297,7 @@ ApplicationWindow{
                                 timer.start();
                             }
                             ifStarted = !ifStarted;
-                            text = ifStarted ? qsTr("Stop") : qsTr("Start");
+                            text = (ifStarted ? qsTr("Stop") : qsTr("Start")) + translator.emptyString;
                         }
                     }
                 }
@@ -303,12 +305,12 @@ ApplicationWindow{
             }
             Tab{
                 anchors.fill: parent;
-                property string title: qsTr("Referee");
+                property string title: qsTr("Referee") + translator.emptyString;
                 RefereeBox{}
             }
             Tab{
                 anchors.fill: parent;
-                property string title: qsTr("Vision");
+                property string title: qsTr("Vision") + translator.emptyString;
                 Rectangle{
                     id:vision;
                     anchors.top: parent.top;
@@ -321,7 +323,7 @@ ApplicationWindow{
                             columns:3;
                             columnSpacing: 20;
                             rowSpacing: 5;
-                            Text{ text:qsTr("Small"); }
+                            Text{ text:qsTr("Small") + translator.emptyString; }
                             Switch{
                                 id:fieldOption;
                                 style: SwitchStyle {
@@ -338,7 +340,7 @@ ApplicationWindow{
                                     interaction.fieldChange(fieldOption.checked);
                                 }
                             }
-                            Text{ text:qsTr("Big"); }
+                            Text{ text:qsTr("Big") + translator.emptyString; }
                         }
                     }
                     function autoSizeForListView(item){
@@ -372,7 +374,7 @@ ApplicationWindow{
                 TextField{
                     id:terminalInput;
                     anchors.fill:parent;
-                    placeholderText: qsTr("Enter Command");
+                    placeholderText: qsTr("Enter Command") + translator.emptyString;
                     style: TextFieldStyle {
                         textColor: "black";
                         background: Rectangle {
@@ -408,7 +410,7 @@ ApplicationWindow{
                 anchors.verticalCenter: parent.verticalCenter;
                 anchors.leftMargin: 10;
                 height:parent.height;
-                text: serial.getName(itemIndex);
+                text: modelData;//serial.getName(itemIndex);
                 lineHeight: parent.height;
             }
             ComboBox{

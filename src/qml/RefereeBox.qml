@@ -75,7 +75,7 @@ Item {
     }
     CheckBox{
         id:refboxSwitch;
-        text:qsTr("Use Referee Box");
+        text:qsTr("Use Referee Box") + translator.emptyString;
         anchors.top: parent.top;
         anchors.topMargin: 10;
         anchors.left: parent.left;
@@ -93,7 +93,7 @@ Item {
         enabled: refboxSwitch.checked;
         spacing: 8;
         GroupBox{
-            title:"Control Command";
+            title:qsTr("Control Command") + translator.emptyString;
             width : parent.width;
             Grid{
                 width:parent.width;
@@ -103,35 +103,35 @@ Item {
                 Button{
                     property int index : Client.RefBoxCommand.HALT;
                     width:parent.buttonWidth;
-                    text:qsTr("Halt");
+                    text:qsTr("Halt") + translator.emptyString;
                     onClicked:getButtonsCommand(index);
                     enabled: haltGame;
                 }
                 Button{
                     property int index : Client.RefBoxCommand.STOP_GAME;
                     width:parent.buttonWidth;
-                    text:qsTr("Stop Game");
+                    text:qsTr("Stop Game") + translator.emptyString;
                     onClicked:getButtonsCommand(index);
                     enabled: stopGame;
                 }
                 Button{
                     property int index : Client.RefBoxCommand.FORCE_START;
                     width:parent.buttonWidth;
-                    text:qsTr("Force Start");
+                    text:qsTr("Force Start") + translator.emptyString;
                     onClicked:getButtonsCommand(index);
                     enabled: forceStart;
                 }
                 Button{
                     property int index : Client.RefBoxCommand.NORMAL_START;
                     width:parent.buttonWidth;
-                    text:qsTr("Normal Start");
+                    text:qsTr("Normal Start") + translator.emptyString;
                     onClicked:getButtonsCommand(index);
                     enabled: normalStart;
                 }
             }
         }
         GroupBox{
-            title:qsTr("Yellow Team Control");
+            title:qsTr("Yellow Team Control") + translator.emptyString;
             width : parent.width;
             enabled: teamControl;
             Grid{
@@ -147,26 +147,26 @@ Item {
                     Button{
                         property int index : Client.RefBoxCommand.KICKOFF_YELLOW;
                         width:parent.buttonWidth;
-                        text:qsTr("Kick off");
+                        text:qsTr("Kick off") + translator.emptyString;
                         onClicked:getButtonsCommand(index);
                     }
                     Button{
                         property int index : Client.RefBoxCommand.PENALTY_YELLOW;
                         width:parent.buttonWidth;
-                        text:qsTr("Penalty");
+                        text:qsTr("Penalty") + translator.emptyString;
                         onClicked:getButtonsCommand(index);
                     }
                 }
                 Button{
                     property int index : Client.RefBoxCommand.DIRECT_KICK_YELLOW;
                     width:parent.buttonWidth;
-                    text:qsTr("Direct Free Kick");
+                    text:qsTr("Direct Free Kick") + translator.emptyString;
                     onClicked:getButtonsCommand(index);
                 }
                 Button{
                     property int index : Client.RefBoxCommand.INDIRECT_KICK_YELLOW;
                     width:parent.buttonWidth;
-                    text:qsTr("Indirect Free Kick");
+                    text:qsTr("Indirect Free Kick") + translator.emptyString;
                     onClicked:getButtonsCommand(index);
                 }
                 Grid{
@@ -177,14 +177,14 @@ Item {
                     Button{
                         property int index : Client.RefBoxCommand.TIMEOUT_YELLOW;
                         width:parent.buttonWidth;
-                        text:qsTr("Timeout");
+                        text:qsTr("Timeout") + translator.emptyString;
                         onClicked:getButtonsCommand(index);
                     }
                 }
             }
         }
         GroupBox{
-            title:qsTr("Blue Team Control");
+            title:qsTr("Blue Team Control") + translator.emptyString;
             width : parent.width;
             enabled: teamControl;
             Grid{
@@ -200,26 +200,26 @@ Item {
                     Button{
                         property int index : Client.RefBoxCommand.KICKOFF_BLUE;
                         width:parent.buttonWidth;
-                        text:qsTr("Kick off");
+                        text:qsTr("Kick off") + translator.emptyString;
                         onClicked:getButtonsCommand(index);
                     }
                     Button{
                         property int index : Client.RefBoxCommand.PENALTY_BLUE;
                         width:parent.buttonWidth;
-                        text:qsTr("Penalty");
+                        text:qsTr("Penalty") + translator.emptyString;
                         onClicked:getButtonsCommand(index);
                     }
                 }
                 Button{
                     property int index : Client.RefBoxCommand.DIRECT_KICK_BLUE;
                     width:parent.buttonWidth;
-                    text:qsTr("Direct Free Kick");
+                    text:qsTr("Direct Free Kick") + translator.emptyString;
                     onClicked:getButtonsCommand(index);
                 }
                 Button{
                     property int index : Client.RefBoxCommand.INDIRECT_KICK_BLUE;
                     width:parent.buttonWidth;
-                    text:qsTr("Indirect Free Kick");
+                    text:qsTr("Indirect Free Kick") + translator.emptyString;
                     onClicked:getButtonsCommand(index);
                 }
                 Grid{
@@ -230,7 +230,7 @@ Item {
                     Button{
                         property int index : Client.RefBoxCommand.TIMEOUT_BLUE;
                         width:parent.buttonWidth;
-                        text:qsTr("Timeout");
+                        text:qsTr("Timeout") + translator.emptyString;
                         onClicked:getButtonsCommand(index);
                     }
                 }
