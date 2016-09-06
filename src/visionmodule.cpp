@@ -42,8 +42,7 @@ void CVisionModule::parse(void * ptr,int size){
             if(_cycle > 32766)
                 _cycle = 1;
             transmit.setCycle(followCheckCycle, _cycle++);
-            Field::instance()->draw(true,false,false);
-//            doTransmit();
+            Field::instance()->draw(true,false,true);
             sendSmsg();
             std::fill_n(cameraUpdate,PARAM::CAMERA,false);
         }
@@ -52,8 +51,6 @@ void CVisionModule::parse(void * ptr,int size){
 
 CVisionModule::CVisionModule(QObject *parent)
     : QObject(parent)
-    , sendAddresses(0)
-    , sendPorts(0)
     , cameraMode(FourCamera)
     , followCheckCycle(10)
     , m_sendFalse(false)
@@ -69,20 +66,20 @@ CVisionModule::CVisionModule(QObject *parent)
     int port = SingleParams::instance()->_("vision.port");
     groupAddress = QString(addressStr.c_str());
     udpSocket = new QUdpSocket();
-    udpSocket->bind(QHostAddress::AnyIPv4, port, QUdpSocket::ShareAddress);
-    udpSocket->joinMulticastGroup(groupAddress);
-    connect(udpSocket, SIGNAL(readyRead()), this, SLOT(output()));
 
     //
     sendUdp = new QUdpSocket();
     sendUdp->bind(QHostAddress::AnyIPv4, port+1, QUdpSocket::ShareAddress);
 
-    json sendArray = SingleParams::instance()->_("vision.send");
-    for(auto& a : sendArray){
-        std::string address = a["address"];
-        sendAddresses.push_back(QHostAddress(QString(address.c_str())));
-        sendPorts.push_back(a["port"]);
-    }
+//    json sendArray = SingleParams::instance()->_("vision.send");
+//    for(auto& a : sendArray){
+//        std::string address = a["address"];
+//        sendAddresses.push_back(QHostAddress(QString(address.c_str())));
+//        sendPorts.push_back(a["port"]);
+//    }
+    sendPort = SingleParams::instance()->_("vision.send.port");
+    std::string str = SingleParams::instance()->_("vision.send.address");
+    sendAddress = QString(str.c_str());
 }
 void CVisionModule::output(){
     while (udpSocket->hasPendingDatagrams()) {
@@ -205,10 +202,13 @@ void CVisionModule::send(){
 void CVisionModule::sendSmsg(){
     transmit_msg = transmit.smsgUpdate(cameraMode,minAddFrame, minLostFrame,maxVehicleDist + distorterr,m_sendFalse);
     GlobalData::instance()->msg.push(transmit_msg);
-    for(int i = 0; i < QNetworkInterface::allInterfaces().length(); ++i){
-        for(int j = 0;j <sendAddresses.size(); j++){
-            sendUdp->setMulticastInterface(QNetworkInterface::allInterfaces()[i]);
-            sendUdp->writeDatagram((char*)&transmit_msg,sizeof(transmit_msg),sendAddresses[j], sendPorts[j]);
-        }
-    }
+    sendUdp->writeDatagram((char*)&transmit_msg,sizeof(transmit_msg),sendAddress, sendPort);
+}
+void CVisionModule::start(quint16 interface,const QString& address,quint16 port){
+    udpSocket->bind(QHostAddress::AnyIPv4, port, QUdpSocket::ShareAddress);
+    udpSocket->joinMulticastGroup(QHostAddress(address),QNetworkInterface::allInterfaces()[interface]);
+    connect(udpSocket, SIGNAL(readyRead()), this, SLOT(output()));
+}
+void CVisionModule::stop(){
+    udpSocket->close();
 }

@@ -40,15 +40,14 @@ Field::Field(QQuickItem *parent)
 //                        SingleParams::instance()->_("canvas.width"),
 //                        SingleParams::instance()->_("canvas.height"))))
     , cameraMode(FourCamera)
-    , pixmap(nullptr){
+    , pixmap(nullptr)
+    , pen(Qt::white,1){
     if(nullptr == single){
         single = this;
     }else{
         qDebug() << "Error declaration of not-only-one Field";
     }
     changeMode(cameraMode);
-    pixmap->fill(COLOR_DARKGREEN);
-    imagePainter.strokePath(painterPath, QPen(Qt::white, 1));
 }
 void Field::initField(){
     if (pixmap == nullptr){
@@ -70,6 +69,7 @@ void Field::paint(QPainter* painter){
 }
 void Field::changeMode(bool ifBig){
     std::string prefix = ifBig ? "bigField" : "smallField";
+    pen.setWidth(ifBig ? 3 : 2);
     totalHeight           = SingleParams::instance()->_(prefix+".canvas.height");
     totalWidth            = SingleParams::instance()->_(prefix+".canvas.width");
     width                 = SingleParams::instance()->_(prefix+".field.width");
@@ -83,13 +83,13 @@ void Field::changeMode(bool ifBig){
     initField();
     area = QRect(0,0,this->property("width").toReal(),this->property("height").toReal());
     pixmap->fill(COLOR_DARKGREEN);
-    imagePainter.strokePath(painterPath, QPen(Qt::white, 1));
+    imagePainter.strokePath(painterPath, pen);
     this->update(area);
 }
 void Field::draw(bool robot,bool ball,bool style){
     static QRect area(0,0,this->property("width").toReal(),this->property("height").toReal());
     pixmap->fill(COLOR_DARKGREEN);
-    imagePainter.strokePath(painterPath, QPen(Qt::white, 1));
+    imagePainter.strokePath(painterPath, pen);
 
     for (int i=-1;i>-40;i-=1)
         style ? drawOneFrame(i,ball,false) : drawPoint(i,ball,true);

@@ -24,6 +24,12 @@ public:
     void mix();
     void send();
     void sendSmsg();
+    void start(quint16 interface,const QString& address,quint16 port);
+    void changeSenderSetting(const QString& address,quint16 port){
+        sendAddress = address;
+        sendPort = port;
+    }
+    void stop();
 public slots:
     void updateVisionControl(bool);
 signals:
@@ -59,8 +65,8 @@ private:
     float maxVehicleDist;//speed*1000/60
     float distorterr;//25
 private:
-    QVector<QHostAddress> sendAddresses;
-    QVector<quint16> sendPorts;
+    QHostAddress sendAddress;
+    quint16 sendPort;
     QUdpSocket *sendUdp;
 };
 typedef Singleton<CVisionModule> VisionModule;

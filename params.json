@@ -48,14 +48,10 @@
         "minLostFrame":20,
         "ballMaxSpeed":1000,
         "robotMaxSpeed":700,
-        "send":[{
+        "send":{
             "address":"127.0.0.1",
             "port":12345
-            },{
-            "address":"127.0.0.1",
-            "port":54321
-            }
-        ]
+        }
     },
     "referee":{
         "address":"224.5.23.1",

@@ -33,6 +33,7 @@ private:
     QPixmap *pixmap;
     QPainter imagePainter;
     QPainterPath painterPath;
+    QPen pen;
     int width;
     int height;
     int goalWidth;

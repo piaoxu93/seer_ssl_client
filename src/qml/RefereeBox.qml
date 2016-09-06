@@ -1,6 +1,7 @@
 import QtQuick 2.6
 import QtQuick.Layouts 1.3
-import QtQuick.Controls 1.5
+import QtQuick.Controls 1.4
+import QtQuick.Controls.Styles 1.4
 import Client.Component 1.0 as Client
 Item {
     Client.RefereeBox { id : refereeBox; }
@@ -73,25 +74,109 @@ Item {
             break;
         }
     }
-    CheckBox{
-        id:refboxSwitch;
-        text:qsTr("Use Referee Box") + translator.emptyString;
-        anchors.top: parent.top;
-        anchors.topMargin: 10;
-        anchors.left: parent.left;
-        anchors.leftMargin: 10;
-        onClicked: {
-            checked ? refBoxTimer.start() : refBoxTimer.stop();
+
+//    CheckBox{
+//        id:refboxSwitch;
+//        style: CheckBoxStyle {
+//                  indicator: Rectangle {
+//                          implicitWidth: 16
+//                          implicitHeight: 16
+//                          radius: 3
+//                          border.color: control.activeFocus ? "darkblue" : "gray"
+//                          border.width: 1
+//                          Rectangle {
+//                              visible: control.checked
+//                              color: "#555"
+//                              border.color: "#333"
+//                              radius: 1
+//                              anchors.margins: 4
+//                              anchors.fill: parent
+//                          }
+//                  }
+//              }
+
+//        text:qsTr("Use Referee Box") + translator.emptyString;
+//        anchors.top: parent.top;
+//        anchors.topMargin: 10;
+//        anchors.left: parent.left;
+//        anchors.leftMargin: 10;
+//        onClicked: {
+//            checked ? refBoxTimer.start() : refBoxTimer.stop();
+//        }
+//    }
+    ColumnLayout{
+        id : refereeSetting;
+        width:parent.width*0.95;
+        anchors.top:parent.top;
+        anchors.horizontalCenter: parent.horizontalCenter;
+        anchors.margins: 10;
+        GroupBox{
+            width:parent.width;
+            title:qsTr("Referee Setting")+translator.emptyString;
+            anchors.horizontalCenter: parent.horizontalCenter;
+            property bool visionGetter : false;
+            Grid{
+                id:refereeInputs;
+                columns: 2;
+                columnSpacing: 20;
+                rowSpacing: 5;
+                anchors.horizontalCenter: parent.horizontalCenter;
+                verticalItemAlignment: Grid.AlignVCenter;
+                horizontalItemAlignment: Grid.AlignLeft;
+                width:parent.width;
+                Text{
+                    id:refereeSettingText;
+                    text:qsTr("Address")+translator.emptyString;
+                }
+                TextField{
+                    id:address;
+                    text:interaction.getDefaultRefereeAddress();
+                    width:parent.width - refereeSettingText.width - parent.columnSpacing;
+                }
+                Text{
+                    text:qsTr("Port")+translator.emptyString;
+                }
+                TextField{
+                    id:port;
+                    text:interaction.getDefaultRefereePort();
+                    width:parent.width - refereeSettingText.width - parent.columnSpacing;
+                }
+            }
+            Button{
+                id:refBoxSwitch;
+                text:(refBoxSwitch.refereeSwitch ? qsTr("Stop") : qsTr("Send")) + translator.emptyString;
+                width:refereeInputs.width;
+                anchors.top: refereeInputs.bottom;
+                anchors.topMargin: 10;
+                anchors.horizontalCenter: parent.horizontalCenter;
+                property bool refereeSwitch: false;
+                onClicked: changeState();
+                function changeState(){
+                    refBoxSwitch.refereeSwitch = !refBoxSwitch.refereeSwitch;
+                    run();
+                }
+                function run(){
+                    if(refBoxSwitch.refereeSwitch){
+                        refereeInputs.enabled = false;
+                        refereeBox.changeSetting(address.text,parseInt(port.text));
+                        refBoxTimer.start();
+                    }else{
+                        refBoxTimer.stop();
+                        refereeInputs.enabled = true;
+                    }
+                }
+                Component.onCompleted: run();
+            }
         }
     }
     ColumnLayout {
         id : control;
         width:parent.width*0.95;
-        anchors.top:refboxSwitch.bottom;
+        anchors.top:refereeSetting.bottom;
         anchors.horizontalCenter: parent.horizontalCenter;
         anchors.margins: 10;
-        enabled: refboxSwitch.checked;
         spacing: 8;
+        enabled: refBoxSwitch.refereeSwitch;
         GroupBox{
             title:qsTr("Control Command") + translator.emptyString;
             width : parent.width;

@@ -1,5 +1,4 @@
 import QtQuick 2.6
-import QtQuick.Layouts 1.3
 import QtQuick.Controls 1.5
 import QtQuick.Controls.Styles 1.4
 import Client.Component 1.0 as Client
@@ -13,6 +12,18 @@ ApplicationWindow{
     maximumWidth: width;
     color:"#FFFFFF";
     id:window;
+
+    menuBar: MenuBar {
+        Menu {
+            title: "Help"
+            MenuItem { text: "" }
+        }
+        Menu {
+            title: "About"
+            MenuItem { text: "" }
+        }
+    }
+
     Client.CommandParser{ id: commandParser; }
     Client.Serial { id : serial; }
     Client.Interaction{ id : interaction; }
@@ -57,6 +68,11 @@ ApplicationWindow{
             Text{
                 id : mousePos;
                 text : "";
+                x:10;
+                y:5;
+                color:"white";
+                font.pointSize: 12;
+                font.weight:  Font.Bold;
             }
         }
         TabView{
@@ -89,11 +105,12 @@ ApplicationWindow{
                     color : "lightgrey";
                     GroupBox{
                         id : crazyListRectangle;
-                        width: parent.width*0.9;
+                        width: parent.width - 15;
                         anchors.horizontalCenter: parent.horizontalCenter;
-                        height: 235;
+                        height: 245;
                         anchors.top: parent.top;
                         anchors.margins: 10;
+                        title :qsTr("Sender Setting") + translator.emptyString;
                         ListView{
                             id : crazyListView;
                             delegate:crazyComponent;
@@ -112,7 +129,7 @@ ApplicationWindow{
                     }
                     Button{
                         id : crazyConnect;
-                        text: qsTr("Connect") + translator.emptyString;
+                        text : (ifConnected ? qsTr("Disconnect") : qsTr("Connect")) + translator.emptyString;
                         property bool ifConnected:false;
                         anchors.top: crazyListRectangle.bottom;
                         anchors.right: parent.right;
@@ -128,10 +145,11 @@ ApplicationWindow{
                                 serial.sendStartPacket();
                             }
                             ifConnected = !ifConnected;
-                            text = (ifConnected ? qsTr("Disconnect") : qsTr("Connect")) + translator.emptyString;
                         }
                     }
                     GroupBox{
+                        title : qsTr("Manual Control") + translator.emptyString;
+                        width:parent.width - 15;
                         anchors.top:crazyConnect.bottom;
                         anchors.horizontalCenter: parent.horizontalCenter;
                         anchors.margins: 20;
@@ -142,9 +160,9 @@ ApplicationWindow{
                         rows:5;
                         verticalItemAlignment: Grid.AlignVCenter;
                         horizontalItemAlignment: Grid.AlignLeft;
+                        anchors.horizontalCenter: parent.horizontalCenter;
                         columnSpacing: 10;
                         rowSpacing: 5;
-                        focus: true;
                         property int m_VEL : 255
                         property int m_VELR : 1023
                         property int velX : 0;
@@ -327,44 +345,140 @@ ApplicationWindow{
                     anchors.top: parent.top;
                     anchors.topMargin: 10;
                     color : "lightgrey";
-                    Column{
+                    GroupBox{
+                        id : visionAddress;
+                        width:parent.width*0.9;
+                        title:qsTr("Receiver Setting")+translator.emptyString;
                         anchors.horizontalCenter: parent.horizontalCenter;
+                        property bool visionGetter : false;
                         Grid{
-                            id : controlGrid;
-                            columns:3;
+                            id:inputFields;
+                            width:parent.width;
+                            columns: 2;
                             columnSpacing: 20;
                             rowSpacing: 5;
-                            Text{ text:qsTr("Small") + translator.emptyString; }
-                            Switch{
-                                id:fieldOption;
-                                style: SwitchStyle {
-                                    groove: Rectangle {
-                                         implicitWidth: 100
-                                         implicitHeight: 20
-                                         color:"black";
-                                         border.width: 1
-                                    }
-                                }
-                                checked: true;
-                                onClicked:{
-                                    fieldCanvas.ifBig = fieldOption.checked;
-                                    interaction.fieldChange(fieldOption.checked);
+                            anchors.horizontalCenter: parent.horizontalCenter;
+                            verticalItemAlignment: Grid.AlignVCenter;
+                            horizontalItemAlignment: Grid.AlignLeft;
+                            Text{
+                                id:inputText;
+                                text:qsTr("Interface")+translator.emptyString;
+                            }
+                            ComboBox{
+                                id:interfaces;
+                                model:interaction.getNetworkInterfaces();width:parent.width - inputText.width - parent.columnSpacing;
+                            }
+                            Text{
+                                text:qsTr("Address")+translator.emptyString;
+                            }
+                            TextField{
+                                id:address;
+                                text:interaction.getDefaultVisionAddress();width:parent.width - inputText.width - parent.columnSpacing;
+                            }
+                            Text{
+                                text:qsTr("Port")+translator.emptyString;
+                            }
+                            TextField{
+                                id:port;
+                                text:interaction.getDefaultVisionPort();width:parent.width - inputText.width - parent.columnSpacing;
+                            }
+                        }
+                    }
+                    GroupBox{
+                        id : visionSender;
+                        width:parent.width*0.90;
+                        title:qsTr("Sender Setting")+translator.emptyString;
+                        anchors.horizontalCenter: parent.horizontalCenter;
+                        anchors.top: visionAddress.bottom;
+                        anchors.topMargin: 5;
+                        Grid{
+                            id:senderInputs;
+                            columns: 2;
+                            columnSpacing: 20;
+                            rowSpacing: 5;
+                            width:parent.width;
+                            anchors.horizontalCenter: parent.horizontalCenter;
+                            verticalItemAlignment: Grid.AlignVCenter;
+                            horizontalItemAlignment: Grid.AlignLeft;
+                            Text{
+                                id : senderInput;
+                                text:qsTr("Address")+translator.emptyString;
+                            }
+                            TextField{
+                                id:senderAddress;
+                                text:interaction.getDefaultVisionSenderAddress();width:parent.width - senderInput.width - parent.columnSpacing;
+                            }
+                            Text{
+                                text:qsTr("Port")+translator.emptyString;
+                            }
+                            TextField{
+                                id:senderPort;
+                                text:interaction.getDefaultVisionSenderPort();width:parent.width - senderInput.width - parent.columnSpacing;
+                            }
+                        }
+                    }
+                    Grid{
+                        id : controlGrid;
+                        anchors.top: visionSender.bottom;
+                        anchors.topMargin: 10;
+                        anchors.horizontalCenter: parent.horizontalCenter;
+                        columns:3;
+                        columnSpacing: 20;
+                        rowSpacing: 5;
+                        Text{ text:qsTr("Small") + translator.emptyString; }
+                        Switch{
+                            id:fieldOption;
+                            style: SwitchStyle {
+                                groove: Rectangle {
+                                     implicitWidth: 120
+                                     implicitHeight: 20
+                                     color:"black";
+                                     border.width: 1
                                 }
                             }
-                            Text{ text:qsTr("Big") + translator.emptyString; }
+                            checked: true;
+                            onCheckedChanged: {
+                                fieldCanvas.ifBig = fieldOption.checked;
+                                interaction.fieldChange(fieldOption.checked);
+                            }
                         }
+                        Text{ text:qsTr("Big") + translator.emptyString; }
                     }
-                    function autoSizeForListView(item){
-                        var root = item.visibleChildren[0];
-                        var listViewHeight = 0;
-                        var listViewWidth = 0;
-                        for (var i = 0; i < root.visibleChildren.length; i++) {
-                            listViewHeight += root.visibleChildren[i].height;
-                            listViewWidth  = Math.max(listViewWidth, root.visibleChildren[i].width);
+                    Button{
+                        id:getterButton;
+                        text:(visionAddress.visionGetter ? qsTr("Stop") : qsTr("Start")) + translator.emptyString;
+                        width:visionSender.width;
+                        anchors.top: controlGrid.bottom;
+                        anchors.topMargin: 20;
+                        anchors.horizontalCenter: parent.horizontalCenter;
+                        onClicked: changeGetterState();
+                        function changeGetterState(){
+                            visionAddress.visionGetter = !visionAddress.visionGetter;
+                            run();
                         }
-                        item.height = listViewHeight;
-                        item.width = listViewWidth;
+                        function run(){
+                            if(visionAddress.visionGetter){
+                                visionAddress.enabled = visionSender.enabled = false;
+                                interaction.startVision(interfaces.currentIndex,address.text,parseInt(port.text),senderAddress.text,parseInt(senderPort.text));
+                            }else{
+                                visionAddress.enabled = visionSender.enabled = true;
+                                interaction.stopVision();
+                            }
+                        }
+                        Component.onCompleted: run();
                     }
+
+//                    function autoSizeForListView(item){
+//                        var root = item.visibleChildren[0];
+//                        var listViewHeight = 0;
+//                        var listViewWidth = 0;
+//                        for (var i = 0; i < root.visibleChildren.length; i++) {
+//                            listViewHeight += root.visibleChildren[i].height;
+//                            listViewWidth  = Math.max(listViewWidth, root.visibleChildren[i].width);
+//                        }
+//                        item.height = listViewHeight;
+//                        item.width = listViewWidth;
+//                    }
                 }
             }
         }
@@ -419,8 +533,7 @@ ApplicationWindow{
             label: Text {
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
-                font.pointSize: 20
-                color: "blue"
+                font.pointSize: 16
                 text:language.text;
             }
             background: Rectangle {
@@ -430,9 +543,17 @@ ApplicationWindow{
         }
         onClicked: switchLanguage();
         function switchLanguage(){
+            var en,zh;
+            if(Qt.platform.os == "osx"){
+                en = "🇬🇧";
+                zh = "🇨🇳";
+            }else{
+                en = "EN";
+                zh = "ZH"
+            }
             language.ifEnglish = !language.ifEnglish;
             translator.selectLanguage(language.ifEnglish ? "en" : "zh");
-            language.text = language.ifEnglish ? "🇬🇧" : "🇨🇳";
+            language.text = language.ifEnglish ? en : zh;
         }
         Component.onCompleted: {
             language.switchLanguage();

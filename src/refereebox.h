@@ -89,6 +89,10 @@ public:
     ~RefereeBox();
     Q_INVOKABLE void changeCommand(int command);
     Q_INVOKABLE void multicastCommand();
+    Q_INVOKABLE void changeSetting(const QString& address,quint16 port){
+        this->groupAddress = address;
+        this->port = port;
+    }
 signals:
 
 public slots:
