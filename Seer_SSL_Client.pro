@@ -11,10 +11,10 @@ RESOURCES += qml.qrc
 win32 {
     PROTOBUF_INCLUDE_DIR = D:\workspace\yys\include
     debug {
-        LIBPROTOBUF_DEBUG = D:\workspace\yys\lib\debug\libprotobuf.lib
+        LIBPROTOBUF_DEBUG = D:\workspace\yys\lib\debug\x86\libprotobuf.lib
     }
     release {
-        LIBPROTOBUF_RELEASE = D:\workspace\yys\lib\release\libprotobuf.lib
+        LIBPROTOBUF_RELEASE = D:\workspace\yys\lib\release\x86\libprotobuf.lib
     }
 }
 
@@ -123,6 +123,8 @@ win32 {
         LIBS += $$LIBPROTOBUF_RELEASE
     }
     INCLUDEPATH += $$PROTOBUF_INCLUDE_DIR
+    INCLUDEPATH += "C:/Program Files (x86)/Windows Kits/10/Include/10.0.10240.0/ucrt"
+    LIBS += -L"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.10240.0/ucrt/x86"
     system(lrelease t1_zh.ts)
     copyToDestdir($$PWD/params.json $$PWD/t1_zh.qm)
 }
@@ -148,3 +150,19 @@ macx {
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
+
+#A fix is to patch the file C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\vcvarsqueryregistry.bat as follows:
+#--- vcvarsqueryregistry.bat     Thu Mar 17 22:24:58 2016
+#+++ vcvarsqueryregistry.bat     Thu May 05 12:48:58 2016
+#@@ -351,7 +351,10 @@
+# @setlocal enableDelayedExpansion
+# @for /f %%i IN ('dir "%UniversalCRTSdkDir%include\" /b /ad-h /on') DO (
+#     @set result=%%i
+#-    @if "!result:~0,3!"=="10." set CRT=!result!
+#+    @set resultcrt=
+#+    @if "!result:~0,3!"=="10." set resultcrt=!result!
+#+    @if not EXIST "%UniversalCRTSdkDir%include\!result!\ucrt" set resultcrt=
+#+    @if not "!resultcrt!"=="" set CRT=!result!
+#     @if "!result!"=="%user_inputversion%" set match=1
+# )
+# @if not "%match%"=="" set CRT=%user_inputversion%
