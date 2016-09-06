@@ -19,21 +19,22 @@ void CVisionModule::parse(void * ptr,int size){
     SSL_WrapperPacket packet;
     packet.ParseFromArray(ptr,size);
     if (packet.has_detection()) {
-        detection = packet.detection();
-        setNewCameraID(detection.camera_id());
-        int balls_n = detection.balls_size();
-        int robots_blue_n =  detection.robots_blue_size();
-        int robots_yellow_n =  detection.robots_yellow_size();
+        int id = packet.detection().camera_id();
+        setNewCameraID(id);
+        detections[id] = packet.detection();
+        int balls_n = detections[id].balls_size();
+        int robots_blue_n =  detections[id].robots_blue_size();
+        int robots_yellow_n =  detections[id].robots_yellow_size();
         for (int i = 0; i < balls_n; i++) {
-            SSL_DetectionBall ball = detection.balls(i);
+            SSL_DetectionBall ball = detections[id].balls(i);
             GlobalData::instance()->setBall(newCameraID, i, ball.x(),ball.y(),ball.confidence());
         }
         for (int i = 0; i < robots_blue_n; i++) {
-            SSL_DetectionRobot robot = detection.robots_blue(i);
+            SSL_DetectionRobot robot = detections[id].robots_blue(i);
                 GlobalData::instance()->setBlueRobot(newCameraID, i,robot.robot_id(),robot.x(),robot.y(),robot.orientation(),robot.confidence());
         }
         for (int i = 0; i < robots_yellow_n; i++) {
-            SSL_DetectionRobot robot = detection.robots_yellow(i);
+            SSL_DetectionRobot robot = detections[id].robots_yellow(i);
             GlobalData::instance()->setYellowRobot(newCameraID, i,robot.robot_id(),robot.x(),robot.y(),robot.orientation(),robot.confidence());
         }
         if (collectNewVision()) {

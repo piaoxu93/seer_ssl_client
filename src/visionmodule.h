@@ -52,7 +52,7 @@ private:
     void setNewCameraID(int id);
 
     SendVisionMessage  transmit_msg;
-    SSL_DetectionFrame detection;
+    SSL_DetectionFrame detections[PARAM::CAMERA];
     int newCameraID;
     int _cycle;
     CAMERAMODE cameraMode;
