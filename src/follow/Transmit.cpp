@@ -6,14 +6,13 @@
 #include <string>
 #include <iostream>
 #include <stdio.h>
-
+#include <QtDebug>
 using namespace std;
 namespace{
 	int sortCount = 0;
 }
 
-Transmit::Transmit()
-{
+Transmit::Transmit(){
 	initRmsgArray();
 
     for (int i=0;i<GlobalData::instance()->cameraNum/2;i++)
@@ -30,12 +29,8 @@ Transmit::Transmit()
 	}
 	_lastCameraMixer=TwoCameraMixer(MaxNumOfCamera,MaxNumOfCamera+1);
 }
-
-Transmit::~Transmit()
-{
-
+Transmit::~Transmit(){
 }
-
 void Transmit::setFirstStart()
 { 
     GlobalData::instance()->firstStart = true;
@@ -83,21 +78,24 @@ void Transmit::initRmsgArray()
 
 SendVisionMessage Transmit::smsgUpdate(int cameraMode,int minAddFrame, int minLostFrame,float maxdist,bool isFalseSend)
 {
-	usortCounter();
+    usortCounter();
 	int startNum=0;
 	if (cameraMode==TwoCamDown||cameraMode==SingleCamLeftDown||cameraMode==SingleCamRightDown)
 		startNum=1;
 
     for (int i=startNum;i<GlobalData::instance()->cameraNum/2+startNum;i++)
-	{
+    {
         _cameraMixer[i].mixAlgorithm(cameraMode,minAddFrame,minLostFrame,maxdist,isFalseSend);
         GlobalData::instance()->changeSmsgToRmsg(i+MaxNumOfCamera);
-	}
-
+    }
 	if (cameraMode==FourCamera)
 	{
 		_lastCameraMixer.mixAlgorithm(cameraMode,minAddFrame,minLostFrame,maxdist,isFalseSend);
 	}
+
 	initRmsgArray();
     return GlobalData::instance()->smsg;
 }
+//void Transmit::process() {
+//    emit finished();
+//}

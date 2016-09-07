@@ -43,7 +43,7 @@ void CVisionModule::parse(void * ptr,int size){
             if(_cycle > 32766)
                 _cycle = 1;
             transmit.setCycle(followCheckCycle, _cycle++);
-            Field::instance()->draw(true,false,true);
+            emit needDraw(true,false,true);
             sendSmsg();
             std::fill_n(cameraUpdate,PARAM::CAMERA,false);
         }
@@ -56,6 +56,8 @@ CVisionModule::CVisionModule(QObject *parent)
     , followCheckCycle(10)
     , m_sendFalse(false)
     , distorterr(25)
+    , interface(0)
+    , ifPause(false)
     , maxBallDist(int(SingleParams::instance()->_("vision.ballMaxSpeed"))*10/PARAM::FOLLOW::FRAMERATE)
     , maxVehicleDist(int(SingleParams::instance()->_("vision.robotMaxSpeed"))*10/PARAM::FOLLOW::FRAMERATE){
     std::fill_n(cameraUpdate,PARAM::CAMERA,false);
@@ -64,12 +66,10 @@ CVisionModule::CVisionModule(QObject *parent)
     minLostFrame = SingleParams::instance()->_("vision.minLostFrame");
 
     std::string addressStr = SingleParams::instance()->_("vision.address");
-    int port = SingleParams::instance()->_("vision.port");
+    port = SingleParams::instance()->_("vision.port");
     groupAddress = QString(addressStr.c_str());
-    udpSocket = new QUdpSocket();
 
-    //
-    sendUdp = new QUdpSocket();
+    sendUdp = new QUdpSocket;
     sendUdp->bind(QHostAddress::AnyIPv4, port+1, QUdpSocket::ShareAddress);
 
 //    json sendArray = SingleParams::instance()->_("vision.send");
@@ -81,25 +81,22 @@ CVisionModule::CVisionModule(QObject *parent)
     sendPort = SingleParams::instance()->_("vision.send.port");
     std::string str = SingleParams::instance()->_("vision.send.address");
     sendAddress = QString(str.c_str());
+
+    udpSocket = new QUdpSocket;
 }
-void CVisionModule::output(){
-    while (udpSocket->hasPendingDatagrams()) {
-        QByteArray datagram;
-        datagram.resize(udpSocket->pendingDatagramSize());
-        udpSocket->readDatagram(datagram.data(), datagram.size());
-        parse((void*)datagram.data(),datagram.size());
-//        parseAndStoreVisionData((void *)datagram.data(),datagram.size(),currentVision);
-//        GlobalData::instance()->camera[currentVision.camID].push(currentVision);
-//        cameraUpdate[currentVision.camID] = true;
-//        if (collectNewVision()){
-//            ballFollow.startFollowDouble( ballAddFrame, ballLostFrame, ballMaxSpeed*10/PARAM::FOLLOW::FRAMERATE);
-//            blueFollow.startFollowDouble( robotAddFrame, robotLostFrame, robotMaxSpeed*10/PARAM::FOLLOW::FRAMERATE);
-//            yellowFollow.startFollowDouble( robotAddFrame, robotLostFrame, robotMaxSpeed*10/PARAM::FOLLOW::FRAMERATE);
-//            //mix();
-//            //send();
-//            sendSmsg();
-//            Field::instance()->draw();
-//        }
+void CVisionModule::process(){
+    QByteArray datagram;
+    while(true){
+        sync.lock();
+//        qDebug() << "ifPause : " << ifPause;
+        if(ifPause)
+            pauseCond.wait(&sync); // in this place, your thread will stop to execute until someone calls resume
+        sync.unlock();
+        if (udpSocket->hasPendingDatagrams()) {
+            datagram.resize(udpSocket->pendingDatagramSize());
+            udpSocket->readDatagram(datagram.data(), datagram.size());
+            parse((void*)datagram.data(),datagram.size());
+        }
     }
 }
 bool CVisionModule::collectNewVision() {
@@ -205,11 +202,18 @@ void CVisionModule::sendSmsg(){
     GlobalData::instance()->msg.push(transmit_msg);
     sendUdp->writeDatagram((char*)&transmit_msg,sizeof(transmit_msg),sendAddress, sendPort);
 }
-void CVisionModule::start(quint16 interface,const QString& address,quint16 port){
+void CVisionModule::changeReceiverSetting(quint16 interface,const QString& address,quint16 port){
+
+    this->interface = interface;
+    this->groupAddress = address;
+    this->port = port;
     udpSocket->bind(QHostAddress::AnyIPv4, port, QUdpSocket::ShareAddress);
-    udpSocket->joinMulticastGroup(QHostAddress(address),QNetworkInterface::allInterfaces()[interface]);
-    connect(udpSocket, SIGNAL(readyRead()), this, SLOT(output()));
+    udpSocket->joinMulticastGroup(QHostAddress(groupAddress),QNetworkInterface::allInterfaces()[interface]);
 }
-void CVisionModule::stop(){
-    udpSocket->close();
+void CVisionModule::changeSenderSetting(const QString& address,quint16 port){
+    sendAddress = address;
+    sendPort = port;
+}
+void CVisionModule::abortSetting(){
+    udpSocket->abort();
 }

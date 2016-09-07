@@ -7,6 +7,7 @@
 #include <QElapsedTimer>
 #include "singleparams.h"
 #include "./follow/GlobalData.h"
+#include "visionmodule.h"
 Field *Field::single = nullptr;
 namespace{
     const static QColor COLOR_BLUE(19,49,137);
@@ -32,13 +33,6 @@ static void initPainterPath(QPainterPath& painterPath);
 static void addQuarterCirclePath(QPainterPath& painterPath,qreal x,qreal y,qreal radius,qreal angel);
 Field::Field(QQuickItem *parent)
     : QQuickPaintedItem(parent)
-//    ,image(QImage(QSize(
-//                      SingleParams::instance()->_("canvas.width"),
-//                      SingleParams::instance()->_("canvas.height"))
-//                  , QImage::Format_ARGB32))
-//    ,pixmap(QPixmap(QSize(
-//                        SingleParams::instance()->_("canvas.width"),
-//                        SingleParams::instance()->_("canvas.height"))))
     , cameraMode(FourCamera)
     , pixmap(nullptr)
     , pen(Qt::white,1){
@@ -47,6 +41,7 @@ Field::Field(QQuickItem *parent)
     }else{
         qDebug() << "Error declaration of not-only-one Field";
     }
+    connect(VisionModule::instance(),SIGNAL(needDraw(bool,bool,bool)),this,SLOT(draw(bool,bool,bool)));
     changeMode(cameraMode);
 }
 void Field::initField(){

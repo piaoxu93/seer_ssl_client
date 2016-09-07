@@ -4,7 +4,7 @@ import QtQuick.Controls.Styles 1.4
 import Client.Component 1.0 as Client
 ApplicationWindow{
     visible:true;
-    width:1350;
+    width:1450;
     height:700;
     minimumHeight: height;
     minimumWidth: width;
@@ -345,7 +345,9 @@ ApplicationWindow{
                     anchors.top: parent.top;
                     anchors.topMargin: 10;
                     color : "lightgrey";
+                    property bool en : true;
                     GroupBox{
+                        enabled: parent.en;
                         id : visionAddress;
                         width:parent.width*0.9;
                         title:qsTr("Receiver Setting")+translator.emptyString;
@@ -385,6 +387,7 @@ ApplicationWindow{
                         }
                     }
                     GroupBox{
+                        enabled: parent.en;
                         id : visionSender;
                         width:parent.width*0.90;
                         title:qsTr("Sender Setting")+translator.emptyString;
@@ -418,6 +421,7 @@ ApplicationWindow{
                         }
                     }
                     Grid{
+                        enabled: parent.en;
                         id : controlGrid;
                         anchors.top: visionSender.bottom;
                         anchors.topMargin: 10;
@@ -458,10 +462,10 @@ ApplicationWindow{
                         }
                         function run(){
                             if(visionAddress.visionGetter){
-                                visionAddress.enabled = visionSender.enabled = false;
+                                vision.en =  false;
                                 interaction.startVision(interfaces.currentIndex,address.text,parseInt(port.text),senderAddress.text,parseInt(senderPort.text));
                             }else{
-                                visionAddress.enabled = visionSender.enabled = true;
+                                vision.en = true;
                                 interaction.stopVision();
                             }
                         }

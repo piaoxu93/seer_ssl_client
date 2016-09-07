@@ -4,6 +4,7 @@
 #include "munkres.h"
 #include "math.h"
 #include <iostream>
+#include <QtDebug>
 using namespace std;
 RobotFollow::RobotFollow(void)
 {
@@ -12,7 +13,7 @@ RobotFollow::RobotFollow(void)
 
 RobotFollow::RobotFollow(int side,int cameraid1,int cameraid2)
 {
-	_side = side;
+    _side = side;
 	_camera1=cameraid1;_camera2=cameraid2;
 	initFollowArray();
 	initSmsg();
@@ -109,9 +110,6 @@ void RobotFollow::startFollowSingle(int court, int minAddFrame, int minLostFrame
 
 	Munkres _munkres;
 	_munkres.solve(_matrix);
-	// ????followarray???¹???????????һ???볡?и??£?---->?????ں?
-	// ????û???¹?---->????????Ϣ????followarray?в???Ϊ????״̬
-	// *Num??ѡ??---->ÿ??followCheckCycle֡???ӽ??ܵĳ????л???
 	for(int row = 0 ; row < MaxFollowNum; row++ ){
 		for ( int col = 0 ; col <ReceiveCarNum; col++ ){
 			if(_matrix(row,col) != INITNUM){
@@ -134,14 +132,13 @@ void RobotFollow::startFollowSingle(int court, int minAddFrame, int minLostFrame
 void RobotFollow::startFollowDouble(int minAddFrame, int minLostFrame,float maxdist)
 {
 	ReceiveVisionMessage mixedrecMsg;
-	for(int i = 0; i<MaxFollowNum; i++){
+    for(int i = 0; i<MaxFollowNum; i++){
 		mixedrecMsg.RobotFound[_side][i] = false;
 		mixedrecMsg.RobotINDEX[_side][i] = MaxFollowNum;
 		mixedrecMsg.RobotPosX[_side][i] = -ERRORNUM;
 		mixedrecMsg.RobotPosY[_side][i] = -ERRORNUM;
 		mixedrecMsg.RobotRotation[_side][i] = -ERRORNUM;
 	}
-
 	int countNum = 0;
 	for(int leftnum=0;leftnum<MaxFollowNum;leftnum++){
         if(GlobalData::instance()->receiveMsg[_camera1].RobotFound[_side][leftnum]){

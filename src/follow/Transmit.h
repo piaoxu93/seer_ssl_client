@@ -1,6 +1,8 @@
 #ifndef _TRANSMIT_H_
 #define _TRANSMIT_H_
 
+#include <QObject>
+#include <QString>
 #include "message.h"
 #include "BallFollow.h"
 #include "RobotFollow.h"
@@ -10,11 +12,10 @@ typedef unsigned char BYTE;
 const int MixPartNum=2;
 
 
-class Transmit
-{
+class Transmit{
 public:
-	Transmit();
-	~Transmit();
+    Transmit();
+    ~Transmit();
 	void initial();
 	void initSmsg();
 	void setCycle(int, int);

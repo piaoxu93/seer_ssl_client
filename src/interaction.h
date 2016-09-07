@@ -21,6 +21,8 @@ public:
     Q_INVOKABLE quint16 getDefaultRefereePort();
 signals:
     void fieldChange(bool);
+    void visionSettingChanged(quint16 interface,const QString& address,quint16 port,const QString& senderAddress,quint16 senderPort);
+    void abortVision();
 public slots:
 };
 

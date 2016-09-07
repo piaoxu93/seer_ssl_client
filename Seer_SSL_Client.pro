@@ -54,7 +54,9 @@ HEADERS += \
     $$PWD/src/follow/TwoCameraMixer.h \
     $$PWD/src/follow/GlobalData.h \
     $$PWD/src/follow/Transmit.h \
-    $$PWD/src/translation.hpp
+    $$PWD/src/translation.hpp \
+    src/threadmanager.h \
+    src/visionthread.h
 
 SOURCES += \
     $$PWD/src/commandparser.cpp \
@@ -83,7 +85,9 @@ SOURCES += \
     $$PWD/src/follow/matrix.cpp \
     $$PWD/src/follow/TwoCameraMixer.cpp \
     $$PWD/src/follow/GlobalData.cpp \
-    $$PWD/src/follow/Transmit.cpp
+    $$PWD/src/follow/Transmit.cpp \
+    src/threadmanager.cpp \
+    src/visionthread.cpp
 
 TRANSLATIONS = t1_zh.ts
 

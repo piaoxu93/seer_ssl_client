@@ -1,5 +1,5 @@
 #include "TwoCameraMixer.h"
-
+#include "QtDebug"
 TwoCameraMixer::TwoCameraMixer(int cameraId1,int cameraId2)
 {
 	_cameraId1=cameraId1;_cameraId2=cameraId2;
@@ -69,8 +69,8 @@ SendVisionMessage TwoCameraMixer::mixAlgorithm(int cameraMode,int minAddFrame, i
 {
 	switch(cameraMode){
 	case TwoCamUp:  case TwoCamDown:  case FourCamera:
-		followRobotDouble( minAddFrame, minLostFrame, maxdist);
-		followBallDouble( minAddFrame, minLostFrame, maxdist);
+        followRobotDouble( minAddFrame, minLostFrame, maxdist);
+        followBallDouble( minAddFrame, minLostFrame, maxdist);
 		break;
 	case SingleCamLeftUp:
 		followRobotSingle(LeftUp, minAddFrame, minLostFrame, maxdist);

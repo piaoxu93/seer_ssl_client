@@ -5,7 +5,10 @@
 #include <QUdpSocket>
 #include <QHostAddress>
 #include <QVector>
-
+#include <QMutex>
+#include <QWaitCondition>
+#include <QThread>
+#include <QtDebug>
 #include <algorithm>
 #include "singleparams.h"
 #include "params.h"
@@ -24,21 +27,36 @@ public:
     void mix();
     void send();
     void sendSmsg();
-    void start(quint16 interface,const QString& address,quint16 port);
-    void changeSenderSetting(const QString& address,quint16 port){
-        sendAddress = address;
-        sendPort = port;
+    void resume(){
+        sync.lock();
+        ifPause = false;
+        sync.unlock();
+        pauseCond.wakeAll();
     }
-    void stop();
+    void pause(){
+        sync.lock();
+        ifPause = true;
+        sync.unlock();
+    }
 public slots:
     void updateVisionControl(bool);
+    void process();
+    void changeSetting(quint16 interface,const QString& address,quint16 port,const QString& senderAddress,quint16 senderPort){
+        changeReceiverSetting(interface, address, port);
+        changeSenderSetting(senderAddress, senderPort);
+    }
+    void abortSetting();
+public:
+    void changeReceiverSetting(quint16 interface,const QString& address,quint16 port);
+    void changeSenderSetting(const QString&,quint16);
 signals:
-
+    void needDraw(bool,bool,bool);
 private slots:
-    void output();
 private:
     QUdpSocket *udpSocket;
     QHostAddress groupAddress;
+    int interface;
+    int port;
     ReceiveVisionMessage currentVision;
     bool collectNewVision();
     bool cameraUpdate[PARAM::CAMERA];
@@ -68,6 +86,10 @@ private:
     QHostAddress sendAddress;
     quint16 sendPort;
     QUdpSocket *sendUdp;
+private:
+    QMutex sync;
+    QWaitCondition pauseCond;
+    bool ifPause;
 };
 typedef Singleton<CVisionModule> VisionModule;
 #endif // VISIONMODULE_H

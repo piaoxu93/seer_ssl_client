@@ -8,18 +8,18 @@
 #include <QImage>
 #include "./follow/message.h"
 
-class Field : public QQuickPaintedItem
-{
+class Field : public QQuickPaintedItem{
+    Q_OBJECT
 public:
     static Field* instance();
     void paint(QPainter* painter) override;
     Field(QQuickItem *parent = 0);
-    void draw(bool robot = true,bool ball = false,bool style = true);
+    virtual ~Field() {};
     void changeMode(bool);
 signals:
 
 public slots:
-
+    void draw(bool robot = true,bool ball = false,bool style = true);
 private:
     void initField();
     CAMERAMODE cameraMode;

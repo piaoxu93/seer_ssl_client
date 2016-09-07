@@ -1,16 +1,23 @@
-#include "QNetworkInterface"
+#include <QNetworkInterface>
 #include "interaction.h"
 #include "visionmodule.h"
 #include "field.h"
+#include "threadmanager.h"
 Interaction::Interaction(QObject *parent) : QObject(parent) {
-    connect(this,SIGNAL(fieldChange(bool)),VisionModule::instance(),SLOT(updateVisionControl(bool)));
+    connect(this,SIGNAL(fieldChange(bool)),VisionModule::instance(),SLOT(updateVisionControl(bool)),Qt::AutoConnection);
+    //connect(this,SIGNAL(visionSettingChanged(quint16,const QString&,quint16,const QString,quint16))
+    //        ,VisionModule::instance(),SLOT(changeSetting(quint16,const QString&,quint16,const QString&,quint16)),Qt::AutoConnection);
+    //connect(this,SIGNAL(abortVision()),VisionModule::instance(),SLOT(abortSetting()),Qt::AutoConnection);
 }
 void Interaction::startVision(quint16 interface,const QString& address,quint16 port,const QString& senderAddress,quint16 senderPort){
-    VisionModule::instance()->changeSenderSetting(senderAddress,senderPort);
-    VisionModule::instance()->start(interface,address,port);
+    //emit visionSettingChanged(interface,address,port,senderAddress,senderPort);
+    VisionModule::instance()->changeSetting(interface,address,port,senderAddress,senderPort);
+    ThreadManager::instance()->visionThreadStart();
 }
 void Interaction::stopVision(){
-    VisionModule::instance()->stop();
+    ThreadManager::instance()->visionThreadStop();
+    //emit abortVision();
+    VisionModule::instance()->abortSetting();
 }
 QString Interaction::getDefaultVisionAddress(){
     std::string str = SingleParams::instance()->_("vision.address");
