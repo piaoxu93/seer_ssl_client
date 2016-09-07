@@ -1,10 +1,11 @@
 import QtQuick 2.6
-import QtQuick.Controls 1.5
+import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
+import QtQuick.Dialogs 1.2
 import Client.Component 1.0 as Client
 ApplicationWindow{
     visible:true;
-    width:1450;
+    width:1400;
     height:700;
     minimumHeight: height;
     minimumWidth: width;
@@ -15,19 +16,48 @@ ApplicationWindow{
 
     menuBar: MenuBar {
         Menu {
-            title: "Help"
-            MenuItem { text: "" }
+            title: qsTr("Setting")+translator.emptyString;
+            Menu {
+                title: qsTr("Language")+translator.emptyString;
+                MenuItem {
+                    id : en;
+                    text:qsTr("English")+translator.emptyString;
+                    onTriggered: {
+                        en.checked = true;
+                        zh.checked = false;
+                        translator.selectLanguage("en");
+                    }
+                }
+                MenuItem {
+                    id : zh;
+                    text:qsTr("Chinese")+translator.emptyString;
+                    onTriggered: {
+                        en.checked = false;
+                        zh.checked = true;
+                        translator.selectLanguage("zh");
+                    }
+                }
+            }
         }
         Menu {
-            title: "About"
-            MenuItem { text: "" }
+            title: qsTr("Help")+translator.emptyString;
+            MenuItem {
+                text: qsTr("About")+translator.emptyString;
+                onTriggered: aboutDialog.visible = true;
+            }
         }
     }
-
+    MessageDialog {
+          id: aboutDialog;
+          title: "About"
+          text: "It's so cool that you are using Qt Quick."
+          Component.onCompleted: visible = false;
+      }
     Client.CommandParser{ id: commandParser; }
     Client.Serial { id : serial; }
     Client.Interaction{ id : interaction; }
     Client.Translator{ id : translator; }
+
     Timer{
         id:timer;
         interval:15;
@@ -471,7 +501,34 @@ ApplicationWindow{
                         }
                         Component.onCompleted: run();
                     }
-
+                    GroupBox{
+                        anchors.top: getterButton.bottom;
+                        anchors.topMargin: 30;
+                        width: parent.width*0.9;
+                        anchors.horizontalCenter: parent.horizontalCenter;
+                        title:qsTr("Demo")+translator.emptyString;
+                        Grid{
+                            id:demoGrid;
+                            width:parent.width;
+                            columns: 2;
+                            columnSpacing: 5;
+                            rowSpacing: 5;
+                            anchors.horizontalCenter: parent.horizontalCenter;
+                            verticalItemAlignment: Grid.AlignVCenter;
+                            horizontalItemAlignment: Grid.AlignLeft;
+                            property int itemWidth : (width - columnSpacing*(columns-1)) / columns;
+                            Repeater{
+                                model:[qsTr("Demo")+translator.emptyString,qsTr("Demo")+translator.emptyString,
+                                qsTr("Demo")+translator.emptyString,qsTr("Demo")+translator.emptyString,
+                                qsTr("Demo")+translator.emptyString,qsTr("Demo")+translator.emptyString];
+                                Button{
+                                    text:modelData;
+                                    width:demoGrid.itemWidth;
+                                    onClicked: interaction.demoTrigger(index);
+                                }
+                            }
+                        }
+                    }
 //                    function autoSizeForListView(item){
 //                        var root = item.visibleChildren[0];
 //                        var listViewHeight = 0;
@@ -525,45 +582,45 @@ ApplicationWindow{
             }
         }
     }
-    Button{
-        id : language;
-        anchors.bottom: parent.bottom;
-        anchors.right: parent.right;
-        property bool ifEnglish : true;
-        width:30;
-        height:20;
-        text:"";
-        style: ButtonStyle {
-            label: Text {
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignHCenter
-                font.pointSize: 16
-                text:language.text;
-            }
-            background: Rectangle {
-                border.width: 0;
-                color:"transparent";
-            }
-        }
-        onClicked: switchLanguage();
-        function switchLanguage(){
-            var en,zh;
-            if(Qt.platform.os == "osx"){
-                en = "🇬🇧";
-                zh = "🇨🇳";
-            }else{
-                en = "EN";
-                zh = "ZH"
-            }
-            language.ifEnglish = !language.ifEnglish;
-            translator.selectLanguage(language.ifEnglish ? "en" : "zh");
-            language.text = language.ifEnglish ? en : zh;
-        }
-        Component.onCompleted: {
-            language.switchLanguage();
-        }
-    }
-
+//    Button{
+//        id : language;
+//        anchors.bottom: parent.bottom;
+//        anchors.right: parent.right;
+//        property bool ifEnglish : true;
+//        width:30;
+//        height:20;
+//        text:"";
+//        style: ButtonStyle {
+//            label: Text {
+//                verticalAlignment: Text.AlignVCenter
+//                horizontalAlignment: Text.AlignHCenter
+//                font.pointSize: 16
+//                text:language.text;
+//            }
+//            background: Rectangle {
+//                border.width: 0;
+//                color:"transparent";
+//            }
+//        }
+//        onClicked: switchLanguage();
+//        function switchLanguage(){
+//            var en,zh;
+//            if(Qt.platform.os == "osx"){
+//                en = "🇬🇧";
+//                zh = "🇨🇳";
+//            }else{
+//                en = "EN";
+//                zh = "ZH"
+//            }
+//            language.ifEnglish = !language.ifEnglish;
+//            translator.selectLanguage(language.ifEnglish ? "en" : "zh");
+//            language.text = language.ifEnglish ? en : zh;
+//        }
+//        Component.onCompleted: {
+//            language.switchLanguage();
+//        }
+//    }
+    Component.onCompleted:translator.selectLanguage("zh");
     Component{
         id:crazyComponent;
         Item{

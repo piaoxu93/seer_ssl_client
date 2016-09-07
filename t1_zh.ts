@@ -101,189 +101,227 @@
 <context>
     <name>main</name>
     <message>
-        <location filename="src/qml/main.qml" line="100"/>
+        <location filename="src/qml/main.qml" line="19"/>
+        <source>Setting</source>
+        <translation>设置</translation>
+    </message>
+    <message>
+        <location filename="src/qml/main.qml" line="21"/>
+        <source>Language</source>
+        <translation>语言</translation>
+    </message>
+    <message>
+        <location filename="src/qml/main.qml" line="24"/>
+        <source>English</source>
+        <translation>英文</translation>
+    </message>
+    <message>
+        <location filename="src/qml/main.qml" line="33"/>
+        <source>Chinese</source>
+        <translation>中文</translation>
+    </message>
+    <message>
+        <location filename="src/qml/main.qml" line="43"/>
+        <source>Help</source>
+        <translation>帮助</translation>
+    </message>
+    <message>
+        <location filename="src/qml/main.qml" line="45"/>
+        <source>About</source>
+        <translation>关于</translation>
+    </message>
+    <message>
+        <location filename="src/qml/main.qml" line="130"/>
         <source>Radio</source>
         <translation>单车控制</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="113"/>
-        <location filename="src/qml/main.qml" line="390"/>
+        <location filename="src/qml/main.qml" line="143"/>
+        <location filename="src/qml/main.qml" line="423"/>
         <source>Sender Setting</source>
         <translation>发射机设置</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="124"/>
+        <location filename="src/qml/main.qml" line="154"/>
         <source>Ports</source>
         <translation>可用串口</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="124"/>
+        <location filename="src/qml/main.qml" line="154"/>
         <source>BaudRate</source>
         <translation>波特率</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="125"/>
+        <location filename="src/qml/main.qml" line="155"/>
         <source>DataBits</source>
         <translation>数据位数</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="125"/>
+        <location filename="src/qml/main.qml" line="155"/>
         <source>Parity</source>
         <translation>校验方式</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="126"/>
+        <location filename="src/qml/main.qml" line="156"/>
         <source>StopBits</source>
         <translation>停止位数</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="126"/>
+        <location filename="src/qml/main.qml" line="156"/>
         <source>Frequency</source>
         <translation>发射频点</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="132"/>
+        <location filename="src/qml/main.qml" line="162"/>
         <source>Connect</source>
         <translation>连接</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="132"/>
+        <location filename="src/qml/main.qml" line="162"/>
         <source>Disconnect</source>
         <translation>断开连接</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="151"/>
+        <location filename="src/qml/main.qml" line="181"/>
         <source>Manual Control</source>
         <translation>手操模式</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="178"/>
+        <location filename="src/qml/main.qml" line="208"/>
         <source>robot</source>
         <translation>车辆编号</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="183"/>
+        <location filename="src/qml/main.qml" line="213"/>
         <source>vel-x</source>
         <translation>纵向速度</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="186"/>
+        <location filename="src/qml/main.qml" line="216"/>
         <source>dribb</source>
         <translation>吸球状态</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="187"/>
-        <location filename="src/qml/main.qml" line="197"/>
+        <location filename="src/qml/main.qml" line="217"/>
+        <location filename="src/qml/main.qml" line="227"/>
         <source>true</source>
         <translation>开</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="187"/>
-        <location filename="src/qml/main.qml" line="197"/>
+        <location filename="src/qml/main.qml" line="217"/>
+        <location filename="src/qml/main.qml" line="227"/>
         <source>false</source>
         <translation>关</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="193"/>
+        <location filename="src/qml/main.qml" line="223"/>
         <source>vel-y </source>
         <translation>横向速度</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="196"/>
+        <location filename="src/qml/main.qml" line="226"/>
         <source>shoot</source>
         <translation>射门状态</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="203"/>
+        <location filename="src/qml/main.qml" line="233"/>
         <source>vel-r</source>
         <translation>旋转速度</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="206"/>
+        <location filename="src/qml/main.qml" line="236"/>
         <source>mode</source>
         <translation>踢球模式</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="207"/>
+        <location filename="src/qml/main.qml" line="237"/>
         <source>lift</source>
         <translation>挑射</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="207"/>
+        <location filename="src/qml/main.qml" line="237"/>
         <source>flat</source>
         <translation>平射</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="213"/>
+        <location filename="src/qml/main.qml" line="243"/>
         <source>step</source>
         <translation>改变步伐</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="216"/>
+        <location filename="src/qml/main.qml" line="246"/>
         <source>power</source>
         <translation>踢球力度</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="312"/>
-        <location filename="src/qml/main.qml" line="329"/>
-        <location filename="src/qml/main.qml" line="449"/>
+        <location filename="src/qml/main.qml" line="342"/>
+        <location filename="src/qml/main.qml" line="359"/>
+        <location filename="src/qml/main.qml" line="483"/>
         <source>Start</source>
         <translation>开始</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="329"/>
-        <location filename="src/qml/main.qml" line="449"/>
+        <location filename="src/qml/main.qml" line="359"/>
+        <location filename="src/qml/main.qml" line="483"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="337"/>
+        <location filename="src/qml/main.qml" line="367"/>
         <source>Referee</source>
         <translation>裁判盒</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="342"/>
+        <location filename="src/qml/main.qml" line="372"/>
         <source>Vision</source>
         <translation>图像控制</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="351"/>
+        <location filename="src/qml/main.qml" line="383"/>
         <source>Receiver Setting</source>
-        <translation type="finished">接收设置</translation>
+        <translation>接收设置</translation>
     </message>
     <message>
         <source>Vision Receiver</source>
         <translation type="obsolete">图像接收</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="365"/>
+        <location filename="src/qml/main.qml" line="397"/>
         <source>Interface</source>
         <translation>网络接口</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="372"/>
-        <location filename="src/qml/main.qml" line="405"/>
+        <location filename="src/qml/main.qml" line="404"/>
+        <location filename="src/qml/main.qml" line="438"/>
         <source>Address</source>
         <translation>地址</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="379"/>
-        <location filename="src/qml/main.qml" line="412"/>
+        <location filename="src/qml/main.qml" line="411"/>
+        <location filename="src/qml/main.qml" line="445"/>
         <source>Port</source>
         <translation>端口</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="428"/>
+        <location filename="src/qml/main.qml" line="462"/>
         <source>Small</source>
         <translation>小场</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="445"/>
+        <location filename="src/qml/main.qml" line="479"/>
         <source>Big</source>
         <translation>大场</translation>
     </message>
     <message>
-        <location filename="src/qml/main.qml" line="502"/>
+        <location filename="src/qml/main.qml" line="509"/>
+        <location filename="src/qml/main.qml" line="521"/>
+        <location filename="src/qml/main.qml" line="522"/>
+        <location filename="src/qml/main.qml" line="523"/>
+        <source>Demo</source>
+        <translation type="finished">样例</translation>
+    </message>
+    <message>
+        <location filename="src/qml/main.qml" line="563"/>
         <source>Enter Command</source>
         <translation>输入命令</translation>
     </message>
