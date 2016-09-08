@@ -35,6 +35,7 @@ Field::Field(QQuickItem *parent)
     : QQuickPaintedItem(parent)
     , cameraMode(FourCamera)
     , pixmap(nullptr)
+    , counter(0)
     , pen(Qt::white,1){
     if(nullptr == single){
         single = this;
@@ -82,6 +83,7 @@ void Field::changeMode(bool ifBig){
     this->update(area);
 }
 void Field::draw(bool robot,bool ball,bool style){
+    counter++;
     static QRect area(0,0,this->property("width").toReal(),this->property("height").toReal());
     pixmap->fill(COLOR_DARKGREEN);
     imagePainter.strokePath(painterPath, pen);
@@ -170,4 +172,19 @@ static void addQuarterCirclePath(QPainterPath& painterPath,qreal x,qreal y,qreal
     painterPath.moveTo(x,y);
     painterPath.arcMoveTo(x-radius,y-radius,2*radius,2*radius,angel);
     painterPath.arcTo(x-radius,y-radius,2*radius,2*radius,angel,90);
+}
+quint16 Field::getFPS(){
+    static QElapsedTimer timer;
+    static bool ifStart = false;
+    static quint64 lastCount;
+    static quint16 result;
+    if (!ifStart) {
+        ifStart = true;
+        timer.start();
+        lastCount = counter;
+        return 0;
+    }
+    result = (counter - lastCount)*1000.0/timer.restart();
+    lastCount = counter;
+    return result;
 }

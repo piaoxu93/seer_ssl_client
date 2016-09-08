@@ -13,6 +13,7 @@ class Field : public QQuickPaintedItem{
 public:
     static Field* instance();
     void paint(QPainter* painter) override;
+    Q_INVOKABLE quint16 getFPS();
     Field(QQuickItem *parent = 0);
     virtual ~Field() {};
     void changeMode(bool);
@@ -35,6 +36,7 @@ private:
     QPainterPath painterPath;
     QPen pen;
     int width;
+    quint64 counter;
     int height;
     int goalWidth;
     int goalDepth;

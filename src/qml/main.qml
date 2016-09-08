@@ -67,6 +67,15 @@ ApplicationWindow{
             serial.sendCommand();
         }
     }
+    Timer{
+        id:fpsTimer;
+        interval:1000;
+        running:true;
+        repeat:true;
+        onTriggered: {
+            fps.text = (fieldCanvas.getFPS()).toString();
+        }
+    }
     Grid{
         rows:2;
         columns:2;
@@ -101,7 +110,27 @@ ApplicationWindow{
                 x:10;
                 y:5;
                 color:"white";
-                font.pointSize: 12;
+                font.pointSize: 14;
+                font.weight:  Font.Bold;
+            }
+            Text{
+                id : fpsWord;
+                text : qsTr("FPS")+translator.emptyString;
+                x:parent.width - 70;
+                y:5;
+                color:"white";
+                font.pointSize: 14;
+                font.weight:  Font.Bold;
+            }
+            Text{
+                id : fps;
+                text : "";
+                anchors.top: parent.top;
+                anchors.topMargin: 5;
+                anchors.right: parent.right;
+                anchors.rightMargin: 10;
+                color:"white";
+                font.pointSize: 14;
                 font.weight:  Font.Bold;
             }
         }
