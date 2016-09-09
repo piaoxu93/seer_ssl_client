@@ -15,13 +15,13 @@ signals:
     void error(QString err);
 public slots:
     void process(){
-        VisionModule::instance()->process();
+//        VisionModule::instance()->process();
     }
     void resume(){
-        VisionModule::instance()->resume();
+//        VisionModule::instance()->resume();
     }
     void pause(){
-        VisionModule::instance()->pause();
+//        VisionModule::instance()->pause();
     }
 };
 typedef Singleton<CVisionThread> VisionThread;

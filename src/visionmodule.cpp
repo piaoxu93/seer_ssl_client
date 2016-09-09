@@ -85,18 +85,22 @@ CVisionModule::CVisionModule(QObject *parent)
     udpSocket = new QUdpSocket;
 }
 void CVisionModule::process(){
-    QByteArray datagram;
+
     while(true){
         sync.lock();
 //        qDebug() << "ifPause : " << ifPause;
         if(ifPause)
             pauseCond.wait(&sync); // in this place, your thread will stop to execute until someone calls resume
         sync.unlock();
-        if (udpSocket->hasPendingDatagrams()) {
-            datagram.resize(udpSocket->pendingDatagramSize());
-            udpSocket->readDatagram(datagram.data(), datagram.size());
-            parse((void*)datagram.data(),datagram.size());
-        }
+        dealWithData();
+    }
+}
+void CVisionModule::dealWithData(){
+    static QByteArray datagram;
+    while (udpSocket->hasPendingDatagrams()) {
+        datagram.resize(udpSocket->pendingDatagramSize());
+        udpSocket->readDatagram(datagram.data(), datagram.size());
+        parse((void*)datagram.data(),datagram.size());
     }
 }
 bool CVisionModule::collectNewVision() {
@@ -216,4 +220,10 @@ void CVisionModule::changeSenderSetting(const QString& address,quint16 port){
 }
 void CVisionModule::abortSetting(){
     udpSocket->abort();
+}
+void CVisionModule::udpSocketConnect(){
+    connect(udpSocket,SIGNAL(readyRead()),this,SLOT(dealWithData()),Qt::DirectConnection);
+}
+void CVisionModule::udpSocketDisconnect(){
+    disconnect(udpSocket,0,this,0);
 }

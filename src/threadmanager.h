@@ -12,15 +12,15 @@ class CThreadManager : public QObject
 public:
     explicit CThreadManager(QObject *parent = 0);
     void visionThreadStart(){
-        VisionThread::instance()->resume();
-        //VisionModule::instance()->resume();
-        if(!visionControl){
-            visionControl = true;
-            visionThread->start();
-        }
+//        VisionThread::instance()->resume();
+//        //VisionModule::instance()->resume();
+//        if(!visionControl){
+//            visionControl = true;
+//            visionThread->start();
+//        }
     }
     void visionThreadStop(){
-        VisionThread::instance()->pause();
+        //VisionThread::instance()->pause();
         //visionThread->quit();
         //VisionModule::instance()->pause();
     }

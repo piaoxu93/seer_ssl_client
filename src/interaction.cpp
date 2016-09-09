@@ -12,10 +12,12 @@ Interaction::Interaction(QObject *parent) : QObject(parent) {
 void Interaction::startVision(quint16 interface,const QString& address,quint16 port,const QString& senderAddress,quint16 senderPort){
     //emit visionSettingChanged(interface,address,port,senderAddress,senderPort);
     VisionModule::instance()->changeSetting(interface,address,port,senderAddress,senderPort);
-    ThreadManager::instance()->visionThreadStart();
+    VisionModule::instance()->udpSocketConnect();
+    //ThreadManager::instance()->visionThreadStart();
 }
 void Interaction::stopVision(){
-    ThreadManager::instance()->visionThreadStop();
+    //ThreadManager::instance()->visionThreadStop();
+    VisionModule::instance()->udpSocketDisconnect();
     //emit abortVision();
     VisionModule::instance()->abortSetting();
 }

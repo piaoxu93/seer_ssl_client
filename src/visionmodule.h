@@ -46,9 +46,12 @@ public slots:
         changeSenderSetting(senderAddress, senderPort);
     }
     void abortSetting();
+    void dealWithData();
 public:
     void changeReceiverSetting(quint16 interface,const QString& address,quint16 port);
     void changeSenderSetting(const QString&,quint16);
+    void udpSocketConnect();
+    void udpSocketDisconnect();
 signals:
     void needDraw(bool,bool,bool);
 private slots:
