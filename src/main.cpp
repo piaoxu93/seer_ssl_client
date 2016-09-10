@@ -32,7 +32,13 @@ void threadRegister(){
 int main(int argc, char *argv[]) {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
+
+#if defined(Q_OS_WIN32)
+    app.setFont(QFont("Microsoft YaHei",9));
+#elif defined(Q_OS_MAC)
     app.setFont(QFont("Helvetica",14));
+#endif
+
     threadRegister();
     qmlRegister();
     QQmlApplicationEngine engine;
