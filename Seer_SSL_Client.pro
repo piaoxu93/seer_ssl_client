@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-CONFIG += c++11 debug
+CONFIG += c++11
 
 QT += qml quick serialport network
 
@@ -113,6 +113,7 @@ defineTest(copyToDestdir) {
 }
 
 win32 {
+    RC_ICONS = logo.ico
     CONFIG(debug, debug|release) {
         #CONFIG += console
         DESTDIR = ./debug/bin
