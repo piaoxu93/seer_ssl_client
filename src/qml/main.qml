@@ -16,6 +16,8 @@ ApplicationWindow{
 
     menuBar: MenuBar {
         Menu {
+            id:menu;
+            property int itemWidth : 100;
             title: qsTr("Setting")+translator.emptyString;
             Menu {
                 title: qsTr("Language")+translator.emptyString;
@@ -44,6 +46,11 @@ ApplicationWindow{
             MenuItem {
                 text: qsTr("About")+translator.emptyString;
                 onTriggered: aboutDialog.visible = true;
+            }
+        }
+        style: MenuBarStyle {
+            itemDelegate: Rectangle {
+                width:100;
             }
         }
     }
@@ -76,11 +83,19 @@ ApplicationWindow{
             fps.text = (fieldCanvas.getFPS()).toString();
         }
     }
+    Rectangle{
+        height:2;
+        width:window.width;
+        color:"yellow";
+        id:line;
+        visible: false;
+    }
     Grid{
         rows:2;
         columns:2;
         rowSpacing:0;
         columnSpacing:0;
+        anchors.top:(Qt.platform.os==="windows")? line.bottom : parent.top;
         function fieldChangeSignal(ifBig){
             fieldCanvas.ifBig = ifBig;
         }
@@ -115,7 +130,7 @@ ApplicationWindow{
             }
             Text{
                 id : fpsWord;
-                text : qsTr("FPS")+translator.emptyString;
+                text : qsTr("FPS");
                 x:parent.width - 70;
                 y:5;
                 color:"white";
@@ -449,7 +464,7 @@ ApplicationWindow{
                         enabled: parent.en;
                         id : visionSender;
                         width:parent.width*0.90;
-                        title:qsTr("Sender Setting")+translator.emptyString;
+                        title:qsTr("Transmit Setting")+translator.emptyString;
                         anchors.horizontalCenter: parent.horizontalCenter;
                         anchors.top: visionAddress.bottom;
                         anchors.topMargin: 5;
@@ -672,7 +687,13 @@ ApplicationWindow{
 //            language.switchLanguage();
 //        }
 //    }
-    Component.onCompleted:translator.selectLanguage("zh");
+    Component.onCompleted:{
+        translator.selectLanguage("zh");
+        if(Qt.platform.os == "windows"){
+            line.visible = true;
+            window.height += 32;
+        }
+    }
     Component{
         id:crazyComponent;
         Item{
