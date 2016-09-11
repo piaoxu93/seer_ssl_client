@@ -546,15 +546,38 @@ ApplicationWindow{
                             verticalItemAlignment: Grid.AlignVCenter;
                             horizontalItemAlignment: Grid.AlignLeft;
                             property int itemWidth : (width - columnSpacing*(columns-1)) / columns;
+                            property int triggerIndex : -1;
                             Repeater{
+                                id : buttons;
                                 model:[qsTr("Demo")+translator.emptyString,qsTr("Demo")+translator.emptyString,
                                 qsTr("Demo")+translator.emptyString,qsTr("Demo")+translator.emptyString,
                                 qsTr("Demo")+translator.emptyString,qsTr("Demo")+translator.emptyString];
                                 Button{
                                     text:modelData;
                                     width:demoGrid.itemWidth;
-                                    onClicked: interaction.demoTrigger(index);
+                                    onClicked: demoGrid.clickEvent(index);
                                 }
+                            }
+                            function clickEvent(index){
+                                if (triggerIndex === -1){
+                                    interaction.demoStart(index);
+                                    for(var i=0;i<buttons.model.length;i++){
+                                        buttons.itemAt(i).enabled = false;
+                                    }
+                                    buttons.itemAt(index).enabled = true;
+                                    buttons.itemAt(index).text = qsTr("Stop")+translator.emptyString;
+                                    triggerIndex = index;
+                                }else if(triggerIndex === index){
+                                    interaction.demoStop(index);
+                                    for(var i=0;i<buttons.model.length;i++){
+                                        buttons.itemAt(i).enabled = true;
+                                    }
+                                    buttons.itemAt(index).text = qsTr("Demo")+translator.emptyString;
+                                    triggerIndex = -1;
+                                }else{
+                                    console.log("Demo Model ERROR!");
+                                }
+                                //interaction.demoTrigger(index);
                             }
                         }
                     }

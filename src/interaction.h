@@ -19,7 +19,8 @@ public:
     Q_INVOKABLE QStringList getNetworkInterfaces();
     Q_INVOKABLE QString getDefaultRefereeAddress();
     Q_INVOKABLE quint16 getDefaultRefereePort();
-    Q_INVOKABLE void demoTrigger(quint8);
+    Q_INVOKABLE void demoStart(quint8 index){}
+    Q_INVOKABLE void demoStop(quint8 index){}
 signals:
     void fieldChange(bool);
     void visionSettingChanged(quint16 interface,const QString& address,quint16 port,const QString& senderAddress,quint16 senderPort);

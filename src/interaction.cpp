@@ -50,6 +50,3 @@ QString Interaction::getDefaultVisionSenderAddress(){
 quint16 Interaction::getDefaultVisionSenderPort(){
     return quint16(SingleParams::instance()->_("vision.send.port"));
 }
-void Interaction::demoTrigger(quint8 index){
-    qDebug() << "demoTrigger : " << index;
-}
