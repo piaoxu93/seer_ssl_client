@@ -41,15 +41,17 @@ public:
 public slots:
     void updateVisionControl(bool);
     void process();
-    void changeSetting(quint16 interface,const QString& address,quint16 port,const QString& senderAddress,quint16 senderPort){
+    void changeSetting(quint16 interface,const QString& address,quint16 port,
+                       const QString& senderAddress,quint16 senderPort,
+                       const QString& senderAddress2,quint16 senderPort2){
         changeReceiverSetting(interface, address, port);
-        changeSenderSetting(senderAddress, senderPort);
+        changeSenderSetting(senderAddress, senderPort,senderAddress2,senderPort2);
     }
     void abortSetting();
     void dealWithData();
 public:
     void changeReceiverSetting(quint16 interface,const QString& address,quint16 port);
-    void changeSenderSetting(const QString&,quint16);
+    void changeSenderSetting(const QString&,quint16,const QString&,quint16);
     void udpSocketConnect();
     void udpSocketDisconnect();
 signals:
@@ -88,6 +90,8 @@ private:
 private:
     QHostAddress sendAddress;
     quint16 sendPort;
+    QHostAddress sendAddress2;
+    quint16 sendPort2;
     QUdpSocket *sendUdp;
 private:
     QMutex sync;

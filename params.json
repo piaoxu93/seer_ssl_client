@@ -50,7 +50,9 @@
         "robotMaxSpeed":700,
         "send":{
             "address":"127.0.0.1",
-            "port":54321
+            "port":54321,
+            "address2":"127.0.0.1",
+            "port2":12345
         }
     },
     "referee":{

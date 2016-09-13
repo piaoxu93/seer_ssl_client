@@ -9,9 +9,9 @@ Interaction::Interaction(QObject *parent) : QObject(parent) {
     //        ,VisionModule::instance(),SLOT(changeSetting(quint16,const QString&,quint16,const QString&,quint16)),Qt::AutoConnection);
     //connect(this,SIGNAL(abortVision()),VisionModule::instance(),SLOT(abortSetting()),Qt::AutoConnection);
 }
-void Interaction::startVision(quint16 interface,const QString& address,quint16 port,const QString& senderAddress,quint16 senderPort){
+void Interaction::startVision(quint16 interface,const QString& address,quint16 port,const QString& senderAddress,quint16 senderPort,const QString& senderAddress2,quint16 senderPort2){
     //emit visionSettingChanged(interface,address,port,senderAddress,senderPort);
-    VisionModule::instance()->changeSetting(interface,address,port,senderAddress,senderPort);
+    VisionModule::instance()->changeSetting(interface,address,port,senderAddress,senderPort,senderAddress2,senderPort2);
     VisionModule::instance()->udpSocketConnect();
     //ThreadManager::instance()->visionThreadStart();
 }
@@ -49,4 +49,11 @@ QString Interaction::getDefaultVisionSenderAddress(){
 }
 quint16 Interaction::getDefaultVisionSenderPort(){
     return quint16(SingleParams::instance()->_("vision.send.port"));
+}
+QString Interaction::getDefaultVisionSenderAddress2(){
+    std::string str = SingleParams::instance()->_("vision.send.address2");
+    return QString(str.c_str());
+}
+quint16 Interaction::getDefaultVisionSenderPort2(){
+    return quint16(SingleParams::instance()->_("vision.send.port2"));
 }

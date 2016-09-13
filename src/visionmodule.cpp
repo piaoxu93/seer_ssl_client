@@ -205,6 +205,7 @@ void CVisionModule::sendSmsg(){
     transmit_msg = transmit.smsgUpdate(cameraMode,minAddFrame, minLostFrame,maxVehicleDist + distorterr,m_sendFalse);
     GlobalData::instance()->msg.push(transmit_msg);
     sendUdp->writeDatagram((char*)&transmit_msg,sizeof(transmit_msg),sendAddress, sendPort);
+    sendUdp->writeDatagram((char*)&transmit_msg,sizeof(transmit_msg),sendAddress2, sendPort2);
 }
 void CVisionModule::changeReceiverSetting(quint16 interface,const QString& address,quint16 port){
 
@@ -214,9 +215,11 @@ void CVisionModule::changeReceiverSetting(quint16 interface,const QString& addre
     udpSocket->bind(QHostAddress::AnyIPv4, port, QUdpSocket::ShareAddress);
     udpSocket->joinMulticastGroup(QHostAddress(groupAddress),QNetworkInterface::allInterfaces()[interface]);
 }
-void CVisionModule::changeSenderSetting(const QString& address,quint16 port){
+void CVisionModule::changeSenderSetting(const QString& address,quint16 port,const QString& address2,quint16 port2){
     sendAddress = address;
     sendPort = port;
+    sendAddress2 = address2;
+    sendPort2 = port;
 }
 void CVisionModule::abortSetting(){
     udpSocket->abort();

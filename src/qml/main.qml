@@ -48,11 +48,11 @@ ApplicationWindow{
                 onTriggered: aboutDialog.visible = true;
             }
         }
-        style: MenuBarStyle {
-            itemDelegate: Rectangle {
-                width:100;
-            }
-        }
+//        style: MenuBarStyle {
+//            itemDelegate: Rectangle {
+//                width:100;
+//            }
+//        }
     }
     MessageDialog {
           id: aboutDialog;
@@ -169,14 +169,24 @@ ApplicationWindow{
             width:window.width - fieldCanvas.width;
             height:fieldCanvas.height;
             id: operationPanel;
+            signal closeCrazy();
             Tab{
+                id : radio;
+                property Item crazyButton : item.crazyButton;
+                onVisibleChanged : {
+                    if (this.activeFocus) {
+                        //operationPanel.closeCrazy();
+                    }
+                }
                 anchors.fill: parent;
                 title: qsTr("Radio") + translator.emptyString;
                 Rectangle{
+                    property Item crazyButton : crazyStart;
                     width:parent.width;
                     anchors.top: parent.top;
                     anchors.bottom: parent.bottom;
                     color : "lightgrey";
+                    id:radioRectangle
                     GroupBox{
                         id : crazyListRectangle;
                         width: parent.width - 15;
@@ -209,7 +219,8 @@ ApplicationWindow{
                         anchors.right: parent.right;
                         anchors.rightMargin: 20;
                         anchors.topMargin: 10;
-                        onClicked: {
+                        onClicked: clickEvent();
+                        function clickEvent(){
                             if(ifConnected){
                                 timer.stop();
                                 if(crazyStart.ifStarted) crazyStart.handleClickEvent();
@@ -228,161 +239,161 @@ ApplicationWindow{
                         anchors.horizontalCenter: parent.horizontalCenter;
                         anchors.margins: 20;
                         id : groupBox2;
-                    Grid{
-                        id : crazyShow;
-                        columns: 4;
-                        rows:5;
-                        verticalItemAlignment: Grid.AlignVCenter;
-                        horizontalItemAlignment: Grid.AlignLeft;
-                        anchors.horizontalCenter: parent.horizontalCenter;
-                        columnSpacing: 10;
-                        rowSpacing: 5;
-                        property int m_VEL : 255
-                        property int m_VELR : 1023
-                        property int velX : 0;
-                        property int velY : 0;
-                        property int velR : 0;
-                        property bool shoot : false;
-                        property bool dribble : false;
-                        property int power : 127;
-                        property int velStep : 1;
-                        property bool mode : false;
-                        property int robotID : 0;
-                        property int itemWidth : 70;
-                        Text{ text:qsTr("robot") + translator.emptyString }
-                        SpinBox{ minimumValue:0; maximumValue:11; value:parent.robotID; width:parent.itemWidth
-                            onEditingFinished:{parent.robotID = value}}
-                        Text{ text:" " }
-                        Text{ text:" " }
-                        Text{ text:qsTr("vel-x") + translator.emptyString }
-                        SpinBox{ minimumValue:-crazyShow.m_VEL; maximumValue:crazyShow.m_VEL; value:parent.velX;width:parent.itemWidth
-                            onEditingFinished:{parent.velX = value;}}
-                        Text{ text:qsTr("dribb") + translator.emptyString }
-                        Button{ text:(parent.dribble ? qsTr("true") : qsTr("false")) +translator.emptyString;width:parent.itemWidth
-                            onClicked: {
-                                parent.dribble = !parent.dribble;
+                        Grid{
+                            id : crazyShow;
+                            columns: 4;
+                            rows:5;
+                            verticalItemAlignment: Grid.AlignVCenter;
+                            horizontalItemAlignment: Grid.AlignLeft;
+                            anchors.horizontalCenter: parent.horizontalCenter;
+                            columnSpacing: 10;
+                            rowSpacing: 5;
+                            property int m_VEL : 255
+                            property int m_VELR : 1023
+                            property int velX : 0;
+                            property int velY : 0;
+                            property int velR : 0;
+                            property bool shoot : false;
+                            property bool dribble : false;
+                            property int power : 127;
+                            property int velStep : 20;
+                            property bool mode : false;
+                            property int robotID : 0;
+                            property int itemWidth : 70;
+                            Text{ text:qsTr("robot") + translator.emptyString }
+                            SpinBox{ minimumValue:0; maximumValue:11; value:parent.robotID; width:parent.itemWidth
+                                onEditingFinished:{parent.robotID = value}}
+                            Text{ text:" " }
+                            Text{ text:" " }
+                            Text{ text:qsTr("vel-x") + translator.emptyString }
+                            SpinBox{ minimumValue:-crazyShow.m_VEL; maximumValue:crazyShow.m_VEL; value:parent.velX;width:parent.itemWidth
+                                onEditingFinished:{parent.velX = value;}}
+                            Text{ text:qsTr("dribb") + translator.emptyString }
+                            Button{ text:(parent.dribble ? qsTr("true") : qsTr("false")) +translator.emptyString;width:parent.itemWidth
+                                onClicked: {
+                                    parent.dribble = !parent.dribble;
+                                    serial.updateCommandParams(crazyShow.robotID,crazyShow.velX,crazyShow.velY,crazyShow.velR,crazyShow.dribble,crazyShow.mode,crazyShow.shoot,crazyShow.power);
+                                }
+                            }
+                            Text{ text:qsTr("vel-y ") + translator.emptyString}
+                            SpinBox{ minimumValue:-crazyShow.m_VEL; maximumValue:crazyShow.m_VEL; value:parent.velY;width:parent.itemWidth
+                                onEditingFinished:{parent.velY = value;}}
+                            Text{ text:qsTr("shoot") + translator.emptyString}
+                            Button{ text:(parent.shoot? qsTr("true") : qsTr("false")) + translator.emptyString;width:parent.itemWidth
+                                onClicked: {
+                                    parent.shoot = !parent.shoot;
+                                    serial.updateCommandParams(crazyShow.robotID,crazyShow.velX,crazyShow.velY,crazyShow.velR,crazyShow.dribble,crazyShow.mode,crazyShow.shoot,crazyShow.power);
+                                }
+                            }
+                            Text{ text:qsTr("vel-r")  + translator.emptyString}
+                            SpinBox{ minimumValue:-crazyShow.m_VELR; maximumValue:crazyShow.m_VELR; value:parent.velR;width:parent.itemWidth
+                                onEditingFinished:{parent.velR = value;}}
+                            Text{ text:qsTr("mode")  + translator.emptyString}
+                            Button{ text:(parent.mode?qsTr("lift"):qsTr("flat")) + translator.emptyString;width:parent.itemWidth
+                                onClicked: {
+                                    parent.mode = !parent.mode
+                                    serial.updateCommandParams(crazyShow.robotID,crazyShow.velX,crazyShow.velY,crazyShow.velR,crazyShow.dribble,crazyShow.mode,crazyShow.shoot,crazyShow.power);
+                                }
+                            }
+                            Text{ text:qsTr("step") + translator.emptyString }
+                            SpinBox{ minimumValue:1; maximumValue:crazyShow.m_VEL; value:parent.velStep;width:parent.itemWidth
+                                onEditingFinished:{parent.velStep = value;}}
+                            Text{ text:qsTr("power") + translator.emptyString }
+                            SpinBox{ minimumValue:0; maximumValue:127; value:parent.power;width:parent.itemWidth
+                                onEditingFinished:{parent.power = value;}}
+                            Keys.onPressed:getFocus(event);
+                            function getFocus(event){
+                                switch(event.key){
+                                case Qt.Key_Enter:
+                                case Qt.Key_Return:
+                                case Qt.Key_Escape:
+                                    crazyShow.focus = true;
+                                    break;
+                                default:
+                                    event.accepted = false;
+                                    return false;
+                                }
+                                event.accepted = true;
+                            }
+                            function handleKeyboardEvent(e){
+                                switch(e){
+                                case 'U':{crazyShow.mode = !crazyShow.mode;break;}
+                                case 'a':{crazyShow.velY = crazyShow.limitVel(crazyShow.velY-crazyShow.velStep,-crazyShow.m_VEL,crazyShow.m_VEL);
+                                    break;}
+                                case 'd':{crazyShow.velY = crazyShow.limitVel(crazyShow.velY+crazyShow.velStep,-crazyShow.m_VEL,crazyShow.m_VEL);
+                                    break;}
+                                case 'w':{crazyShow.velX = crazyShow.limitVel(crazyShow.velX+crazyShow.velStep,-crazyShow.m_VEL,crazyShow.m_VEL);
+                                    break;}
+                                case 's':{crazyShow.velX = crazyShow.limitVel(crazyShow.velX-crazyShow.velStep,-crazyShow.m_VEL,crazyShow.m_VEL);
+                                    break;}
+                                case 'q':{crazyShow.dribble = !crazyShow.dribble;
+                                    break;}
+                                case 'e':{crazyShow.shoot = !crazyShow.shoot;
+                                    break;}
+                                case 'L':{crazyShow.velR = crazyShow.limitVel(crazyShow.velR+crazyShow.velStep,-crazyShow.m_VELR,crazyShow.m_VELR);
+                                    break;}
+                                case 'R':{crazyShow.velR = crazyShow.limitVel(crazyShow.velR-crazyShow.velStep,-crazyShow.m_VELR,crazyShow.m_VELR);
+                                    break;}
+                                case 'S':{crazyShow.velX = 0;
+                                        crazyShow.velY = 0;
+                                        crazyShow.velR = 0;
+                                        crazyShow.shoot = false;
+                                        crazyShow.dribble = false;
+                                    break;}
+                                default:
+                                    return false;
+                                }
                                 serial.updateCommandParams(crazyShow.robotID,crazyShow.velX,crazyShow.velY,crazyShow.velR,crazyShow.dribble,crazyShow.mode,crazyShow.shoot,crazyShow.power);
                             }
-                        }
-                        Text{ text:qsTr("vel-y ") + translator.emptyString}
-                        SpinBox{ minimumValue:-crazyShow.m_VEL; maximumValue:crazyShow.m_VEL; value:parent.velY;width:parent.itemWidth
-                            onEditingFinished:{parent.velY = value;}}
-                        Text{ text:qsTr("shoot") + translator.emptyString}
-                        Button{ text:(parent.shoot? qsTr("true") : qsTr("false")) + translator.emptyString;width:parent.itemWidth
-                            onClicked: {
-                                parent.shoot = !parent.shoot;
-                                serial.updateCommandParams(crazyShow.robotID,crazyShow.velX,crazyShow.velY,crazyShow.velR,crazyShow.dribble,crazyShow.mode,crazyShow.shoot,crazyShow.power);
+                            function limitVel(vel,minValue,maxValue){
+                                if(vel>maxValue) return maxValue;
+                                if(vel<minValue) return minValue;
+                                return vel;
+                            }
+                            Shortcut{
+                                sequence:"A";
+                                onActivated:crazyShow.handleKeyboardEvent('a');
+                            }
+                            Shortcut{
+                                sequence:"Up";
+                                onActivated:crazyShow.handleKeyboardEvent('U');
+                            }
+                            Shortcut{
+                                sequence:"D"
+                                onActivated:crazyShow.handleKeyboardEvent('d');
+                            }
+                            Shortcut{
+                                sequence:"W"
+                                onActivated:crazyShow.handleKeyboardEvent('w');
+                            }
+                            Shortcut{
+                                sequence:"S"
+                                onActivated:crazyShow.handleKeyboardEvent('s');
+                            }
+                            Shortcut{
+                                sequence:"Q"
+                                onActivated:crazyShow.handleKeyboardEvent('q');
+                            }
+                            Shortcut{
+                                sequence:"E"
+                                onActivated:crazyShow.handleKeyboardEvent('e');
+                            }
+                            Shortcut{
+                                sequence:"Left"
+                                onActivated:crazyShow.handleKeyboardEvent('L');
+                            }
+                            Shortcut{
+                                sequence:"Right"
+                                onActivated:crazyShow.handleKeyboardEvent('R');
+                            }
+                            Shortcut{
+                                sequence:"Space"
+                                onActivated:crazyShow.handleKeyboardEvent('S');
                             }
                         }
-                        Text{ text:qsTr("vel-r")  + translator.emptyString}
-                        SpinBox{ minimumValue:-crazyShow.m_VELR; maximumValue:crazyShow.m_VELR; value:parent.velR;width:parent.itemWidth
-                            onEditingFinished:{parent.velR = value;}}
-                        Text{ text:qsTr("mode")  + translator.emptyString}
-                        Button{ text:(parent.mode?qsTr("lift"):qsTr("flat")) + translator.emptyString;width:parent.itemWidth
-                            onClicked: {
-                                parent.mode = !parent.mode
-                                serial.updateCommandParams(crazyShow.robotID,crazyShow.velX,crazyShow.velY,crazyShow.velR,crazyShow.dribble,crazyShow.mode,crazyShow.shoot,crazyShow.power);
-                            }
-                        }
-                        Text{ text:qsTr("step") + translator.emptyString }
-                        SpinBox{ minimumValue:1; maximumValue:crazyShow.m_VEL; value:parent.velStep;width:parent.itemWidth
-                            onEditingFinished:{parent.velStep = value;}}
-                        Text{ text:qsTr("power") + translator.emptyString }
-                        SpinBox{ minimumValue:0; maximumValue:127; value:parent.power;width:parent.itemWidth
-                            onEditingFinished:{parent.power = value;}}
-                        Keys.onPressed:getFocus(event);
-                        function getFocus(event){
-                            switch(event.key){
-                            case Qt.Key_Enter:
-                            case Qt.Key_Return:
-                            case Qt.Key_Escape:
-                                crazyShow.focus = true;
-                                break;
-                            default:
-                                event.accepted = false;
-                                return false;
-                            }
-                            event.accepted = true;
-                        }
-                        function handleKeyboardEvent(e){
-                            switch(e){
-                            case 'U':{crazyShow.mode = !crazyShow.mode;break;}
-                            case 'a':{crazyShow.velY = crazyShow.limitVel(crazyShow.velY-crazyShow.velStep,-crazyShow.m_VEL,crazyShow.m_VEL);
-                                break;}
-                            case 'd':{crazyShow.velY = crazyShow.limitVel(crazyShow.velY+crazyShow.velStep,-crazyShow.m_VEL,crazyShow.m_VEL);
-                                break;}
-                            case 'w':{crazyShow.velX = crazyShow.limitVel(crazyShow.velX+crazyShow.velStep,-crazyShow.m_VEL,crazyShow.m_VEL);
-                                break;}
-                            case 's':{crazyShow.velX = crazyShow.limitVel(crazyShow.velX-crazyShow.velStep,-crazyShow.m_VEL,crazyShow.m_VEL);
-                                break;}
-                            case 'q':{crazyShow.dribble = !crazyShow.dribble;
-                                break;}
-                            case 'e':{crazyShow.shoot = !crazyShow.shoot;
-                                break;}
-                            case 'L':{crazyShow.velR = crazyShow.limitVel(crazyShow.velR+crazyShow.velStep,-crazyShow.m_VELR,crazyShow.m_VELR);
-                                break;}
-                            case 'R':{crazyShow.velR = crazyShow.limitVel(crazyShow.velR-crazyShow.velStep,-crazyShow.m_VELR,crazyShow.m_VELR);
-                                break;}
-                            case 'S':{crazyShow.velX = 0;
-                                    crazyShow.velY = 0;
-                                    crazyShow.velR = 0;
-                                    crazyShow.shoot = false;
-                                    crazyShow.dribble = false;
-                                break;}
-                            default:
-                                return false;
-                            }
-                            serial.updateCommandParams(crazyShow.robotID,crazyShow.velX,crazyShow.velY,crazyShow.velR,crazyShow.dribble,crazyShow.mode,crazyShow.shoot,crazyShow.power);
-                        }
-                        function limitVel(vel,minValue,maxValue){
-                            if(vel>maxValue) return maxValue;
-                            if(vel<minValue) return minValue;
-                            return vel;
-                        }
-                        Shortcut{
-                            sequence:"A";
-                            onActivated:crazyShow.handleKeyboardEvent('a');
-                        }
-                        Shortcut{
-                            sequence:"Up";
-                            onActivated:crazyShow.handleKeyboardEvent('U');
-                        }
-                        Shortcut{
-                            sequence:"D"
-                            onActivated:crazyShow.handleKeyboardEvent('d');
-                        }
-                        Shortcut{
-                            sequence:"W"
-                            onActivated:crazyShow.handleKeyboardEvent('w');
-                        }
-                        Shortcut{
-                            sequence:"S"
-                            onActivated:crazyShow.handleKeyboardEvent('s');
-                        }
-                        Shortcut{
-                            sequence:"Q"
-                            onActivated:crazyShow.handleKeyboardEvent('q');
-                        }
-                        Shortcut{
-                            sequence:"E"
-                            onActivated:crazyShow.handleKeyboardEvent('e');
-                        }
-                        Shortcut{
-                            sequence:"Left"
-                            onActivated:crazyShow.handleKeyboardEvent('L');
-                        }
-                        Shortcut{
-                            sequence:"Right"
-                            onActivated:crazyShow.handleKeyboardEvent('R');
-                        }
-                        Shortcut{
-                            sequence:"Space"
-                            onActivated:crazyShow.handleKeyboardEvent('S');
-                        }
-                    }
                     }
                     Button{
-                        id : crazyStart;
+                        id:crazyStart;
                         text:qsTr("Start") + translator.emptyString;
                         property bool ifStarted:false;
                         anchors.right:parent.right;
@@ -404,7 +415,6 @@ ApplicationWindow{
                         }
                     }
                 }
-
             }
             Tab{
                 anchors.fill: parent;
@@ -493,6 +503,33 @@ ApplicationWindow{
                                 text:interaction.getDefaultVisionSenderPort();width:parent.width - senderInput.width - parent.columnSpacing;
                             }
                         }
+                        Grid{
+                            id:senderInputs2;
+                            columns: 2;
+                            columnSpacing: 20;
+                            rowSpacing: 5;
+                            width:parent.width;
+                            anchors.horizontalCenter: parent.horizontalCenter;
+                            verticalItemAlignment: Grid.AlignVCenter;
+                            horizontalItemAlignment: Grid.AlignLeft;
+                            anchors.top: senderInputs.bottom;
+                            anchors.topMargin: 10;
+                            Text{
+                                id : senderInput2;
+                                text:qsTr("Address")+translator.emptyString;
+                            }
+                            TextField{
+                                id:senderAddress2;
+                                text:interaction.getDefaultVisionSenderAddress2();width:parent.width - senderInput.width - parent.columnSpacing;
+                            }
+                            Text{
+                                text:qsTr("Port")+translator.emptyString;
+                            }
+                            TextField{
+                                id:senderPort2;
+                                text:interaction.getDefaultVisionSenderPort2();width:parent.width - senderInput.width - parent.columnSpacing;
+                            }
+                        }
                     }
                     Grid{
                         enabled: parent.en;
@@ -537,7 +574,7 @@ ApplicationWindow{
                         function run(){
                             if(visionAddress.visionGetter){
                                 vision.en =  false;
-                                interaction.startVision(interfaces.currentIndex,address.text,parseInt(port.text),senderAddress.text,parseInt(senderPort.text));
+                                interaction.startVision(interfaces.currentIndex,address.text,parseInt(port.text),senderAddress.text,parseInt(senderPort.text),senderAddress2.text,parseInt(senderPort2.text));
                             }else{
                                 vision.en = true;
                                 interaction.stopVision();
@@ -551,6 +588,34 @@ ApplicationWindow{
                         width: parent.width*0.9;
                         anchors.horizontalCenter: parent.horizontalCenter;
                         title:qsTr("Demo")+translator.emptyString;
+                        property bool ifYellow : false;
+                        Grid{
+                            id : teamGrid;
+                            anchors.top: parent.top;
+                            anchors.horizontalCenter: parent.horizontalCenter;
+                            verticalItemAlignment: Grid.AlignVCenter;
+                            columns:3;
+                            columnSpacing: 20;
+                            rowSpacing: 5;
+                            Text{ text:qsTr("Yellow") + translator.emptyString; }
+                            Switch{
+                                id:teamSwitch;
+                                style: SwitchStyle {
+                                    groove: Rectangle {
+                                         implicitWidth: 120
+                                         implicitHeight: 20
+                                         color:"black";
+                                         border.width: 1
+                                    }
+                                }
+                                checked: true;
+                                onCheckedChanged: {
+                                    fieldCanvas.ifBig = fieldOption.checked;
+                                    interaction.fieldChange(fieldOption.checked);
+                                }
+                            }
+                            Text{ text:qsTr("Blue") + translator.emptyString; }
+                        }
                         Grid{
                             id:demoGrid;
                             width:parent.width;
@@ -560,6 +625,8 @@ ApplicationWindow{
                             anchors.horizontalCenter: parent.horizontalCenter;
                             verticalItemAlignment: Grid.AlignVCenter;
                             horizontalItemAlignment: Grid.AlignLeft;
+                            anchors.top: teamGrid.bottom;
+                            anchors.topMargin: 5;
                             property int itemWidth : (width - columnSpacing*(columns-1)) / columns;
                             property int triggerIndex : -1;
                             Repeater{
@@ -575,38 +642,28 @@ ApplicationWindow{
                             }
                             function clickEvent(index){
                                 if (triggerIndex === -1){
-                                    interaction.demoStart(index);
+                                    interaction.demoStart(teamSwitch.checked,index);
                                     for(var i=0;i<buttons.model.length;i++){
                                         buttons.itemAt(i).enabled = false;
                                     }
+                                    teamGrid.enabled = false;
                                     buttons.itemAt(index).enabled = true;
                                     buttons.itemAt(index).text = qsTr("Stop")+translator.emptyString;
                                     triggerIndex = index;
                                 }else if(triggerIndex === index){
-                                    interaction.demoStop(index);
+                                    interaction.demoStop(teamSwitch.checked,index);
                                     for(var i=0;i<buttons.model.length;i++){
                                         buttons.itemAt(i).enabled = true;
                                     }
+                                    teamGrid.enabled = true;
                                     buttons.itemAt(index).text = qsTr("Demo")+translator.emptyString;
                                     triggerIndex = -1;
                                 }else{
                                     console.log("Demo Model ERROR!");
                                 }
-                                //interaction.demoTrigger(index);
                             }
                         }
                     }
-//                    function autoSizeForListView(item){
-//                        var root = item.visibleChildren[0];
-//                        var listViewHeight = 0;
-//                        var listViewWidth = 0;
-//                        for (var i = 0; i < root.visibleChildren.length; i++) {
-//                            listViewHeight += root.visibleChildren[i].height;
-//                            listViewWidth  = Math.max(listViewWidth, root.visibleChildren[i].width);
-//                        }
-//                        item.height = listViewHeight;
-//                        item.width = listViewWidth;
-//                    }
                 }
             }
         }
@@ -691,7 +748,6 @@ ApplicationWindow{
         translator.selectLanguage("zh");
         if(Qt.platform.os == "windows"){
             line.visible = true;
-            window.height += 32;
         }
     }
     Component{
