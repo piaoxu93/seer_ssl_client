@@ -169,24 +169,20 @@ ApplicationWindow{
             width:window.width - fieldCanvas.width;
             height:fieldCanvas.height;
             id: operationPanel;
-            signal closeCrazy();
             Tab{
                 id : radio;
-                property Item crazyButton : item.crazyButton;
+                signal leave();
                 onVisibleChanged : {
-                    if (this.activeFocus) {
-                        //operationPanel.closeCrazy();
-                    }
+                    radio.leave();
                 }
                 anchors.fill: parent;
                 title: qsTr("Radio") + translator.emptyString;
                 Rectangle{
-                    property Item crazyButton : crazyStart;
                     width:parent.width;
                     anchors.top: parent.top;
                     anchors.bottom: parent.bottom;
                     color : "lightgrey";
-                    id:radioRectangle
+                    id:radioRectangle;
                     GroupBox{
                         id : crazyListRectangle;
                         width: parent.width - 15;
@@ -414,6 +410,14 @@ ApplicationWindow{
                             text = (ifStarted ? qsTr("Stop") : qsTr("Start")) + translator.emptyString;
                         }
                     }
+                    Connections{
+                        target:radio;
+                        onLeave:{
+                            if(crazyConnect.ifConnected){
+                                crazyConnect.clickEvent();
+                            }
+                        }
+                    }
                 }
             }
             Tab{
@@ -604,14 +608,25 @@ ApplicationWindow{
                                     groove: Rectangle {
                                          implicitWidth: 120
                                          implicitHeight: 20
-                                         color:"black";
+                                         Rectangle {
+                                             implicitWidth: 60;
+                                             implicitHeight: 20;
+                                             color:"blue";
+                                             anchors.left: parent.left;
+                                         }
+                                         Rectangle {
+                                             implicitWidth: 60;
+                                             implicitHeight: 20;
+                                             color:"yellow";
+                                             anchors.right: parent.right;
+                                         }
+                                         //color: teamSwitch.checked ? "blue" : "yellow";
                                          border.width: 1
                                     }
                                 }
                                 checked: true;
                                 onCheckedChanged: {
-                                    fieldCanvas.ifBig = fieldOption.checked;
-                                    interaction.fieldChange(fieldOption.checked);
+
                                 }
                             }
                             Text{ text:qsTr("Blue") + translator.emptyString; }
