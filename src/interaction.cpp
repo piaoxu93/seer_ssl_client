@@ -1,4 +1,6 @@
 #include <QNetworkInterface>
+#include <QProcess>
+#include <QDir>
 #include "interaction.h"
 #include "visionmodule.h"
 #include "field.h"
@@ -8,6 +10,16 @@ Interaction::Interaction(QObject *parent) : QObject(parent) {
     //connect(this,SIGNAL(visionSettingChanged(quint16,const QString&,quint16,const QString,quint16))
     //        ,VisionModule::instance(),SLOT(changeSetting(quint16,const QString&,quint16,const QString&,quint16)),Qt::AutoConnection);
     //connect(this,SIGNAL(abortVision()),VisionModule::instance(),SLOT(abortSetting()),Qt::AutoConnection);
+}
+Interaction::~Interaction() {
+#if defined(Q_OS_WIN32)
+    if (zeusProcess != nullptr) {
+        if (zeusProcess->isOpen()) {
+            zeusProcess->close();
+        }
+        delete zeusProcess;
+    }
+#endif
 }
 void Interaction::startVision(quint16 interface,const QString& address,quint16 port,const QString& senderAddress,quint16 senderPort,const QString& senderAddress2,quint16 senderPort2){
     //emit visionSettingChanged(interface,address,port,senderAddress,senderPort);
@@ -56,4 +68,68 @@ QString Interaction::getDefaultVisionSenderAddress2(){
 }
 quint16 Interaction::getDefaultVisionSenderPort2(){
     return quint16(SingleParams::instance()->_("vision.send.port2"));
+}
+
+void Interaction::demoStart(bool ifBlue, quint8 index) {
+#if defined(Q_OS_WIN32)
+    QStringList args;
+    if (ifBlue) {
+        args << "cb" << "sl";
+    } else {
+        args << "cy" << "sr";
+    }
+
+    switch (index) {
+    case 0:
+    {
+        QDir dir;
+        QString path = dir.currentPath() + QString("/demo1");
+        QString exe = path + QString("/Zeus.exe");
+        zeusProcess = new QProcess;
+        zeusProcess->setWorkingDirectory(path);
+        zeusProcess->start(exe, args);
+        break;
+    }
+    case 1:
+        break;
+    case 2:
+        break;
+    case 3:
+        break;
+    case 4:
+        break;
+    case 5:
+        break;
+    default:
+        break;
+    }
+#endif
+}
+
+void Interaction::demoStop(bool ifBlue, quint8 index) {
+#if defined(Q_OS_WIN32)
+    switch (index) {
+    case 0:
+    {
+        if (zeusProcess->isOpen()) {
+            zeusProcess->close();
+        }
+        delete zeusProcess;
+        zeusProcess = nullptr;
+        break;
+    }
+    case 1:
+        break;
+    case 2:
+        break;
+    case 3:
+        break;
+    case 4:
+        break;
+    case 5:
+        break;
+    default:
+        break;
+    }
+#endif
 }

@@ -2,12 +2,14 @@
 #define INTERACTION_H
 
 #include <QObject>
+#include <QProcess>
 #include "params.h"
 class Interaction : public QObject
 {
     Q_OBJECT
 public:
     explicit Interaction(QObject *parent = 0);
+    ~Interaction();
 public:
     Q_INVOKABLE int getCameraNumber() { return PARAM::CAMERA; }
     Q_INVOKABLE void startVision(quint16,const QString&,quint16,const QString&,quint16,const QString&,quint16);
@@ -21,13 +23,19 @@ public:
     Q_INVOKABLE QStringList getNetworkInterfaces();
     Q_INVOKABLE QString getDefaultRefereeAddress();
     Q_INVOKABLE quint16 getDefaultRefereePort();
-    Q_INVOKABLE void demoStart(bool ifBlue,quint8 index){}
-    Q_INVOKABLE void demoStop(bool ifBlue,quint8 index){}
+    Q_INVOKABLE void demoStart(bool ifBlue,quint8 index);
+    Q_INVOKABLE void demoStop(bool ifBlue,quint8 index);
 signals:
     void fieldChange(bool);
     void visionSettingChanged(quint16 interface,const QString& address,quint16 port,const QString& senderAddress,quint16 senderPort);
     void abortVision();
 public slots:
+
+#if defined(Q_OS_WIN32)
+private:
+    QProcess *zeusProcess;
+#endif
+
 };
 
 #endif // INTERACTION_H

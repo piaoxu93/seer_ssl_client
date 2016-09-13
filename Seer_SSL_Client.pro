@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-CONFIG += c++11
+CONFIG += c++11 release
 
 QT += qml quick serialport network
 
