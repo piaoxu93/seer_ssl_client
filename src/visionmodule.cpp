@@ -206,6 +206,7 @@ void CVisionModule::sendSmsg(){
     GlobalData::instance()->msg.push(transmit_msg);
     sendUdp->writeDatagram((char*)&transmit_msg,sizeof(transmit_msg),sendAddress, sendPort);
     sendUdp->writeDatagram((char*)&transmit_msg,sizeof(transmit_msg),sendAddress2, sendPort2);
+    qDebug() << sendPort << " " << sendPort2 ;
 }
 void CVisionModule::changeReceiverSetting(quint16 interface,const QString& address,quint16 port){
 
@@ -219,7 +220,7 @@ void CVisionModule::changeSenderSetting(const QString& address,quint16 port,cons
     sendAddress = address;
     sendPort = port;
     sendAddress2 = address2;
-    sendPort2 = port;
+    sendPort2 = port2;
 }
 void CVisionModule::abortSetting(){
     udpSocket->abort();
