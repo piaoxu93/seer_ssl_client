@@ -44,8 +44,8 @@
     "vision":{
         "address":"224.5.23.2",
         "port":10005,
-        "minAddFrame":10,
-        "minLostFrame":20,
+        "minAddFrame":3,
+        "minLostFrame":10,
         "ballMaxSpeed":1000,
         "robotMaxSpeed":700,
         "send":{

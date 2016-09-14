@@ -85,7 +85,7 @@ SendVisionMessage Transmit::smsgUpdate(int cameraMode,int minAddFrame, int minLo
 
     for (int i=startNum;i<GlobalData::instance()->cameraNum/2+startNum;i++)
     {
-        _cameraMixer[i].mixAlgorithm(cameraMode,minAddFrame,minLostFrame,maxdist,isFalseSend);
+        _cameraMixer[i].mixAlgorithm(cameraMode,minAddFrame,1,maxdist,isFalseSend);
         GlobalData::instance()->changeSmsgToRmsg(i+MaxNumOfCamera);
     }
 	if (cameraMode==FourCamera)
