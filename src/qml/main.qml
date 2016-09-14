@@ -6,7 +6,7 @@ import Client.Component 1.0 as Client
 ApplicationWindow{
     visible:true;
     width:1400;
-    height:700;
+    height:(Qt.platform.os == "windows") ? 722 : 700;
     minimumHeight: height;
     minimumWidth: width;
     maximumHeight: height;
@@ -125,7 +125,7 @@ ApplicationWindow{
                 x:10;
                 y:5;
                 color:"white";
-                font.pointSize: 14;
+                font.pointSize: (Qt.platform.os == "windows") ? 10 : 14;
                 font.weight:  Font.Bold;
             }
             Text{
@@ -134,7 +134,7 @@ ApplicationWindow{
                 x:parent.width - 70;
                 y:5;
                 color:"white";
-                font.pointSize: 14;
+                font.pointSize: (Qt.platform.os == "windows") ? 10 : 14;
                 font.weight:  Font.Bold;
             }
             Text{
@@ -145,7 +145,7 @@ ApplicationWindow{
                 anchors.right: parent.right;
                 anchors.rightMargin: 10;
                 color:"white";
-                font.pointSize: 14;
+                font.pointSize: (Qt.platform.os == "windows") ? 10 : 14;
                 font.weight:  Font.Bold;
             }
         }
