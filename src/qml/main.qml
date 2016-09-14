@@ -554,6 +554,14 @@ ApplicationWindow{
                                      color:"black";
                                      border.width: 1
                                 }
+                                handle: Rectangle {
+                                    implicitWidth: 60
+                                    implicitHeight: 20
+                                    color:enabled ? "#f3f3f3" : "#e0e0e0";
+                                    border.color:"#a0a0a0";
+                                    border.width: 1;
+                                    radius: 1;
+                                }
                             }
                             checked: true;
                             onCheckedChanged: {
