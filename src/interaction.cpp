@@ -70,7 +70,7 @@ quint16 Interaction::getDefaultVisionSenderPort2(){
     return quint16(SingleParams::instance()->_("vision.send.port2"));
 }
 
-void Interaction::demoStart(bool ifBlue, quint8 index) {
+void Interaction::demoStart(bool ifBlue, quint8 index,bool ifBigField) {
 #if defined(Q_OS_WIN32)
     QStringList args;
     if (ifBlue) {
@@ -103,10 +103,12 @@ void Interaction::demoStart(bool ifBlue, quint8 index) {
     default:
         break;
     }
+#else
+//    qDebug() << "FieldOption : " << ifBigField;
 #endif
 }
 
-void Interaction::demoStop(bool ifBlue, quint8 index) {
+void Interaction::demoStop(bool ifBlue, quint8 index,bool ifBigField) {
 #if defined(Q_OS_WIN32)
     switch (index) {
     case 0:

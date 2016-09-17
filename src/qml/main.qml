@@ -169,6 +169,7 @@ ApplicationWindow{
             width:window.width - fieldCanvas.width;
             height:fieldCanvas.height;
             id: operationPanel;
+            signal fieldOptionChange(bool ifBig);
             Tab{
                 id : radio;
                 signal leave();
@@ -566,6 +567,7 @@ ApplicationWindow{
                             checked: true;
                             onCheckedChanged: {
                                 fieldCanvas.ifBig = fieldOption.checked;
+                                operationPanel.fieldOptionChange(fieldOption.checked);
                                 interaction.fieldChange(fieldOption.checked);
                             }
                         }
@@ -594,9 +596,19 @@ ApplicationWindow{
                         }
                         Component.onCompleted: run();
                     }
+                }
+            }
+            Tab{
+                anchors.fill: parent;
+                property string title: qsTr("Demo") + translator.emptyString;
+                Rectangle{
+                    property bool fieldIfBig : true;
+                    id:demo;
+                    anchors.top: parent.top;
+                    anchors.topMargin: 10;
+                    color : "lightgrey";
                     GroupBox{
-                        anchors.top: getterButton.bottom;
-                        anchors.topMargin: 30;
+                        anchors.top: parent.top;
                         width: parent.width*0.9;
                         anchors.horizontalCenter: parent.horizontalCenter;
                         title:qsTr("Demo")+translator.emptyString;
@@ -670,7 +682,7 @@ ApplicationWindow{
                             }
                             function clickEvent(index){
                                 if (triggerIndex === -1){
-                                    interaction.demoStart(teamSwitch.checked,index);
+                                    interaction.demoStart(teamSwitch.checked,index,demo.fieldIfBig);
                                     for(var i=0;i<buttons.model.length;i++){
                                         buttons.itemAt(i).enabled = false;
                                     }
@@ -679,7 +691,7 @@ ApplicationWindow{
                                     buttons.itemAt(index).text = qsTr("Stop")+translator.emptyString;
                                     triggerIndex = index;
                                 }else if(triggerIndex === index){
-                                    interaction.demoStop(teamSwitch.checked,index);
+                                    interaction.demoStop(teamSwitch.checked,index,demo.fieldIfBig);
                                     for(var i=0;i<buttons.model.length;i++){
                                         buttons.itemAt(i).enabled = true;
                                     }
@@ -690,6 +702,12 @@ ApplicationWindow{
                                     console.log("Demo Model ERROR!");
                                 }
                             }
+                        }
+                    }
+                    Connections{
+                        target:operationPanel;
+                        onFieldOptionChange:{
+                            demo.fieldIfBig = ifBig;
                         }
                     }
                 }
