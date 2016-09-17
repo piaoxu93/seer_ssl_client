@@ -81,28 +81,39 @@ void Interaction::demoStart(bool ifBlue, quint8 index,bool ifBigField) {
 
     switch (index) {
     case 0:
-    {
-        QDir dir;
-        QString path = dir.currentPath() + QString("/demo1");
-        QString exe = path + QString("/Zeus.exe");
-        zeusProcess = new QProcess;
-        zeusProcess->setWorkingDirectory(path);
-        zeusProcess->start(exe, args);
+		args << "dribble";
         break;
-    }
     case 1:
+		args << "pass";
         break;
     case 2:
+		args << "normal_attack";
         break;
     case 3:
+		args << "normal_pass";
         break;
     case 4:
+		args << "defend";
         break;
     case 5:
+		args << "corner";
         break;
     default:
+		args << "dribble";
         break;
     }
+	QDir dir;
+	QString path;
+	if (ifBigField) {
+		path = dir.currentPath() + QString("/big");
+	}
+	else {
+		path = dir.currentPath() + QString("/small");
+	}
+	QString exe = path + QString("/ssl.exe");
+	zeusProcess = new QProcess;
+	zeusProcess->setWorkingDirectory(path);
+	zeusProcess->start(exe, args);
 #else
 //    qDebug() << "FieldOption : " << ifBigField;
 #endif
@@ -110,28 +121,12 @@ void Interaction::demoStart(bool ifBlue, quint8 index,bool ifBigField) {
 
 void Interaction::demoStop(bool ifBlue, quint8 index,bool ifBigField) {
 #if defined(Q_OS_WIN32)
-    switch (index) {
-    case 0:
-    {
-        if (zeusProcess->isOpen()) {
-            zeusProcess->close();
-        }
-        delete zeusProcess;
-        zeusProcess = nullptr;
-        break;
-    }
-    case 1:
-        break;
-    case 2:
-        break;
-    case 3:
-        break;
-    case 4:
-        break;
-    case 5:
-        break;
-    default:
-        break;
-    }
+	if (zeusProcess != nullptr) {
+		if (zeusProcess->isOpen()) {
+			zeusProcess->close();
+		}
+		delete zeusProcess;
+		zeusProcess = nullptr;
+	}
 #endif
 }
