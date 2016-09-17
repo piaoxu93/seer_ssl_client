@@ -671,9 +671,9 @@ ApplicationWindow{
                             property int triggerIndex : -1;
                             Repeater{
                                 id : buttons;
-                                model:[qsTr("Demo")+translator.emptyString,qsTr("Demo")+translator.emptyString,
-                                qsTr("Demo")+translator.emptyString,qsTr("Demo")+translator.emptyString,
-                                qsTr("Demo")+translator.emptyString,qsTr("Demo")+translator.emptyString];
+                                model:[qsTr("dribble")+translator.emptyString,qsTr("pass")+translator.emptyString,
+                                qsTr("normal attack")+translator.emptyString,qsTr("normal pass")+translator.emptyString,
+                                qsTr("defend")+translator.emptyString,qsTr("corner")+translator.emptyString];
                                 Button{
                                     text:modelData;
                                     width:demoGrid.itemWidth;
