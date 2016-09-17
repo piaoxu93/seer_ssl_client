@@ -88,9 +88,9 @@ void Field::draw(bool robot,bool ball,bool style){
     pixmap->fill(COLOR_DARKGREEN);
     imagePainter.strokePath(painterPath, pen);
 
-    for (int i=-1;i>-40;i-=1)
-        style ? drawOneFrame(i,ball,false) : drawPoint(i,ball,true);
-    drawOneFrame(0,true,true);
+    //for (int i=-1;i>-40;i-=1)
+    //    style ? drawOneFrame(i,ball,false) : drawPoint(i,ball,true);
+    drawOneFrame(0,true,true,true);
     this->update(area);
 }
 void Field::drawPoint(int index,bool ball,bool solid){
@@ -113,29 +113,35 @@ void Field::drawPoint(int index,bool ball,bool solid){
         paintBall(solid ? COLOR_ORANGE : COLOR_TRANSORANGE, vision.Ballx*posRatio,vision.Bally*posRatio);
     }
 }
-void Field::drawOneFrame(int index,bool ball,bool solid){
+void Field::drawOneFrame(int index,bool ball,bool solid,bool ifDrawNum) {
     static qreal posRatio = 0.1;
     static qreal angRatio = 1;//180/3.14159;
     auto& vision = GlobalData::instance()->msg[index];
     for(int i=0;i<SendCarNum;i++){
         if(vision.RobotFound[BLUE][i]){
             paintCar(solid ? COLOR_BLUE : COLOR_TRANSBLUE
-                             ,vision.RobotINDEX[BLUE][i]
-                     ,vision.RobotPosX[BLUE][i]*posRatio,vision.RobotPosY[BLUE][i]*posRatio,vision.RobotRotation[BLUE][i]*angRatio);
+                     ,vision.RobotINDEX[BLUE][i]
+                     ,vision.RobotPosX[BLUE][i]*posRatio
+                     ,vision.RobotPosY[BLUE][i]*posRatio
+                     ,vision.RobotRotation[BLUE][i]*angRatio
+                     ,ifDrawNum,Qt::white);
         }
     }
-    for(int i=0;i<SendCarNum;i++){
-        if(vision.RobotFound[YELLOW][i]){
+    for (int i=0;i<SendCarNum;i++) {
+        if (vision.RobotFound[YELLOW][i]) {
             paintCar(solid ? COLOR_YELLOW : COLOR_TRANSYELLOW
-                             ,vision.RobotINDEX[YELLOW][i]
-                     ,vision.RobotPosX[YELLOW][i]*posRatio,vision.RobotPosY[YELLOW][i]*posRatio,vision.RobotRotation[YELLOW][i]*angRatio);
+                     ,vision.RobotINDEX[YELLOW][i]
+                     ,vision.RobotPosX[YELLOW][i]*posRatio
+                     ,vision.RobotPosY[YELLOW][i]*posRatio
+                     ,vision.RobotRotation[YELLOW][i]*angRatio
+                     ,ifDrawNum,Qt::black);
         }
     }
     if (vision.BallFound && ball){
         paintBall(solid ? COLOR_ORANGE : COLOR_TRANSORANGE, vision.Ballx*posRatio,vision.Bally*posRatio);
     }
 }
-void Field::paintCar(const QColor& color,quint8 num,qreal x,qreal y,qreal radian){
+void Field::paintCar(const QColor& color,quint8 num,qreal x,qreal y,qreal radian,bool ifDrawNum,const QColor& textColor){
     static float diameter = SingleParams::instance()->_("car.diameter");
     static float faceWidth = SingleParams::instance()->_("car.faceWidth");
     qreal radius = diameter/2;
@@ -143,6 +149,11 @@ void Field::paintCar(const QColor& color,quint8 num,qreal x,qreal y,qreal radian
     imagePainter.setBrush(QBrush(color));
     imagePainter.setPen(Qt::NoPen);
     imagePainter.drawChord(x-radius,y-radius,diameter,diameter,(90.0-chordAngel - radian)*16,(180.0+2*chordAngel)*16);
+    if (ifDrawNum) {
+        imagePainter.setBrush(Qt::NoBrush);
+        imagePainter.setPen(QPen(textColor));
+        imagePainter.drawText(x-5,y+5,QString::number(num));
+    }
 }
 void Field::paintBall(const QColor& color,qreal x, qreal y){
     static float radius = float(SingleParams::instance()->_("ball.diameter"))/2;

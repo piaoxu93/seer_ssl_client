@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>src/qml/main.qml</file>
         <file>src/qml/RefereeBox.qml</file>
+        <file>logo.ico</file>
+        <file>logo.jpg</file>
     </qresource>
 </RCC>

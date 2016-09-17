@@ -25,9 +25,10 @@ private:
     void initField();
     CAMERAMODE cameraMode;
     static Field *single;
-    void drawOneFrame(int,bool ball,bool solid = true);
+    void drawOneFrame(int,bool ball,bool solid = true,bool ifDrawNum = false);
     void drawPoint(int index,bool ball,bool solid);
-    void paintCar(const QColor& color,quint8 num,qreal x,qreal y,qreal radian);
+    void paintCar(const QColor& color,quint8 num,qreal x,qreal y,qreal radian
+                  ,bool ifDrawNum = false,const QColor& textColor = Qt::white);
     void paintBall(const QColor& color,qreal x,qreal y);
     void initPainterPath();
     //QImage *image;

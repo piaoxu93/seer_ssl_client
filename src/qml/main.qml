@@ -54,24 +54,58 @@ ApplicationWindow{
 //            }
 //        }
     }
-    MessageDialog {
-          id: aboutDialog;
-          title: "About"
-          text: "It's so cool that you are using Qt Quick."
-          Component.onCompleted: visible = false;
-      }
+    Dialog {
+        id: aboutDialog;
+        title: "About"
+        Component.onCompleted: visible = false;
+        contentItem: Rectangle {
+            color: "white"
+            implicitWidth: 400
+            implicitHeight: 300
+            Image{
+                width:128;
+                height:128;
+                x:20;
+                y:20;
+                source:"../../logo.jpg";
+            }
+            Text{
+                x:20;
+                y:20+128+20;
+                text:qsTr("YISIBOT SSL CLIENT");
+            }
+            Text{
+                x:20;
+                y:20+128+20+40;
+                text:qsTr("Copyright © 2016 YISIBOT, All rights reserved");
+            }
+            Text{
+                x:20;
+                y:20+128+20+80;
+                text:qsTr("power by RoboKit");
+            }
+            Button{
+                x:320;
+                y:20+128+20+80+10;
+                text : qsTr("Close")+translator.emptyString;
+                onClicked: aboutDialog.visible = false;
+            }
+        }
+    }
     Client.CommandParser{ id: commandParser; }
     Client.Serial { id : serial; }
     Client.Interaction{ id : interaction; }
     Client.Translator{ id : translator; }
-
+    signal radioSend();
     Timer{
         id:timer;
         interval:15;
         running:false;
         repeat:true;
+        property int count : 0
         onTriggered: {
             serial.sendCommand();
+            window.radioSend();
         }
     }
     Timer{
@@ -327,9 +361,9 @@ ApplicationWindow{
                                     break;}
                                 case 'e':{crazyShow.shoot = !crazyShow.shoot;
                                     break;}
-                                case 'L':{crazyShow.velR = crazyShow.limitVel(crazyShow.velR+crazyShow.velStep,-crazyShow.m_VELR,crazyShow.m_VELR);
+                                case 'L':{crazyShow.velR = crazyShow.limitVel(crazyShow.velR+5,-crazyShow.m_VELR,crazyShow.m_VELR);
                                     break;}
-                                case 'R':{crazyShow.velR = crazyShow.limitVel(crazyShow.velR-crazyShow.velStep,-crazyShow.m_VELR,crazyShow.m_VELR);
+                                case 'R':{crazyShow.velR = crazyShow.limitVel(crazyShow.velR-5,-crazyShow.m_VELR,crazyShow.m_VELR);
                                     break;}
                                 case 'S':{crazyShow.velX = 0;
                                         crazyShow.velY = 0;
@@ -386,6 +420,13 @@ ApplicationWindow{
                             Shortcut{
                                 sequence:"Space"
                                 onActivated:crazyShow.handleKeyboardEvent('S');
+                            }
+                            Connections{
+                                target:window;
+                                onRadioSend:{
+                                    if (crazyShow.velR > 0) crazyShow.velR--;
+                                    if (crazyShow.velR < 0) crazyShow.velR++;
+                                }
                             }
                         }
                     }
@@ -752,6 +793,7 @@ ApplicationWindow{
             }
         }
     }
+/*
 //    Button{
 //        id : language;
 //        anchors.bottom: parent.bottom;
@@ -790,6 +832,7 @@ ApplicationWindow{
 //            language.switchLanguage();
 //        }
 //    }
+*/
     Component.onCompleted:{
         translator.selectLanguage("zh");
         if(Qt.platform.os == "windows"){
