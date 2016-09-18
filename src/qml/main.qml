@@ -73,22 +73,25 @@ ApplicationWindow{
                 x:20;
                 y:20+128+20;
                 text:qsTr("YISIBOT SSL CLIENT");
+				font.pointSize: 12;
+				font.weight:  Font.Bold;
             }
             Text{
                 x:20;
-                y:20+128+20+40;
+                y:20+128+20+50;
                 text:qsTr("Copyright © 2016 YISIBOT, All rights reserved");
             }
             Text{
                 x:20;
-                y:20+128+20+80;
-                text:qsTr("power by RoboKit");
+                y:20+128+20+90;
+                text:qsTr("Power by RoboKit®, Seer Robotics");
             }
             Button{
                 x:320;
-                y:20+128+20+80+10;
+                y:20+128+20+90+10;
                 text : qsTr("Close")+translator.emptyString;
                 onClicked: aboutDialog.visible = false;
+				visible: (Qt.platform.os == "windows") ? false : true;
             }
         }
     }
