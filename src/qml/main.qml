@@ -69,6 +69,13 @@ ApplicationWindow{
                 y:20;
                 source:"../../logo.jpg";
             }
+            Image{
+                width:128;
+                height:128;
+                x:200;
+                y:15;
+                source:"../../seer.jpg";
+            }
             Text{
                 x:20;
                 y:20+128+20;
