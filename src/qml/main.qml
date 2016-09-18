@@ -384,6 +384,9 @@ ApplicationWindow{
                                 default:
                                     return false;
                                 }
+                                updateCommand();
+                            }
+                            function updateCommand(){
                                 serial.updateCommandParams(crazyShow.robotID,crazyShow.velX,crazyShow.velY,crazyShow.velR,crazyShow.dribble,crazyShow.mode,crazyShow.shoot,crazyShow.power);
                             }
                             function limitVel(vel,minValue,maxValue){
@@ -436,6 +439,8 @@ ApplicationWindow{
                                 onRadioSend:{
                                     if (crazyShow.velR > 0) crazyShow.velR--;
                                     if (crazyShow.velR < 0) crazyShow.velR++;
+                                    crazyShow.shoot = false;
+                                    crazyShow.updateCommand();
                                 }
                             }
                         }
@@ -691,8 +696,7 @@ ApplicationWindow{
                                              color:"yellow";
                                              anchors.right: parent.right;
                                          }
-                                         //color: teamSwitch.checked ? "blue" : "yellow";
-                                         border.width: 1
+                                         border.width: 1;
                                     }
                                     handle: Rectangle {
                                         implicitWidth: 60
@@ -747,7 +751,7 @@ ApplicationWindow{
                                         buttons.itemAt(i).enabled = true;
                                     }
                                     teamGrid.enabled = true;
-                                    buttons.itemAt(index).text = qsTr("Demo")+translator.emptyString;
+                                    buttons.itemAt(index).text = buttons.model[index];
                                     triggerIndex = -1;
                                 }else{
                                     console.log("Demo Model ERROR!");
