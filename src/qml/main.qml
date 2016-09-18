@@ -723,8 +723,8 @@ ApplicationWindow{
                             Repeater{
                                 id : buttons;
                                 model:[qsTr("dribble")+translator.emptyString,qsTr("pass")+translator.emptyString,
-                                qsTr("normal attack")+translator.emptyString,qsTr("normal pass")+translator.emptyString,
-                                qsTr("defend")+translator.emptyString,qsTr("corner")+translator.emptyString];
+                                qsTr("advance")+translator.emptyString,qsTr("chip")+translator.emptyString,
+                                qsTr("attack")+translator.emptyString,qsTr("defend")+translator.emptyString];
                                 Button{
                                     text:modelData;
                                     width:demoGrid.itemWidth;

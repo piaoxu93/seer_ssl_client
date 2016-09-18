@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="zh_CN">
+<TS version="2.1" language="zh_CN">
 <context>
     <name>RefereeBox</name>
     <message>
@@ -275,24 +275,36 @@
         <translation>传射</translation>
     </message>
     <message>
-        <source>normal attack</source>
-        <translation>进攻1</translation>
-    </message>
-    <message>
-        <source>normal pass</source>
-        <translation>进攻2</translation>
-    </message>
-    <message>
         <source>defend</source>
         <translation>防守</translation>
     </message>
     <message>
-        <source>corner</source>
-        <translation>角球</translation>
+        <source>Close</source>
+        <translation>关闭</translation>
     </message>
     <message>
-        <source>Close</source>
-        <translation type="finished">关闭</translation>
+        <source>YISIBOT SSL CLIENT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copyright © 2016 YISIBOT, All rights reserved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Power by RoboKit®, Seer Robotics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>advance</source>
+        <translation type="unfinished">抢球</translation>
+    </message>
+    <message>
+        <source>chip</source>
+        <translation type="unfinished">挑球</translation>
+    </message>
+    <message>
+        <source>attack</source>
+        <translation type="unfinished">进攻</translation>
     </message>
 </context>
 </TS>

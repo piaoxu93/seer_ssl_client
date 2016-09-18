@@ -87,16 +87,16 @@ void Interaction::demoStart(bool ifBlue, quint8 index,bool ifBigField) {
 		args << "pass";
         break;
     case 2:
-		args << "normal_attack";
+		args << "advance";
         break;
     case 3:
-		args << "normal_pass";
+		args << "chip";
         break;
     case 4:
-		args << "defend";
+		args << "attack";
         break;
     case 5:
-		args << "corner";
+		args << "defend";
         break;
     default:
 		args << "dribble";
