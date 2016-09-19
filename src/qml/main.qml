@@ -108,6 +108,7 @@ ApplicationWindow{
     Client.Translator{ id : translator; }
     signal radioSend();
     signal radioSendTimer();
+    signal radioVelRTimer();
     Timer{
         id:timer;
         interval:15;
@@ -115,13 +116,19 @@ ApplicationWindow{
         repeat:true;
         property int count : 0;
         property int radioTimer : 5;
+        property int count2 : 0;
+        property int velRTimer : 3;
         onTriggered: {
-            console.log(count);
             if (count < radioTimer)
                 count++;
             if (count == radioTimer) {
                 count++;
                 radioSendTimer();
+            }
+            if (count2 < velRTimer)
+                count2++;
+            if (count2 == velRTimer) {
+                radioVelRTimer();
             }
             serial.sendCommand();
             window.radioSend();
@@ -310,6 +317,7 @@ ApplicationWindow{
                             property bool mode : false;
                             property int robotID : 0;
                             property int itemWidth : 70;
+                            property int velRAddStep : 10;
                             Text{ text:qsTr("robot") + translator.emptyString }
                             SpinBox{ minimumValue:0; maximumValue:11; value:parent.robotID; width:parent.itemWidth
                                 onEditingFinished:{parent.robotID = value}}
@@ -381,9 +389,11 @@ ApplicationWindow{
                                 case 'e':{crazyShow.shoot = !crazyShow.shoot;
                                     timer.count = 0;
                                     break;}
-                                case 'L':{crazyShow.velR = crazyShow.limitVel(crazyShow.velR+5,-crazyShow.m_VELR,crazyShow.m_VELR);
+                                case 'L':{crazyShow.velR = crazyShow.limitVel(crazyShow.velR+crazyShow.velRAddStep,-crazyShow.m_VELR,crazyShow.m_VELR);
+                                    timer.count2 = 0;
                                     break;}
-                                case 'R':{crazyShow.velR = crazyShow.limitVel(crazyShow.velR-5,-crazyShow.m_VELR,crazyShow.m_VELR);
+                                case 'R':{crazyShow.velR = crazyShow.limitVel(crazyShow.velR-crazyShow.velRAddStep,-crazyShow.m_VELR,crazyShow.m_VELR);
+                                    timer.count2 = 0;
                                     break;}
                                 case 'S':{crazyShow.velX = 0;
                                         crazyShow.velY = 0;
@@ -446,9 +456,15 @@ ApplicationWindow{
                             }
                             Connections{
                                 target:window;
-                                onRadioSend:{
-                                    if (crazyShow.velR > 0) crazyShow.velR--;
-                                    if (crazyShow.velR < 0) crazyShow.velR++;
+                                onRadioVelRTimer:{
+                                    var limitVelR = 15;
+                                    crazyShow.velR = crazyShow.velR*0.9;
+                                    //if (crazyShow.velR > 0) crazyShow.velR = crazyShow.limitVel(crazyShow.velR-crazyShow.velRMinStep,0,crazyShow.m_VELR);
+                                    //if (crazyShow.velR < 0) crazyShow.velR = crazyShow.limitVel(crazyShow.velR+crazyShow.velRMinStep,-crazyShow.m_VELR,0);
+                                    if (crazyShow.velR < limitVelR && crazyShow.velR > -limitVelR) {
+                                        crazyShow.velR = 0;
+                                        timer.count2++;
+                                    }
                                     crazyShow.updateCommand();
                                 }
                             }
