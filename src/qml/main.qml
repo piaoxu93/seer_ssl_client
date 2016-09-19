@@ -107,13 +107,22 @@ ApplicationWindow{
     Client.Interaction{ id : interaction; }
     Client.Translator{ id : translator; }
     signal radioSend();
+    signal radioSendTimer();
     Timer{
         id:timer;
         interval:15;
         running:false;
         repeat:true;
-        property int count : 0
+        property int count : 0;
+        property int radioTimer : 5;
         onTriggered: {
+            console.log(count);
+            if (count < radioTimer)
+                count++;
+            if (count == radioTimer) {
+                count++;
+                radioSendTimer();
+            }
             serial.sendCommand();
             window.radioSend();
         }
@@ -370,6 +379,7 @@ ApplicationWindow{
                                 case 'q':{crazyShow.dribble = !crazyShow.dribble;
                                     break;}
                                 case 'e':{crazyShow.shoot = !crazyShow.shoot;
+                                    timer.count = 0;
                                     break;}
                                 case 'L':{crazyShow.velR = crazyShow.limitVel(crazyShow.velR+5,-crazyShow.m_VELR,crazyShow.m_VELR);
                                     break;}
@@ -439,6 +449,12 @@ ApplicationWindow{
                                 onRadioSend:{
                                     if (crazyShow.velR > 0) crazyShow.velR--;
                                     if (crazyShow.velR < 0) crazyShow.velR++;
+                                    crazyShow.updateCommand();
+                                }
+                            }
+                            Connections{
+                                target:window;
+                                onRadioSendTimer:{
                                     crazyShow.shoot = false;
                                     crazyShow.updateCommand();
                                 }
