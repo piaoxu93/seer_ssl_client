@@ -89,9 +89,9 @@ void Interaction::demoStart(bool ifBlue, quint8 index,bool ifBigField) {
     case 2:
 		args << "advance";
         break;
-    case 3:
-		args << "chip";
-        break;
+	case 3:
+		args << "chipkick";
+		break;
     case 4:
 		args << "attack";
         break;
