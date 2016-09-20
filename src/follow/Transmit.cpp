@@ -19,12 +19,12 @@ Transmit::Transmit(){
 	{
 		if(i==0)
 		{
-		_cameraMixer[0]=TwoCameraMixer(1,3);
+        _cameraMixer[0]=TwoCameraMixer(2,3);
 		}
 		
 		else if(i==1)
 		{
-		_cameraMixer[1]=TwoCameraMixer(0,2);
+        _cameraMixer[1]=TwoCameraMixer(0,1);
 		}
 	}
 	_lastCameraMixer=TwoCameraMixer(MaxNumOfCamera,MaxNumOfCamera+1);

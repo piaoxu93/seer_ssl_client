@@ -13,7 +13,6 @@ ApplicationWindow{
     maximumWidth: width;
     color:"#FFFFFF";
     id:window;
-
     menuBar: MenuBar {
         Menu {
             id:menu;
