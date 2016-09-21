@@ -56,12 +56,12 @@ void Transmit::setCycle(int followcycle, int cycle)
 void Transmit::initRmsgArray()
 {
 	for(int i = 0; i < MaxNumOfCamera+2 ; i++){
-		for(int j = 0; j < MaxBallNum; j++){
+        for (int j = 0; j < MaxBallNum; j++) {
             GlobalData::instance()->receiveMsg[i].Ballx[j] = -ERRORNUM;  //add 2010 +
             GlobalData::instance()->receiveMsg[i].Bally[j] = -ERRORNUM;
             GlobalData::instance()->receiveMsg[i].BallFound[j] = false;
 		}
-		for(int j = 0; j < ReceiveCarNum; j++){
+        for (int j = 0; j < ReceiveCarNum; j++) {
             GlobalData::instance()->receiveMsg[i].RobotINDEX[BLUE][j] = MaxFollowNum;
             GlobalData::instance()->receiveMsg[i].RobotFound[BLUE][j] = false;
             GlobalData::instance()->receiveMsg[i].RobotPosX[BLUE][j] = -ERRORNUM;

@@ -111,7 +111,21 @@ bool CVisionModule::collectNewVision() {
     return true;
 }
 void CVisionModule::updateVisionControl(bool mode){
-    cameraMode = mode ? FourCamera : TwoCamUp;
+    if (mode) {
+        cameraMode = FourCamera;
+        for(int i=0;i<4;i++){
+            GlobalData::instance()->cameraControl[i] = true;
+        }
+    }else {
+        cameraMode = TwoCamUp;
+        for(int i=0;i<2;i++){
+            GlobalData::instance()->cameraControl[i] = true;
+        }
+        for(int i=2;i<4;i++){
+            GlobalData::instance()->cameraControl[i] = false;
+        }
+    }
+    //cameraMode = mode ? FourCamera : TwoCamUp;
     Field::instance()->changeMode(mode);
 }
 void CVisionModule::mix(){
