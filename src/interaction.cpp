@@ -106,8 +106,7 @@ void Interaction::demoStart(bool ifBlue, quint8 index,bool ifBigField) {
 	QString path;
 	if (ifBigField) {
 		path = dir.currentPath() + QString("/big");
-	}
-	else {
+    } else {
 		path = dir.currentPath() + QString("/small");
 	}
 	QString exe = path + QString("/ssl.exe");
