@@ -2,6 +2,7 @@
 #include "lib/crc/crc.h"
 #include "singleparams.h"
 #include <QSerialPort>
+#include <QTest>
 #include <QElapsedTimer>
 #include <QtDebug>
 #include <iostream>
@@ -32,6 +33,15 @@ RadioPacket::RadioPacket(QSerialPort* serialPtr)
 bool RadioPacket::sendStartPacket(){
     if(serialPtr != NULL){
         serialPtr->write((startPacket1.data()),TRANSMIT_PACKET_SIZE);
+        if (serialPtr->waitForBytesWritten(2000)) {
+            if (serialPtr->waitForReadyRead(2000)) {
+                QByteArray responseData = serialPtr->readAll();
+                while (serialPtr->waitForReadyRead(10))
+                    responseData += serialPtr->readAll();
+            }
+        } else {
+            qDebug() << "Start packet write timeout!";
+        }
         serialPtr->write((startPacket2.data()),TRANSMIT_PACKET_SIZE);
         return true;
     }
@@ -47,8 +57,8 @@ bool RadioPacket::sendCommand(){
     if(times == 0) timer.start();
     if(serialPtr != NULL){
         encode();
+        //qDebug() << transmitPacket.toHex();
         serialPtr->write((transmitPacket.data()),TRANSMIT_PACKET_SIZE);
-        //qDebug() << "Hz : " << double(++times)/timer.nsecsElapsed()*1000000000;
         return true;
     }
     return false;

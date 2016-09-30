@@ -2,7 +2,7 @@ TEMPLATE = app
 
 CONFIG += c++11 release
 
-QT += qml quick serialport network
+QT += qml quick serialport network testlib
 
 TARGET = Seer_SSL_Client
 

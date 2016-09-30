@@ -18,6 +18,7 @@ public:
     void updateFrequency(int);
 private:
     static const int TRANSMIT_PACKET_SIZE = 25;
+    static const int TRANS_FEEDBACK_SIZE = 20;
     QByteArray startPacket1;
     QByteArray startPacket2;
     QByteArray transmitPacket;

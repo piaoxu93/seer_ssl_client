@@ -1,5 +1,6 @@
 #include <QtSerialPort/QSerialPortInfo>
 #include <QtDebug>
+#include <QTest>
 #include "serialobject.h"
 #include "singleparams.h"
 SerialObject::SerialObject(QObject *parent):QObject(parent),radioPacket(&serial){
@@ -99,6 +100,7 @@ void SerialObject::openSerialPort(){
 
     if (serial.open(QIODevice::ReadWrite)) {
         qDebug() << "SerialPort Connected...";
+
     } else {
         qDebug() << "SerialPort connect failed...";
     }

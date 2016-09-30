@@ -276,6 +276,15 @@ ApplicationWindow{
                         anchors.rightMargin: 20;
                         anchors.topMargin: 10;
                         onClicked: clickEvent();
+//                        Timer{
+//                            id:tempTimer;
+//                            onTriggered: serial.sendStartPacket();
+//                        }
+//                        function delay(delayTime) {
+//                            tempTimer.interval = delayTime;
+//                            tempTimer.repeat = false;
+//                            tempTimer.start();
+//                        }
                         function clickEvent(){
                             if(ifConnected){
                                 timer.stop();
