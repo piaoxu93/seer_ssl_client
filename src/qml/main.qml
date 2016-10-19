@@ -229,6 +229,13 @@ ApplicationWindow{
             height:fieldCanvas.height;
             id: operationPanel;
             signal fieldOptionChange(bool ifBig);
+            property bool fieldIfBig : true;
+            Connections{
+                target:operationPanel;
+                onFieldOptionChange:{
+                    operationPanel.fieldIfBig = ifBig;
+                }
+            }
             Tab{
                 id : radio;
                 signal leave();
@@ -785,7 +792,7 @@ ApplicationWindow{
                             }
                             function clickEvent(index){
                                 if (triggerIndex === -1){
-                                    interaction.demoStart(teamSwitch.checked,index,demo.fieldIfBig);
+                                    interaction.demoStart(teamSwitch.checked,index,operationPanel.fieldIfBig);
                                     for(var i=0;i<buttons.model.length;i++){
                                         buttons.itemAt(i).enabled = false;
                                     }
@@ -794,7 +801,7 @@ ApplicationWindow{
                                     buttons.itemAt(index).text = qsTr("Stop")+translator.emptyString;
                                     triggerIndex = index;
                                 }else if(triggerIndex === index){
-                                    interaction.demoStop(teamSwitch.checked,index,demo.fieldIfBig);
+                                    interaction.demoStop(teamSwitch.checked,index,operationPanel.fieldIfBig);
                                     for(var i=0;i<buttons.model.length;i++){
                                         buttons.itemAt(i).enabled = true;
                                     }
@@ -807,12 +814,7 @@ ApplicationWindow{
                             }
                         }
                     }
-                    Connections{
-                        target:operationPanel;
-                        onFieldOptionChange:{
-                            demo.fieldIfBig = ifBig;
-                        }
-                    }
+
                 }
             }
         }
