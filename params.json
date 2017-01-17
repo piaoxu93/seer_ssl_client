@@ -43,7 +43,10 @@
     },
     "vision":{
         "address":"224.5.23.2",
-        "port":10005,
+        "port":{
+            "small":10002,
+            "big":10005
+        },
         "minAddFrame":3,
         "minLostFrame":10,
         "ballMaxSpeed":1000,

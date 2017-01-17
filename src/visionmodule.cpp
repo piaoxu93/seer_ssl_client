@@ -66,7 +66,7 @@ CVisionModule::CVisionModule(QObject *parent)
     minLostFrame = SingleParams::instance()->_("vision.minLostFrame");
 
     std::string addressStr = SingleParams::instance()->_("vision.address");
-    port = SingleParams::instance()->_("vision.port");
+    port = SingleParams::instance()->_("vision.port.big");
     groupAddress = QString(addressStr.c_str());
 
     sendUdp = new QUdpSocket;

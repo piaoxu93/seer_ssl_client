@@ -15,7 +15,7 @@ public:
     Q_INVOKABLE void startVision(quint16,const QString&,quint16,const QString&,quint16,const QString&,quint16);
     Q_INVOKABLE void stopVision();
     Q_INVOKABLE QString getDefaultVisionAddress();
-    Q_INVOKABLE quint16 getDefaultVisionPort();
+    Q_INVOKABLE quint16 getDefaultVisionPort(bool);
     Q_INVOKABLE QString getDefaultVisionSenderAddress();
     Q_INVOKABLE QString getDefaultVisionSenderAddress2();
     Q_INVOKABLE quint16 getDefaultVisionSenderPort();

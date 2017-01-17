@@ -545,9 +545,8 @@ ApplicationWindow{
                     anchors.top: parent.top;
                     anchors.topMargin: 10;
                     color : "lightgrey";
-                    property bool en : true;
                     GroupBox{
-                        enabled: parent.en;
+                        enabled: false;
                         id : visionAddress;
                         width:parent.width*0.9;
                         title:qsTr("Receiver Setting")+translator.emptyString;
@@ -582,12 +581,12 @@ ApplicationWindow{
                             }
                             TextField{
                                 id:port;
-                                text:interaction.getDefaultVisionPort();width:parent.width - inputText.width - parent.columnSpacing;
+                                text:interaction.getDefaultVisionPort(fieldCanvas.ifBig);width:parent.width - inputText.width - parent.columnSpacing;
                             }
                         }
                     }
                     GroupBox{
-                        enabled: parent.en;
+                        enabled: false;
                         id : visionSender;
                         width:parent.width*0.90;
                         title:qsTr("Transmit Setting")+translator.emptyString;

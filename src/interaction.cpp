@@ -37,8 +37,9 @@ QString Interaction::getDefaultVisionAddress(){
     std::string str = SingleParams::instance()->_("vision.address");
     return QString(str.c_str());
 }
-quint16 Interaction::getDefaultVisionPort(){
-    return quint16(SingleParams::instance()->_("vision.port"));
+quint16 Interaction::getDefaultVisionPort(bool ifBig){
+    return ifBig ? quint16(SingleParams::instance()->_("vision.port.big")) :
+                   quint16(SingleParams::instance()->_("vision.port.small"));
 }
 QStringList Interaction::getNetworkInterfaces(){
     const auto& interfaces = QNetworkInterface::allInterfaces();

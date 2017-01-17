@@ -12,7 +12,7 @@ RefereeBox::RefereeBox(QObject *parent) : QObject(parent),currentCommand(GameSta
     port = SingleParams::instance()->_("referee.sendPort");
     groupAddress = QString(addressStr.c_str());
     udpSocket = new QUdpSocket();
-    udpSocket->bind(QHostAddress::AnyIPv4, port, QUdpSocket::ShareAddress);
+    udpSocket->bind(QHostAddress::AnyIPv4, port+1, QUdpSocket::ShareAddress);
     commandCounter = 1;
 }
 RefereeBox::~RefereeBox(){
