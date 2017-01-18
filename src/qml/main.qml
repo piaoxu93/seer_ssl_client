@@ -545,8 +545,9 @@ ApplicationWindow{
                     anchors.top: parent.top;
                     anchors.topMargin: 10;
                     color : "lightgrey";
+                    property bool en: false;
                     GroupBox{
-                        enabled: false;
+                        enabled: vision.en;
                         id : visionAddress;
                         width:parent.width*0.9;
                         title:qsTr("Receiver Setting")+translator.emptyString;
@@ -586,7 +587,7 @@ ApplicationWindow{
                         }
                     }
                     GroupBox{
-                        enabled: false;
+                        enabled: vision.en;
                         id : visionSender;
                         width:parent.width*0.90;
                         title:qsTr("Transmit Setting")+translator.emptyString;
@@ -647,7 +648,7 @@ ApplicationWindow{
                         }
                     }
                     Grid{
-                        enabled: parent.en;
+                        enabled: vision.en;
                         id : controlGrid;
                         anchors.top: visionSender.bottom;
                         anchors.topMargin: 10;
@@ -697,10 +698,10 @@ ApplicationWindow{
                         }
                         function run(){
                             if(visionAddress.visionGetter){
-                                //vision.en =  false;
+                                vision.en =  false;
                                 interaction.startVision(interfaces.currentIndex,address.text,parseInt(port.text),senderAddress.text,parseInt(senderPort.text),senderAddress2.text,parseInt(senderPort2.text));
                             }else{
-                                //vision.en = true;
+                                vision.en = true;
                                 interaction.stopVision();
                             }
                         }
