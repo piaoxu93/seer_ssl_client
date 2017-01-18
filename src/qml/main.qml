@@ -697,10 +697,10 @@ ApplicationWindow{
                         }
                         function run(){
                             if(visionAddress.visionGetter){
-                                vision.en =  false;
+                                //vision.en =  false;
                                 interaction.startVision(interfaces.currentIndex,address.text,parseInt(port.text),senderAddress.text,parseInt(senderPort.text),senderAddress2.text,parseInt(senderPort2.text));
                             }else{
-                                vision.en = true;
+                                //vision.en = true;
                                 interaction.stopVision();
                             }
                         }
