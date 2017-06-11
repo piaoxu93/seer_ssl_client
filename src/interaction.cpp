@@ -130,3 +130,6 @@ void Interaction::demoStop(bool ifBlue, quint8 index,bool ifBigField) {
 	}
 #endif
 }
+void Interaction::controlCamera(int index, bool state){
+    GlobalData::instance()->cameraControl[index] = state;
+}

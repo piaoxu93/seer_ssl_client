@@ -25,6 +25,7 @@ public:
     Q_INVOKABLE quint16 getDefaultRefereePort();
     Q_INVOKABLE void demoStart(bool ifBlue,quint8 index,bool ifBigField = true);
     Q_INVOKABLE void demoStop(bool ifBlue,quint8 index,bool ifBigField = true);
+    Q_INVOKABLE void controlCamera(int,bool);
 signals:
     void fieldChange(bool);
     void visionSettingChanged(quint16 interface,const QString& address,quint16 port,const QString& senderAddress,quint16 senderPort);

@@ -94,8 +94,8 @@ void Field::draw(bool robot,bool ball,bool style){
     pixmap->fill(COLOR_DARKGREEN);
     imagePainter.strokePath(painterPath, pen);
 
-    for (int i=-1;i>-40;i-=1)
-        style ? drawOneFrame(i,ball,false) : drawPoint(i,ball,true);
+//    for (int i=-1;i>-40;i-=1)
+//        style ? drawOneFrame(i,ball,false) : drawPoint(i,ball,true);
     drawOneFrame(0,true,true,true);
     this->update(area);
 }

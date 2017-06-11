@@ -684,12 +684,37 @@ ApplicationWindow{
                         }
                         Text{ text:qsTr("Big") + translator.emptyString; }
                     }
+                    GroupBox{
+                        id:cameraGroupBox;
+                        width:parent.width*0.90;
+                        title:qsTr("Camera Settings")+translator.emptyString;
+                        //height:childrenRect.height;
+                        anchors.top:controlGrid.bottom;
+                        anchors.horizontalCenter: parent.horizontalCenter;
+                        anchors.topMargin: 5;
+                        Grid{
+                            columns:2;
+                            columnSpacing: 40;
+                            anchors.horizontalCenter: parent.horizontalCenter;
+                            horizontalItemAlignment: Grid.AlignHCenter;
+                            verticalItemAlignment: Grid.AlignVCenter;
+                            Repeater{
+                                model:interaction.getCameraNumber();
+                                CheckBox{
+                                    property int itemIndex : index;
+                                    text:"Camera " + itemIndex;
+                                    checked: true;
+                                    onCheckedChanged: interaction.controlCamera(itemIndex,checked);
+                                }
+                            }
+                        }
+                    }
                     Button{
                         id:getterButton;
                         text:(visionAddress.visionGetter ? qsTr("Stop") : qsTr("Start")) + translator.emptyString;
                         width:visionSender.width;
-                        anchors.top: controlGrid.bottom;
-                        anchors.topMargin: 20;
+                        anchors.top: cameraGroupBox.bottom;
+                        anchors.topMargin: 10;
                         anchors.horizontalCenter: parent.horizontalCenter;
                         onClicked: changeGetterState();
                         function changeGetterState(){
